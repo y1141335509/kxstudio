@@ -1,0 +1,9 @@
+/* HomePage.css */
+.slick-dots li button:before {
+  font-size: 16px; /* Change this value to increase or decrease the size of the dots */
+  color: #fff; /* Optional: change the color of the dots */
+}
+
+.slick-dots li.slick-active button:before {
+  color: #c9c9c9; /* Optional: change the color of active dot */
+}
