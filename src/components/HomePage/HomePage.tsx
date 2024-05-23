@@ -67,7 +67,7 @@ function CarouselSection() {
     <Box sx={{ width: '100%', py: 4, marginTop: '2em', '.slick-dots li button:before': { fontSize: '16px', color: 'black' }, '.slick-dots li.slick-active button:before': { color: 'primary.main' } }}>
       <Slider {...settings}>    {/* set up carousel configurations */}
 
-        {/* Second Carousel */}
+        {/* First Carousel */}
         <div>
           <Paper
             sx={{
@@ -154,6 +154,86 @@ function CarouselSection() {
               <Typography>​​开放世界PRG</Typography>
             </Box>
             <img src="/images/homepage-carousel-4.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
+          </Paper>
+        </div>
+
+        {/* Fifth Carousel */}
+        <div>
+          <Paper
+            sx={{
+              padding: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              height: 424, // Adjust based on your content
+            }}
+          >
+            <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>打游戏，是为了追求高分吗？除了高分，没有其他的追求吗？在Food War中，每一次切割不仅仅是为了得分，更是一场关乎生死的挑战！</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>🍽️ 吃得太多，你就会“爆炸”！ 小心选择你的每一刀，掌握好每一次的食物摄入量，别让你的健康走向极限！</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>🥛 特色关卡：从简单的牛奶开始，体验独特的“tap and hold”消费机制，寓教于乐。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>📈 逐级挑战：随着游戏进程解锁新的食物和挑战，学习如何平衡各种营养，以保持身体健康和游戏得分的平衡。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>🥗 从垃圾食品到世界美食：随着版本更新，探索更多诱人的食物选择和更高的风险，学习健康饮食的重要性。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>下载 Food War，开启你的健康饮食之旅，挑战你的忍者切割技巧吧！在追求高分的同时，别忘了你的生命同样重要！</Typography>
+              <Typography variant="h5">🌟 新游戏上线：Food War —— 营养忍者大战！ 🌟</Typography>
+              <Typography>​冒险游戏</Typography>
+            </Box>
+            <img src="/images/homepage-carousel-5food war.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
+          </Paper>
+        </div>
+
+        {/* Sixth Carousel */}
+        <div>
+          <Paper
+            sx={{
+              padding: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              height: 424, // Adjust based on your content
+            }}
+          >
+            <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>在广阔王国的新征服土地上，权力的阴影和阴谋的寒气弥漫开来。《暗黑王座》带你进入这个中世纪哥特式的复杂世界，成为一名掌管命运的法官，你的每一个选择都将重塑整个王国的未来。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>深度决策制作： 每个选择都充满道德困境，从司法裁决到个人道德抉择，深刻影响故事走向和角色关系。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>‍建设与创造：使用丰富的资源和工具，在你的土地上建造城堡、村庄、艺术品甚至是完整的文明。设计属于你的世界，让它充满活力和色彩复杂的角色关系： 建立或破坏联盟，每一个决定都可能成为胜败的关键。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>策略战斗与潜行元素： 在宫廷斗争中，运用策略战斗技巧和政治手腕，巧妙应对敌对势力。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>角色成长系统： 发展你的外交、战斗和诡计能力，成为不可或缺的统治者。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>丰富的故事结局： 根据你的选择，故事可能走向复仇或宽恕，每种决定都有其独特的后果和终局。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>在《暗黑王座》中，执掌权杖，统御黑暗，决定一个国家的命运。会屈从于旧日的怨恨，还是为了更大的利益铸就新的联盟？在权谋的漩涡中，找到属于你的道路。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>加入我们，揭开权力的面纱，探索你的王座之路。</Typography>
+              <Typography variant="h5">暗黑王座</Typography>
+              <Typography>​​权力游戏，由你主宰</Typography>
+            </Box>
+            <img src="/images/homepage-carousel-6dark throne.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
+          </Paper>
+        </div>
+
+        {/* Seventh Carousel */}
+        <div>
+          <Paper
+            sx={{
+              padding: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              height: 424, // Adjust based on your content
+            }}
+          >
+            <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>揭开挑战，开启留学之旅："留学生大战移民局"</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>“留学生大战移民局”不仅仅是一款游戏，它是您作为国际学生在美国的缩影，体验从学生签证到绿卡的复杂过程。在这里，每一个选择都可能影响您的留学道路。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>真实模拟：亲身体验国际学生的生活，享受学习、管理时间、建立人际网络的乐趣和挑战。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>策略游戏玩法：每一个决策都至关重要。选择您的学习路径，合理分配资源，申请签证，展现您的策略智慧。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>动态结果：基于您的选择，游戏有多种结局。感受H1B抽签的刺激、求职面试的紧张以及获得绿卡的喜悦。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>教育性信息：深入了解美国的移民流程。对希望了解或经历美国留学生活的玩家来说，这是一款集趣味与信息于一体的游戏。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>引人入胜的视觉与音效：游戏采用了融合现实与卡通风格的视觉艺术风格，配以激励人心的音轨，完美呈现您的留学起伏。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>您准备好迎接挑战了吗？</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>加入“留学生大战移民局”，与成千上万的玩家一起开启追寻美国梦的征程。在游戏中，您将体验签证申请、求职搜索和文化适应的复杂性，同时在美国构建新生活。</Typography>
+              <Typography variant="h5">留学生大战移民局</Typography>
+              <Typography>​​文字冒险游戏</Typography>
+            </Box>
+            <img src="/images/homepage-carousel-7uscis.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
           </Paper>
         </div>
       </Slider>
