@@ -12,6 +12,7 @@ import HomePage from './components/HomePage/HomePage'; // Your homepage componen
 import GamesPage from './components/GamesPage/GamesPage'; // Component for Games
 import ResourcesPage from './components/ResourcesPage/ResourcesPage'; // Component for Resources
 import AboutUsPage from './components/AboutUsPage/AboutUsPage'; // Component for About Us
+import MyDreamPage from './components/MyDreamPage/MyDreamPage'; // Component for My Dream
 
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/my-dream" element={<MyDreamPage />} />
         <Route path="/games" element={<GamesPage />} />
         <Route path="/resources" element={<ResourcesPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />

@@ -23,6 +23,9 @@ const Header: React.FC = () => {
 
           <div style={{ display: 'flex', marginRight: '2em' }}>
             {/* Navigation Links */}
+            <Button color='inherit' component={RouterLink} to='/my-dream'>
+              My Dreams
+            </Button>
             <Button color="inherit" component={RouterLink} to="/games">
               游戏
             </Button>
