@@ -1,3 +1,11 @@
+
+# Introduction to this website development
+
+* This website is built using React Typescript stored on GitHub.com
+* This project is published on Vercel.com, and then rendered as kxstudio.org 
+* The kxstudio.org domain is hosted on squarespace.com
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
