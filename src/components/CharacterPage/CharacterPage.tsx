@@ -3,6 +3,8 @@ import { Container, Box, Typography, Paper, List, ListItem, ListItemButton, List
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { Block, Topic } from '@mui/icons-material';
+import './CharacterPage.css';
 
 
 interface SideNavProps {
@@ -25,18 +27,76 @@ interface Character {
 
 
 // Mock data for countries and characters
-const countries = ['Japan', 'USA', 'China', 'France', 'Egypt'];
+const countries = ['Others', '创界之梦', '暗黑王座',];
 const characters = [
-  { id: 1, name: 'Character 1', image: 'https://uploadstatic.mihoyo.com/contentweb/20220208/2022020814003845991.png', country: 'Japan', description: 'Description 1' },
-  { id: 2, name: 'Character 2', image: 'https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/fdcbc9ef8859b7077d92ae38d925e15e_7767077963502328666.png', country: 'Japan', description: 'Description 2' },
-  { id: 3, name: 'Character 3', image: 'https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/b51565c6f1298e534e90b6e63332e9c1_6618231443033589469.png', country: 'USA', description: 'Description 3' },
-  { id: 4, name: 'Character 4', image: 'https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/965e940e6caafe8fbd4bf0e17653000b_7797376782783229067.png', country: 'USA', description: 'Description 4' },
-  { id: 5, name: 'Character 5', image: 'https://webstatic.mihoyo.com/upload/contentweb/2022/07/04/d35a0a1d13f821fd55a6951210c672ac_8868204139408761896.png', country: 'China', description: 'Description 5' },
-  { id: 6, name: 'Character 6', image: 'https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/01d9b164e0de2611c84ccdec5b84ced8_4841535305526345122.png', country: 'China', description: 'Description 6' },
-  { id: 7, name: 'Character 7', image: 'https://fastcdn.mihoyo.com/content-v2/hk4e/123893/c3f7661378c0cfa11ab2cc2a9bd09c5e_4714225803080593226.png', country: 'France', description: 'Description 7' },
-  { id: 8, name: 'Character 8', image: 'https://act-webstatic.mihoyo.com/upload/contentweb/hk4e/c765b3ba5e3b25ce6e8afd3e758251a8_741046217554426529.png', country: 'France', description: 'Description 8' },
-  { id: 9, name: 'Character 9', image: 'https://webstatic.mihoyo.com/upload/contentweb/2023/01/10/1f3bc8199884ff93a04e713809e4aef3_66257121119188218.png', country: 'Egypt', description: 'Description 9' },
-  { id: 10, name: 'Character 10', image: 'https://webstatic.mihoyo.com/upload/contentweb/2023/03/15/4f486ee9943936bb8d8a8ebc9c9df9b2_964302051434856950.png', country: 'Egypt', description: 'Description 10' },
+  {
+    id: 1, name: '桃子小姐 (Miss Peach)', image: '/images/character-page/Miss Peach.png', country: 'Others',
+    description: <Typography>桃子小姐在周围人看来总是格外聪明。尽管如此，她似乎从未参与过任何非凡或开创性的事情。
+      然而，她真正的才能在于她能够在脑海中快速模拟并验证解决方案，这些解决方案往往是别人经过几百年验证的成果。
+      这种独特的能力使她成为一个默默无闻的天才，她在幕后确保只有最有效和经过时间考验的解决方案被实施。</Typography>,
+    avatar: '/images/character-page/Miss Peach-avatar.png'
+  },
+  {
+    id: 2, name: '莱桑德 (Lysander)', image: '/images/character-page/Lysander.png', country: 'Others',
+    description: <Typography>
+      莱桑德小时候经常被同龄人欺负和孤立。作为一种特殊的惩罚，他被迫在月光下保持清醒，禁止寻求睡眠的安慰。
+      这种不寻常的环境使他与夜晚元素产生了神秘的联系，赋予了他夜间增强的能力。随着年龄的增长，
+      他意识到月光不仅抚慰了他的情感创伤，还增强了他的身体和魔法力量。</Typography>,
+    avatar: '/images/character-page/Lysander-avatar.png'
+  },
+  {
+    id: 3, name: '闇影 (Yàn Yǐng)', image: '/images/character-page/Yàn Yǐng.png', country: 'Others',
+    description: <Typography>
+      闇影原本是一名杀手训练中的精英，因其冷血无情，被视为完美的杀人机器。然而，在一次地震救援中，他目睹了无辜的痛苦与死亡，
+      内心的人性开始觉醒，他的杀手本能受到了挑战。这种心理变化导致他的训练成绩开始下滑，最终未能通过最后的杀手考核，
+      被迫转行成为一名刽子手。尽管职业变了，闇影的执行力依然强劲，每次执行死刑都异常冷静和精准。但每次行刑结束后，
+      他都会在归途中丢弃斧头，对着夕阳长叹，表达着对自己命运的无奈和对所做之事的内疚。
+    </Typography>,
+    avatar: '/images/character-page/Yàn Yǐng-avatar.png'
+  },
+  {
+    id: 4, name: '101公主', image: '/images/character-page/101公主.png', country: 'Others',
+    description: <Typography>
+      101公主出生在一个繁荣和和平的王国，她几乎没有遇到过太多的挫折。她的生活充满了各种乐趣和舒适，
+      但她对生活中的不公平和不合理保持着敏感和批判的态度。她的最大梦想是能够不劳而获，享受生活中的一切美好。
+    </Typography>,
+    avatar: '/images/character-page/101公主-avatar.png'
+  },
+  {
+    id: 5, name: 'Silver（银）', image: '/images/character-page/Silver.png', country: 'Others',
+    description: <Typography>
+      Silver的童年因一次与父亲的严重冲突而留下了深刻的心理阴影，他被砍去一根手指，这一事件深刻地影响了他对世界的看法。
+      尽管外表看起来是阳光和单纯的，他的内心却裹着层层的暗黑伪装，这种矛盾成为了他一生的悲剧和动力。
+    </Typography>,
+    avatar: '/images/character-page/Silver-avatar.png'
+  },
+  {
+    id: 6, name: '樱花姬', image: '/images/character-page/樱花姬.png', country: 'Others',
+    description: <Typography>
+      樱花姬是一个孤儿，从小因为她的粉色卷发而被欺负。她没有得到过真正的爱，年轻时深爱的男人最终抛弃了她，
+      这让她对爱情产生了深深的不信任。之后，她投身于职场，成为一名事业成功的女性，但在感情上却成了一个玩世不恭的人。
+      她表面上看似享受着轻浮的生活，实际上内心深处极度渴望被爱和接纳。直到遇见一个看似不会爱上的少年，她的生活开始有了新的转机，
+      她尝试成为更好的自己，但过程中充满挣扎和失败，最终在少年的帮助下，她接受了感情无法强求的事实。在一次深刻的心灵觉醒后，
+      她决定以一种唯美的方式结束自己的生命，化作樱花飘散。
+    </Typography>,
+    avatar: '/images/character-page/樱花姬-avatar.png'
+  },
+  {
+    id: 7, name: 'Character 7', image: 'https://uploadstatic.mihoyo.com/contentweb/20220208/2022020814003845991.png',
+    country: '创界之梦', description: 'Description 7', avatar: 'https://uploadstatic.mihoyo.com/contentweb/20220208/2022020813481182336.png'
+  },
+  {
+    id: 8, name: 'Character 8', image: 'https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/fdcbc9ef8859b7077d92ae38d925e15e_7767077963502328666.png',
+    country: '创界之梦', description: 'Description 8', avatar: 'https://uploadstatic.mihoyo.com/contentweb/20210817/2021081714114216212.png'
+  },
+  {
+    id: 9, name: 'Character 9', image: 'https://uploadstatic.mihoyo.com/contentweb/20220208/2022020814003845991.png',
+    country: '暗黑王座', description: 'Description 9', avatar: 'https://uploadstatic.mihoyo.com/contentweb/20220208/2022020813481182336.png'
+  },
+  {
+    id: 10, name: 'Character 10', image: 'https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/fdcbc9ef8859b7077d92ae38d925e15e_7767077963502328666.png',
+    country: '暗黑王座', description: 'Description 10', avatar: 'https://uploadstatic.mihoyo.com/contentweb/20210817/2021081714114216212.png'
+  },
   // Add more characters as needed
 ];
 
@@ -68,14 +128,30 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
     slidesToScroll: 1,
     autoplay: false,
     autoplaySpeed: 3000,
-    customPaging: (i: number) => (
-      <img src={filteredCharacters[i].image} alt={filteredCharacters[i].name} style={{ width: 50 }} />
-    ),
+
+    // customPaging 设置carousel下方小点点的风格
+    customPaging: (i: number) => {
+      const char = filteredCharacters[i];
+      // Ensure that the character and its image are defined
+      if (char && char.image) {
+        return (
+          <img src={char.image} alt={char.name} style={{ width: 50, height: 50, margin: '10px' }} />
+        );
+      } else {
+        // Provide a fallback if the character or image is undefined
+        return (
+          <div style={{ width: 50, height: 50, margin: '10px', backgroundColor: '#eee' }} />
+        );
+      }
+    },
+
+
+
     dotsClass: 'slick-dots custom-dots'
   };
 
   return (
-    <Box sx={{ width: '100%', py: 4, marginTop: '2em' }}>
+    <Box sx={{ marginBottom: '70px', width: '100%' }}>
       <Slider {...settings}>
         {filteredCharacters.length > 0 ? filteredCharacters.map(character => (
           <div key={character.id}>
@@ -90,14 +166,14 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
         )) : <Typography>No characters found for this country.</Typography>}
       </Slider>
     </Box>
+
   );
 }
 
 
 function CharacterPage() {
-  const [selectedCountry, setSelectedCountry] = useState<string>('Japan'); // Default selection
+  const [selectedCountry, setSelectedCountry] = useState<string>('Others'); // Default selection
 
-  console.log("Page rendering with country:", selectedCountry); // Debug output
 
   return (
     <Container maxWidth="lg" sx={{ display: 'flex' }}>

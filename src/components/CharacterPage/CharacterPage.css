@@ -1,0 +1,29 @@
+.custom-dots {
+  bottom: -50px; /* Adjust this value to ensure dots do not overlap with the carousel images */
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+
+.custom-dots li {
+  display: inline-block;
+  margin: 0 10px; /* Ensure spacing between dots */
+  margin-right: 30px;
+}
+
+.custom-dots li button {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.custom-dots li button img {
+  display: block; /* Ensure images are centered and do not take additional space */
+  width: 50px; /* Maintain image size */
+  height: 50px;
+  border-radius: 50%; /* Optional: if you want dots to be round */
+}

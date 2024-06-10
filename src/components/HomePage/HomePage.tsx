@@ -25,7 +25,7 @@ function Subscription() {
               borderRadius: 2, // Optionally add a border radius
             }}
             alt="Descriptive Alt Text"
-            src="/images/homepage-pic1.png"
+            src="/images/homepage/homepage-pic1.png"
           />
         </Grid>
 
@@ -83,7 +83,7 @@ function CarouselSection() {
               <Typography variant="h5">与你的1001次初遇</Typography>
               <Typography>​​恋爱冒险游戏</Typography>
             </Box>
-            <img src="/images/homepage-carousel-1.png" alt="Story 1" style={{ width: 375, height: 400, marginRight: '6em', }} />
+            <img src="/images/homepage/homepage-carousel-1.png" alt="Story 1" style={{ width: 375, height: 400, marginRight: '6em', }} />
           </Paper>
         </div>
 
@@ -103,7 +103,7 @@ function CarouselSection() {
               <Typography variant="h5">最后的战役</Typography>
               <Typography>女性向文字恋爱冒险游戏</Typography>
             </Box>
-            <img src="/images/homepage-carousel-2.png" alt="Story 2" style={{ width: 375, height: 400, marginRight: '6em', }} />
+            <img src="/images/homepage/homepage-carousel-2.png" alt="Story 2" style={{ width: 375, height: 400, marginRight: '6em', }} />
           </Paper>
         </div>
 
@@ -128,7 +128,7 @@ function CarouselSection() {
               <Typography variant="h5">千载不忘</Typography>
               <Typography>权谋之间的恋爱推理游戏</Typography>
             </Box>
-            <img src="/images/homepage-carousel-3.png" alt="Story 3" style={{ width: 375, height: 400, marginRight: '6em', }} />
+            <img src="/images/homepage/homepage-carousel-3.png" alt="Story 3" style={{ width: 375, height: 400, marginRight: '6em', }} />
           </Paper>
         </div>
 
@@ -153,7 +153,7 @@ function CarouselSection() {
               <Typography variant="h5">创界之梦</Typography>
               <Typography>​​开放世界PRG</Typography>
             </Box>
-            <img src="/images/homepage-carousel-4.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
+            <img src="/images/homepage/homepage-carousel-4.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
           </Paper>
         </div>
 
@@ -178,7 +178,7 @@ function CarouselSection() {
               <Typography variant="h5">🌟 新游戏上线：Food War —— 营养忍者大战！ 🌟</Typography>
               <Typography>​冒险游戏</Typography>
             </Box>
-            <img src="/images/homepage-carousel-5food war.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
+            <img src="/images/homepage/homepage-carousel-5food war.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
           </Paper>
         </div>
 
@@ -205,7 +205,7 @@ function CarouselSection() {
               <Typography variant="h5">暗黑王座</Typography>
               <Typography>​​权力游戏，由你主宰</Typography>
             </Box>
-            <img src="/images/homepage-carousel-6dark throne.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
+            <img src="/images/homepage/homepage-carousel-6dark throne.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
           </Paper>
         </div>
 
@@ -233,7 +233,7 @@ function CarouselSection() {
               <Typography variant="h5">留学生大战移民局</Typography>
               <Typography>​​文字冒险游戏</Typography>
             </Box>
-            <img src="/images/homepage-carousel-7uscis.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
+            <img src="/images/homepage/homepage-carousel-7uscis.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
           </Paper>
         </div>
       </Slider>
