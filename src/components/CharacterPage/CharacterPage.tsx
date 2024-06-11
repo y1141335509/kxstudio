@@ -132,7 +132,8 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
       // Ensure that the character and its image are defined
       if (char && char.avatar) {
         return (
-          <img src={char.avatar} alt={char.name} style={{ width: 50, height: 50, margin: '0 10px' }} />
+          // the margin here changes the margin between carousel slides and carousel avatar dots
+          <img src={char.avatar} alt={char.name} style={{ width: 50, height: 50, margin: '-20px 10px' }} />
         );
       } else {
         // Provide a fallback if the character or image is undefined
