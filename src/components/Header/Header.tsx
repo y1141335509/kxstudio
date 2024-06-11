@@ -23,9 +23,9 @@ const Header: React.FC = () => {
 
           <div style={{ display: 'flex', marginRight: '2em' }}>
             {/* Navigation Links */}
-            <Button color="inherit" component={RouterLink} to="/games">
+            {/* <Button color="inherit" component={RouterLink} to="/games">
               游戏
-            </Button>
+            </Button> */}
             <Button color="inherit" component={RouterLink} to="/character-page">
               角色
             </Button>

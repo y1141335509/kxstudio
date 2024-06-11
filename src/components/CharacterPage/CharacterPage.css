@@ -27,3 +27,12 @@
   height: 50px;
   border-radius: 50%; /* Optional: if you want dots to be round */
 }
+
+/* CharacterPage.css */
+.slick-slider {
+  margin-bottom: 40px; /* Adjust the bottom margin of the slider */
+}
+
+.slick-dots {
+  padding-top: 40px; /* Adds space above the dots */
+}

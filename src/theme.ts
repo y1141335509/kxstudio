@@ -31,8 +31,7 @@ const theme = createTheme({
     body1: {
       fontWeight: 300,
     },
-
-  }
+  },
 });
 
 export default theme;

@@ -2,6 +2,7 @@ import React from "react";
 import Slider from "react-slick";
 import { Grid, Box, Typography, TextField, Button, Paper, Container } from "@mui/material";
 import "./HomePage.css";
+import shadows from "@mui/material/styles/shadows";
 
 
 
@@ -76,9 +77,10 @@ function CarouselSection() {
               alignItems: 'center',
               justifyContent: 'space-around',
               height: 424, // Adjust based on your content
+              boxShadow: 'none',  // ensure no shadow is displayed
             }}
           >
-            <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
+            <Box sx={{ marginLeft: '6em', marginRight: '3em', boxShadow: 0, }}>
               <Typography gutterBottom sx={{ fontSize: '14px', }}>在《与你的1001次初遇》中，玩家将扮演一位在网络世界中邂逅了一个来自远方的男主角的女性。男主角是一位深谙二次元文化、充满智慧且热情的年轻人，他的神秘魅力让你深深着迷。然而，他害羞且腼腆，加之两人之间的家庭背景和年龄差异，使得这段关系充满了挑战。游戏的目标是通过决策和互动，逐渐打开男主角的心扉，克服你们之间的差异，寻找一种共享的语言，最终在现实世界中见面。这是一款关于勇气、爱情和理解的游戏，它提供了一个情感丰富、深思熟虑的故事体验，让玩家在过程中找到共鸣，也可能学到一些新的事物。</Typography>
               <Typography variant="h5">与你的1001次初遇</Typography>
               <Typography>​​恋爱冒险游戏</Typography>
@@ -96,6 +98,7 @@ function CarouselSection() {
               alignItems: 'center',
               justifyContent: 'space-around',
               height: 424, // Adjust based on your content
+              boxShadow: 'none',  // ensure no shadow is displayed
             }}
           >
             <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
@@ -116,6 +119,7 @@ function CarouselSection() {
               alignItems: 'center',
               justifyContent: 'space-around',
               height: 424, // Adjust based on your content
+              boxShadow: 'none',  // ensure no shadow is displayed
             }}
           >
             <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
@@ -141,6 +145,7 @@ function CarouselSection() {
               alignItems: 'center',
               justifyContent: 'space-around',
               height: 424, // Adjust based on your content
+              boxShadow: 'none',  // ensure no shadow is displayed
             }}
           >
             <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
@@ -166,6 +171,7 @@ function CarouselSection() {
               alignItems: 'center',
               justifyContent: 'space-around',
               height: 424, // Adjust based on your content
+              boxShadow: 'none',  // ensure no shadow is displayed
             }}
           >
             <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
@@ -191,6 +197,7 @@ function CarouselSection() {
               alignItems: 'center',
               justifyContent: 'space-around',
               height: 424, // Adjust based on your content
+              boxShadow: 'none',  // ensure no shadow is displayed
             }}
           >
             <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
@@ -218,6 +225,7 @@ function CarouselSection() {
               alignItems: 'center',
               justifyContent: 'space-around',
               height: 424, // Adjust based on your content
+              boxShadow: 'none',  // ensure no shadow is displayed
             }}
           >
             <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
