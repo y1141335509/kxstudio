@@ -27,7 +27,7 @@ interface Character {
 
 
 // Mock data for countries and characters
-const countries = ['Others', '创界之梦', '暗黑王座',];
+const countries = ['Others', '与你的1001次初遇', '最后的战役',];
 const characters = [
   {
     id: 1, name: '桃子小姐 (Miss Peach)', image: '/images/character-page/Miss Peach.png', country: 'Others',
@@ -82,20 +82,20 @@ const characters = [
     avatar: '/images/character-page/樱花姬-avatar.png'
   },
   {
-    id: 7, name: 'Character 7', image: 'https://uploadstatic.mihoyo.com/contentweb/20220208/2022020814003845991.png',
-    country: '创界之梦', description: 'Description 7', avatar: 'https://uploadstatic.mihoyo.com/contentweb/20220208/2022020813481182336.png'
+    id: 7, name: 'Character 7', image: '/images/character-page/boy1.png',
+    country: '与你的1001次初遇', description: 'Description 7', avatar: '/images/character-page/boy1-avatar.png'
   },
   {
-    id: 8, name: 'Character 8', image: 'https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/fdcbc9ef8859b7077d92ae38d925e15e_7767077963502328666.png',
-    country: '创界之梦', description: 'Description 8', avatar: 'https://uploadstatic.mihoyo.com/contentweb/20210817/2021081714114216212.png'
+    id: 8, name: 'Character 8', image: '/images/character-page/boy1.png',
+    country: '与你的1001次初遇', description: 'Description 8', avatar: '/images/character-page/boy1-avatar.png'
   },
   {
-    id: 9, name: 'Character 9', image: 'https://uploadstatic.mihoyo.com/contentweb/20220208/2022020814003845991.png',
-    country: '暗黑王座', description: 'Description 9', avatar: 'https://uploadstatic.mihoyo.com/contentweb/20220208/2022020813481182336.png'
+    id: 9, name: 'Character 9', image: '/images/character-page/boy2.png',
+    country: '最后的战役', description: 'Description 9', avatar: '/images/character-page/boy2-avatar.png'
   },
   {
-    id: 10, name: 'Character 10', image: 'https://webstatic.mihoyo.com/upload/contentweb/2022/06/30/fdcbc9ef8859b7077d92ae38d925e15e_7767077963502328666.png',
-    country: '暗黑王座', description: 'Description 10', avatar: 'https://uploadstatic.mihoyo.com/contentweb/20210817/2021081714114216212.png'
+    id: 10, name: 'Character 10', image: '/images/character-page/boy2.png',
+    country: '最后的战役', description: 'Description 10', avatar: '/images/character-page/boy2-avatar.png'
   },
   // Add more characters as needed
 ];
@@ -130,9 +130,9 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
     customPaging: (i: number) => {
       const char = filteredCharacters[i];
       // Ensure that the character and its image are defined
-      if (char && char.image) {
+      if (char && char.avatar) {
         return (
-          <img src={char.image} alt={char.name} style={{ width: 50, height: 50, margin: '0 10px' }} />
+          <img src={char.avatar} alt={char.name} style={{ width: 50, height: 50, margin: '0 10px' }} />
         );
       } else {
         // Provide a fallback if the character or image is undefined
