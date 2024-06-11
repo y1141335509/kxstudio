@@ -116,6 +116,7 @@ function SideNav({ onSelectCountry }: SideNavProps) {
 
 function CarouselSection({ selectedCountry }: CarouselSectionProps) {
   const filteredCharacters = characters.filter(char => char.country === selectedCountry);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -124,16 +125,32 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
     slidesToScroll: 1,
     autoplay: false,
     autoplaySpeed: 3000,
-    customPaging: (i: number) => (
-      <img src={filteredCharacters[i].avatar} alt={filteredCharacters[i].name} style={{ width: 50, height: 50, margin: '0 10px' }} />
-    ),
-    dotsClass: 'slick-dots custom-dots'
+
+    // customPaging 设置carousel下方小点点的风格
+    customPaging: (i: number) => {
+      const char = filteredCharacters[i];
+      // Ensure that the character and its image are defined
+      if (char && char.image) {
+        return (
+          <img src={char.image} alt={char.name} style={{ width: 50, height: 50, margin: '0 10px' }} />
+        );
+      } else {
+        // Provide a fallback if the character or image is undefined
+        return (
+          <div style={{ width: 50, height: 50, margin: '10px', backgroundColor: '#eee' }} />
+        );
+      }
+    },
+    // customPaging: (i: number) => (
+    //   <img src={filteredCharacters[i].image} alt={filteredCharacters[i].name} style={{ width: 50, height: 50, margin: '0 10px' }} />
+    // ),
+    dotsClass: 'slick-dots custom-dots' 
   };
 
   return (
-    <Box sx={{ width: '100%', py: 4, marginTop: '2em', '.slick-slider': { marginBottom: '20px' }, '.slick-dots': { paddingTop: '20px' } }}>
+    <Box sx={{ marginBottom: '70px', width: '100%', py: 4, marginTop: '2em', '.slick-slider': { marginBottom: '20px' }, '.slick-dots': { paddingTop: '20px' } }}>
       <Slider {...settings}>
-        {filteredCharacters.map(character => (
+        {filteredCharacters.length > 0 ? filteredCharacters.map(character => (
           <div key={character.id}>
             <Paper sx={{ padding: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around', height: 424, boxShadow: 'none', }}>
               <Box sx={{ marginLeft: '6em', marginRight: '3em', boxShadow: 'none', }}>
@@ -143,12 +160,12 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
               <img src={character.image} alt={character.name} style={{ width: 375, height: 400 }} />
             </Paper>
           </div>
-        ))}
+        )) : <Typography>No characters found for this country.</Typography>}
       </Slider>
     </Box>
+
   );
 }
-
 
 
 function CharacterPage() {
