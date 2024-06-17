@@ -27,7 +27,7 @@ interface Character {
 
 
 // Mock data for countries and characters
-const countries = ['Others', '与你的1001次初遇', '最后的战役',];
+const countries = ['与你的1001次初遇', '最后的战役', 'Others', ];
 const characters = [
   {
     id: 1, name: '桃子小姐 (Miss Peach)', image: '/images/character-page/Miss Peach.png', country: 'Others',
@@ -82,20 +82,48 @@ const characters = [
     avatar: '/images/character-page/樱花姬-avatar.png'
   },
   {
-    id: 7, name: 'Character 7', image: '/images/character-page/boy1.png',
-    country: '与你的1001次初遇', description: 'Description 7', avatar: '/images/character-page/boy1-avatar.png'
+    id: 7, name: '韩星辰', image: '/images/character-page/韩星辰.png',
+    country: '与你的1001次初遇', description: <Typography>
+      星座：摩羯座    <br />
+      性格类型：INFJ  <br />
+      性格特征：
+      <li>内向且自卑：韩星辰是一个非常内向的人，常常感到自卑，尤其是在面对与自己背景或年龄有较大差异的人时。</li>
+      <li>智慧与热情：尽管内向，韩星辰在熟悉的二次元文化领域表现出惊人的智慧和热情。</li>
+      <li>神秘且腼腆：他的神秘魅力和腼腆的性格使他在网络世界中极具吸引力。</li>
+      <li>情感表达独特：他喜欢通过字谜和隐喻来表达自己的情感，这种独特的沟通方式是他与他人建立联系的一种方式。</li>
+    </Typography>, avatar: '/images/character-page/韩星辰-avatar.png'
   },
   {
-    id: 8, name: 'Character 8', image: '/images/character-page/boy1.png',
-    country: '与你的1001次初遇', description: 'Description 8', avatar: '/images/character-page/boy1-avatar.png'
+    id: 8, name: '韩星辰', image: '/images/character-page/韩星辰.png',
+    country: '与你的1001次初遇', description: 
+    <Typography>
+    星座：摩羯座    <br />
+    性格类型：INFJ  <br />
+    性格特征：
+    <li>内向且自卑：韩星辰是一个非常内向的人，常常感到自卑，尤其是在面对与自己背景或年龄有较大差异的人时。</li>
+    <li>智慧与热情：尽管内向，韩星辰在熟悉的二次元文化领域表现出惊人的智慧和热情。</li>
+    <li>神秘且腼腆：他的神秘魅力和腼腆的性格使他在网络世界中极具吸引力。</li>
+    <li>情感表达独特：他喜欢通过字谜和隐喻来表达自己的情感，这种独特的沟通方式是他与他人建立联系的一种方式。</li>
+    </Typography>, 
+    avatar: '/images/character-page/韩星辰-avatar.png'
   },
   {
-    id: 9, name: 'Character 9', image: '/images/character-page/boy2.png',
-    country: '最后的战役', description: 'Description 9', avatar: '/images/character-page/boy2-avatar.png'
+    id: 9, name: '白止', image: '/images/character-page/白止.png',
+    country: '最后的战役', description: <Typography >
+      白止是一个单纯而忠诚的王子，与女主青梅竹马。尽管女主在旅途中喜欢过其他男主，白止始终是她最信任的人。
+      白止的内向、单纯、聪明理性和善良让他在女主的生命中扮演了重要的角色。他拥有一双大眼睛和双眼皮，显得非常可爱。
+      一路上，白止一直陪伴着女主，一起经历了各种挑战和冒险。无论是面对困境还是险境，白止总是毫不犹豫地出手相助，
+      多次将女主从水深火热中解救出来。他的存在不仅为女主提供了安全感，也成为她坚定信念的重要支柱。
+    </Typography>, avatar: '/images/character-page/白止-avatar.png'
   },
   {
-    id: 10, name: 'Character 10', image: '/images/character-page/boy2.png',
-    country: '最后的战役', description: 'Description 10', avatar: '/images/character-page/boy2-avatar.png'
+    id: 10, name: '白止', image: '/images/character-page/白止.png',
+    country: '最后的战役', description: <Typography>
+      白止是一个单纯而忠诚的王子，与女主青梅竹马。尽管女主在旅途中喜欢过其他男主，白止始终是她最信任的人。
+      白止的内向、单纯、聪明理性和善良让他在女主的生命中扮演了重要的角色。他拥有一双大眼睛和双眼皮，显得非常可爱。
+      一路上，白止一直陪伴着女主，一起经历了各种挑战和冒险。无论是面对困境还是险境，白止总是毫不犹豫地出手相助，
+      多次将女主从水深火热中解救出来。他的存在不仅为女主提供了安全感，也成为她坚定信念的重要支柱。
+    </Typography>, avatar: '/images/character-page/白止-avatar.png'
   },
   // Add more characters as needed
 ];
