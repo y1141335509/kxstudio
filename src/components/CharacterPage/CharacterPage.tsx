@@ -198,7 +198,7 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
 
 
 function CharacterPage() {
-  const [selectedCountry, setSelectedCountry] = useState<string>('Others'); // Default selection
+  const [selectedCountry, setSelectedCountry] = useState<string>('与你的1001次初遇'); // Default selection
 
 
   return (

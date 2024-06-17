@@ -29,12 +29,12 @@ const Header: React.FC = () => {
             <Button color="inherit" component={RouterLink} to="/character-page">
               角色
             </Button>
-            <Button color="inherit" component={RouterLink} to="/resources">
+            {/* <Button color="inherit" component={RouterLink} to="/resources">
               资源
             </Button>
             <Button color="inherit" component={RouterLink} to="/about-us">
               了解我们
-            </Button>
+            </Button> */}
           </div>
         </Toolbar>
       </AppBar>
