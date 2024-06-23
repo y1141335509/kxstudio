@@ -13,6 +13,7 @@ import GamesPage from './components/GamesPage/GamesPage'; // Component for Games
 import ResourcesPage from './components/ResourcesPage/ResourcesPage'; // Component for Resources
 import AboutUsPage from './components/AboutUsPage/AboutUsPage'; // Component for About Us
 import CharacterPage from './components/CharacterPage/CharacterPage'; // Component for Character Page
+import SilverPage from './components/CharacterPage/SilverPage/SilverPage';  // component from Silver Page
 
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/games" element={<GamesPage />} />
         <Route path="/character-page" element={<CharacterPage />} />
+        <Route path="/character-page/silver" element={<SilverPage />} />
         <Route path="/resources" element={<ResourcesPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
       </Routes>

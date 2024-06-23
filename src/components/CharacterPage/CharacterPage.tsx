@@ -4,6 +4,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Block, Topic } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
 import './CharacterPage.css';
 
 
@@ -185,6 +186,11 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
               <Box sx={{ marginLeft: '6em', marginRight: '3em', boxShadow: 'none', }}>
                 <Typography variant="h5">{character.name}</Typography>
                 <Typography>{character.description}</Typography>
+                {character.name === "Silver（银）" && (
+                  <Link to='/character-page/silver' style={{ textDecoration: 'none'}}>
+                    <Typography sx={{mt: 2, color: 'blue'}}>Learn More</Typography>
+                  </Link>
+                )}
               </Box>
               <img src={character.image} alt={character.name} style={{ width: 375, height: 400 }} />
             </Paper>
