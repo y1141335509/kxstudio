@@ -31,14 +31,22 @@ interface Character {
 const countries = ['与你的1001次初遇', '最后的战役', 'Others', ];
 const characters = [
   {
-    id: 1, name: '桃子小姐 (Miss Peach)', image: '/images/character-page/Miss Peach.png', country: 'Others',
+    id: 1, name: 'Silver（银）', image: '/images/character-page/Silver.png', country: 'Others',
+    description: <Typography>
+      Silver的童年因一次与父亲的严重冲突而留下了深刻的心理阴影，他被砍去一根手指，这一事件深刻地影响了他对世界的看法。
+      尽管外表看起来是阳光和单纯的，他的内心却裹着层层的暗黑伪装，这种矛盾成为了他一生的悲剧和动力。
+    </Typography>,
+    avatar: '/images/character-page/Silver-avatar.png'
+  },
+  {
+    id: 2, name: '桃子小姐 (Miss Peach)', image: '/images/character-page/Miss Peach.png', country: 'Others',
     description: <Typography>桃子小姐在周围人看来总是格外聪明。尽管如此，她似乎从未参与过任何非凡或开创性的事情。
       然而，她真正的才能在于她能够在脑海中快速模拟并验证解决方案，这些解决方案往往是别人经过几百年验证的成果。
       这种独特的能力使她成为一个默默无闻的天才，她在幕后确保只有最有效和经过时间考验的解决方案被实施。</Typography>,
     avatar: '/images/character-page/Miss Peach-avatar.png'
   },
   {
-    id: 2, name: '莱桑德 (Lysander)', image: '/images/character-page/Lysander.png', country: 'Others',
+    id: 3, name: '莱桑德 (Lysander)', image: '/images/character-page/Lysander.png', country: 'Others',
     description: <Typography>
       莱桑德小时候经常被同龄人欺负和孤立。作为一种特殊的惩罚，他被迫在月光下保持清醒，禁止寻求睡眠的安慰。
       这种不寻常的环境使他与夜晚元素产生了神秘的联系，赋予了他夜间增强的能力。随着年龄的增长，
@@ -46,7 +54,7 @@ const characters = [
     avatar: '/images/character-page/Lysander-avatar.png'
   },
   {
-    id: 3, name: '闇影 (Yàn Yǐng)', image: '/images/character-page/Yàn Yǐng.png', country: 'Others',
+    id: 4, name: '闇影 (Yàn Yǐng)', image: '/images/character-page/Yàn Yǐng.png', country: 'Others',
     description: <Typography>
       闇影原本是一名杀手训练中的精英，因其冷血无情，被视为完美的杀人机器。然而，在一次地震救援中，他目睹了无辜的痛苦与死亡，
       内心的人性开始觉醒，他的杀手本能受到了挑战。这种心理变化导致他的训练成绩开始下滑，最终未能通过最后的杀手考核，
@@ -56,20 +64,12 @@ const characters = [
     avatar: '/images/character-page/Yàn Yǐng-avatar.png'
   },
   {
-    id: 4, name: '101公主', image: '/images/character-page/101公主.png', country: 'Others',
+    id: 5, name: '101公主', image: '/images/character-page/101公主.png', country: 'Others',
     description: <Typography>
       101公主出生在一个繁荣和和平的王国，她几乎没有遇到过太多的挫折。她的生活充满了各种乐趣和舒适，
       但她对生活中的不公平和不合理保持着敏感和批判的态度。她的最大梦想是能够不劳而获，享受生活中的一切美好。
     </Typography>,
     avatar: '/images/character-page/101公主-avatar.png'
-  },
-  {
-    id: 5, name: 'Silver（银）', image: '/images/character-page/Silver.png', country: 'Others',
-    description: <Typography>
-      Silver的童年因一次与父亲的严重冲突而留下了深刻的心理阴影，他被砍去一根手指，这一事件深刻地影响了他对世界的看法。
-      尽管外表看起来是阳光和单纯的，他的内心却裹着层层的暗黑伪装，这种矛盾成为了他一生的悲剧和动力。
-    </Typography>,
-    avatar: '/images/character-page/Silver-avatar.png'
   },
   {
     id: 6, name: '樱花姬', image: '/images/character-page/樱花姬.png', country: 'Others',
@@ -188,7 +188,7 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
                 <Typography>{character.description}</Typography>
                 {character.name === "Silver（银）" && (
                   <Link to='/character-page/silver' style={{ textDecoration: 'none'}}>
-                    <Typography sx={{mt: 2, color: 'blue'}}>Learn More</Typography>
+                    <Typography sx={{mt: 2, color: 'blue'}}>走近他</Typography>
                   </Link>
                 )}
               </Box>

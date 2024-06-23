@@ -11,6 +11,7 @@ const Silver = () => {
     '/images/silver-page/silver-01.png',
     '/images/silver-page/silver-02.png',
     '/images/silver-page/silver-03.png',
+    '/images/silver-page/silver-04.png',
   ];
 
   // Settings for the carousel
@@ -68,6 +69,9 @@ const Silver = () => {
               </div>
               <div>
                 <img src="/images/silver-page/silver-03.png" alt="Silver 3" style={{ width: '100%', height: 'auto' }} />
+              </div>
+              <div>
+                <img src="/images/silver-page/silver-04.png" alt="Silver 4" style={{ width: '100%', height: 'auto' }} />
               </div>
             </Slider>
           </Box>
