@@ -244,6 +244,29 @@ function CarouselSection() {
             <img src="/images/homepage/homepage-carousel-7uscis.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
           </Paper>
         </div>
+
+        {/* Eighth Carousel */}
+        <div>
+          <Paper
+            sx={{
+              padding: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              height: 424, // Adjust based on your content
+              boxShadow: 'none',  // ensure no shadow is displayed
+            }}
+          >
+            <Box sx={{ marginLeft: '6em', marginRight: '3em', }}>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}></Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}>《平安喜乐》带你体验从出生到成年的非凡旅程。玩家通过一系列道德选择，决定角色的发展和命运，可能成为天使、恶魔或普通人。游戏融合了细腻的画面和动态音轨，提供深度沉浸的体验。每个选择都会塑造你的命运，引领你走向不同的结局。加入《平安喜乐》，开启你的一生之旅。</Typography>
+              <Typography gutterBottom sx={{ fontSize: '14px', }}></Typography>
+              <Typography variant="h5">平安喜乐</Typography>
+              <Typography>动作，角色扮演，人生模拟</Typography>
+            </Box>
+            <img src="/images/homepage/homepage-carousel-8peach love.png" alt="Story 4" style={{ width: 375, height: 400, marginRight: '6em', }} />
+          </Paper>
+        </div>
       </Slider>
     </Box>
   );
