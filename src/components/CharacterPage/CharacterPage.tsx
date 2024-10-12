@@ -83,16 +83,18 @@ const characters = [
     avatar: '/images/character-page/樱花姬-avatar.png'
   },
   {
-    id: 7, name: '韩星辰', image: '/images/character-page/韩星辰.png',
-    country: '与你的1001次初遇', description: <Typography>
-      星座：摩羯座    <br />
-      性格类型：INFJ  <br />
-      性格特征：
-      <li>内向且自卑：韩星辰是一个非常内向的人，常常感到自卑，尤其是在面对与自己背景或年龄有较大差异的人时。</li>
-      <li>智慧与热情：尽管内向，韩星辰在熟悉的二次元文化领域表现出惊人的智慧和热情。</li>
-      <li>神秘且腼腆：他的神秘魅力和腼腆的性格使他在网络世界中极具吸引力。</li>
-      <li>情感表达独特：他喜欢通过字谜和隐喻来表达自己的情感，这种独特的沟通方式是他与他人建立联系的一种方式。</li>
-    </Typography>, avatar: '/images/character-page/韩星辰-avatar.png'
+    id: 7, name: '盛泽', image: '/images/character-page/盛泽.png',
+    country: '与你的1001次初遇', 
+    description: <Typography>
+      盛泽是一个外表冷酷、内心柔软的商业精英。他聪明理性，面对商场如履薄冰的局势，总能展现出强大的决策力。
+      然而，在爱情面前，他却显得克制且犹豫，始终保持理智与距离。尽管如此，他的深情从未消退，
+      偶尔流露出的温柔和浪漫，更是令他独具魅力。 <br />
+      性格亮点：
+        <li>表面冷漠，内心温暖</li>
+        <li>极度自律，追求完美</li>
+        <li>浪漫与克制并存</li>
+      经典台词：“这不是我的婚戒，也可以是我们的婚戒。” 💍
+    </Typography>, avatar: '/images/character-page/盛泽-avatar.png'
   },
   {
     id: 8, name: '韩星辰', image: '/images/character-page/韩星辰.png',
