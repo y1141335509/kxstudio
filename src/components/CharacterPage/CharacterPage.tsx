@@ -83,8 +83,17 @@ const characters = [
     avatar: '/images/character-page/樱花姬-avatar.png'
   },
   {
-    id: 7, name: '盛泽', image: '/images/character-page/盛泽.png',
-    country: '与你的1001次初遇', 
+    id: 7, name: '陆泽（Calvin Lu）', image: '/images/character-page/陆泽.png',
+    country: 'Others', 
+    description: <Typography>
+      陆泽的少年时期因一次投资失败而被父亲严厉责罚，这段经历深深影响了他对自己价值的认知。他不得不亲手放弃对绘画的热爱，投身于一个充满算计与压力的商场世界。这一事件在他心中刻下了深深的烙印，使他对亲密关系和信任充满矛盾。
+      尽管陆泽表面温润如玉，举止优雅，似乎是一个无可挑剔的绅士，但他内心深处却埋藏着一股压抑的孤独与脆弱。他的微笑是他的武器，亦是他的盔甲，而内心的不安与渴望则驱动着他不断追求成就与认可。
+      这份温柔与冷酷的矛盾，使陆泽的故事既令人心动，也充满了悲剧色彩。他的情感世界如同一枚戒指——看似完美无瑕，却隐藏着一部分未知的力量。
+    </Typography>, avatar: '/images/character-page/陆泽-avatar.png'
+  },
+  {
+    id: 8, name: '盛泽', image: '/images/character-page/盛泽.png',
+    country: 'Others', 
     description: <Typography>
       盛泽是一个外表冷酷、内心柔软的商业精英。他聪明理性，面对商场如履薄冰的局势，总能展现出强大的决策力。
       然而，在爱情面前，他却显得克制且犹豫，始终保持理智与距离。尽管如此，他的深情从未消退，
@@ -97,7 +106,7 @@ const characters = [
     </Typography>, avatar: '/images/character-page/盛泽-avatar.png'
   },
   {
-    id: 8, name: '韩星辰', image: '/images/character-page/韩星辰.png',
+    id: 9, name: '韩星辰', image: '/images/character-page/韩星辰.png',
     country: '与你的1001次初遇', description: 
     <Typography>
     星座：摩羯座    <br />
@@ -111,8 +120,22 @@ const characters = [
     avatar: '/images/character-page/韩星辰-avatar.png'
   },
   {
-    id: 9, name: '白止', image: '/images/character-page/白止.png',
-    country: '最后的战役', description: <Typography >
+    id: 10, name: '韩星辰', image: '/images/character-page/韩星辰.png',
+    country: '与你的1001次初遇', description: 
+    <Typography>
+    星座：摩羯座    <br />
+    性格类型：INFJ  <br />
+    性格特征：
+    <li>内向且自卑：韩星辰是一个非常内向的人，常常感到自卑，尤其是在面对与自己背景或年龄有较大差异的人时。</li>
+    <li>智慧与热情：尽管内向，韩星辰在熟悉的二次元文化领域表现出惊人的智慧和热情。</li>
+    <li>神秘且腼腆：他的神秘魅力和腼腆的性格使他在网络世界中极具吸引力。</li>
+    <li>情感表达独特：他喜欢通过字谜和隐喻来表达自己的情感，这种独特的沟通方式是他与他人建立联系的一种方式。</li>
+    </Typography>, 
+    avatar: '/images/character-page/韩星辰-avatar.png'
+  },
+  {
+    id: 11, name: '白止', image: '/images/character-page/白止.png',
+    country: '最后的战役', description: <Typography >``
       白止是一个单纯而忠诚的王子，与女主青梅竹马。尽管女主在旅途中喜欢过其他男主，白止始终是她最信任的人。
       白止的内向、单纯、聪明理性和善良让他在女主的生命中扮演了重要的角色。他拥有一双大眼睛和双眼皮，显得非常可爱。
       一路上，白止一直陪伴着女主，一起经历了各种挑战和冒险。无论是面对困境还是险境，白止总是毫不犹豫地出手相助，
@@ -120,7 +143,7 @@ const characters = [
     </Typography>, avatar: '/images/character-page/白止-avatar.png'
   },
   {
-    id: 10, name: '白止', image: '/images/character-page/白止.png',
+    id: 12, name: '白止', image: '/images/character-page/白止.png',
     country: '最后的战役', description: <Typography>
       白止是一个单纯而忠诚的王子，与女主青梅竹马。尽管女主在旅途中喜欢过其他男主，白止始终是她最信任的人。
       白止的内向、单纯、聪明理性和善良让他在女主的生命中扮演了重要的角色。他拥有一双大眼睛和双眼皮，显得非常可爱。
@@ -145,9 +168,21 @@ function SideNav({ onSelectCountry }: SideNavProps) {
   );
 }
 
-function CarouselSection({ selectedCountry }: CarouselSectionProps) {
-  const filteredCharacters = characters.filter(char => char.country === selectedCountry);
 
+// Carousel Section
+function CarouselSection({ selectedCountry }: CarouselSectionProps) {
+  // Filter characters based on selected country and ensure uniqueness
+  const filteredCharacters = Array.from(
+    new Map(
+      characters
+        .filter((char) => char.country === selectedCountry)
+        .map((char) => [char.id, char]) // Use `id` as a unique key
+    ).values()
+  );
+  
+  console.log('Filtered Characters:', filteredCharacters);
+
+  
   const settings = {
     dots: true,
     infinite: true,
@@ -156,53 +191,142 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
     slidesToScroll: 1,
     autoplay: false,
     autoplaySpeed: 3000,
-
-    // customPaging 设置carousel下方小点点的风格
     customPaging: (i: number) => {
       const char = filteredCharacters[i];
-      // Ensure that the character and its image are defined
       if (char && char.avatar) {
         return (
-          // the margin here changes the margin between carousel slides and carousel avatar dots
-          <img src={char.avatar} alt={char.name} style={{ width: 50, height: 50, margin: '-20px 10px' }} />
-        );
-      } else {
-        // Provide a fallback if the character or image is undefined
-        return (
-          <div style={{ width: 50, height: 50, margin: '10px', backgroundColor: '#eee' }} />
+          <img
+            src={char.avatar}
+            alt={char.name}
+            style={{ width: 50, height: 50, margin: '-20px 10px' }}
+          />
         );
       }
+      return <div style={{ width: 50, height: 50, margin: '10px', backgroundColor: '#eee' }} />;
     },
-    // customPaging: (i: number) => (
-    //   <img src={filteredCharacters[i].image} alt={filteredCharacters[i].name} style={{ width: 50, height: 50, margin: '0 10px' }} />
-    // ),
-    dotsClass: 'slick-dots custom-dots' 
+    dotsClass: 'slick-dots custom-dots',
   };
 
   return (
-    <Box sx={{ marginBottom: '70px', width: '100%', py: 4, marginTop: '2em', '.slick-slider': { marginBottom: '20px' }, '.slick-dots': { paddingTop: '20px' } }}>
+    <Box sx={{ marginBottom: '70px', width: '100%', py: 4, marginTop: '2em' }}>
       <Slider {...settings}>
-        {filteredCharacters.length > 0 ? filteredCharacters.map(character => (
-          <div key={character.id}>
-            <Paper sx={{ padding: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around', height: 424, boxShadow: 'none', }}>
-              <Box sx={{ marginLeft: '6em', marginRight: '3em', boxShadow: 'none', }}>
-                <Typography variant="h5">{character.name}</Typography>
-                <Typography>{character.description}</Typography>
-                {character.name === "Silver（银）" && (
-                  <Link to='/character-page/silver' style={{ textDecoration: 'none'}}>
-                    <Typography sx={{mt: 2, color: 'blue'}}>走近他</Typography>
-                  </Link>
-                )}
-              </Box>
-              <img src={character.image} alt={character.name} style={{ width: 375, height: 400 }} />
-            </Paper>
-          </div>
-        )) : <Typography>No characters found for this country.</Typography>}
+        {filteredCharacters.length > 0 ? (
+          filteredCharacters.map((character, index) => (
+            <div key={`${character.id}-${index}`}>
+              <Paper
+                sx={{
+                  padding: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-around',
+                  height: 424,
+                  boxShadow: 'none',
+                }}
+              >
+                <Box sx={{ marginLeft: '6em', marginRight: '3em' }}>
+                  <Typography variant="h5">{character.name}</Typography>
+                  <Typography>{character.description}</Typography>
+                  {character.name === 'Silver（银）' && (
+                    <Link to="/character-page/silver" style={{ textDecoration: 'none' }}>
+                      <Typography sx={{ mt: 2, color: 'blue' }}>走近他</Typography>
+                    </Link>
+                  )}
+                </Box>
+                <img src={character.image} alt={character.name} style={{ width: 375, height: 400 }} />
+              </Paper>
+            </div>
+          ))
+        ) : (
+          <Typography>No characters found for this country.</Typography>
+        )}
       </Slider>
     </Box>
-
   );
 }
+
+// function CarouselSection({ selectedCountry }: CarouselSectionProps) {
+//   // 确保数据唯一
+//   const filteredCharacters = Array.from(
+//     new Map(
+//       characters
+//         .filter((char) => char.country === selectedCountry)
+//         .map((char) => [char.id, char])
+//     ).values()
+//   );
+
+//   filteredCharacters.forEach(character => console.log(character));
+
+//   const settings = {
+//     dots: true,
+//     infinite: true,
+//     speed: 500,
+//     slidesToShow: 1,
+//     slidesToScroll: 1,
+//     autoplay: false,
+//     autoplaySpeed: 3000,
+//     customPaging: (i: number) => {
+//       const char = filteredCharacters[i];
+//       if (char && char.avatar) {
+//         return (
+//           <img
+//             src={char.avatar}
+//             alt={char.name}
+//             style={{ width: 50, height: 50, margin: '-20px 10px' }}
+//           />
+//         );
+//       } else {
+//         return <div style={{ width: 50, height: 50, margin: '10px', backgroundColor: '#eee' }} />;
+//       }
+//     },
+//     dotsClass: 'slick-dots custom-dots',
+//   };
+
+//   return (
+//     <Box
+//       sx={{
+//         marginBottom: '70px',
+//         width: '100%',
+//         py: 4,
+//         marginTop: '2em',
+//         '.slick-slider': { marginBottom: '20px' },
+//         '.slick-dots': { paddingTop: '20px' },
+//       }}
+//     >
+//       <Slider {...settings}>
+//         {filteredCharacters.length > 0 ? (
+//           filteredCharacters.map((character, index) => (
+//             <div key={`${character.id}-${index}`}>
+//               <Paper
+//                 sx={{
+//                   padding: 2,
+//                   display: 'flex',
+//                   alignItems: 'center',
+//                   justifyContent: 'space-around',
+//                   height: 424,
+//                   boxShadow: 'none',
+//                 }}
+//               >
+//                 <Box sx={{ marginLeft: '6em', marginRight: '3em', boxShadow: 'none' }}>
+//                   <Typography variant="h5">{character.name}</Typography>
+//                   <Typography>{character.description}</Typography>
+//                   {character.name === 'Silver（银）' && (
+//                     <Link to="/character-page/silver" style={{ textDecoration: 'none' }}>
+//                       <Typography sx={{ mt: 2, color: 'blue' }}>走近他</Typography>
+//                     </Link>
+//                   )}
+//                 </Box>
+//                 <img src={character.image} alt={character.name} style={{ width: 375, height: 400 }} />
+//               </Paper>
+//             </div>
+//           ))
+//         ) : (
+//           <Typography>No characters found for this country.</Typography>
+//         )}
+//       </Slider>
+//     </Box>
+//   );
+// }
+
 
 
 function CharacterPage() {
