@@ -11,22 +11,17 @@ function Subscription() {
   const [message, setMessage] = useState(""); // 用于显示订阅结果消息
 
   const handleSubscribe = async () => {
-    if (!email) {
-      setMessage("请输入有效的邮箱地址");
-      return;
-    }
-
     try {
-      const response = await fetch("https://kxstudio-jia4zytrc-nikos-projects-c38f9458.vercel.app/api/subscribe", {
+      const response = await fetch("/api/subscribe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
-
+  
       const result = await response.json();
-      setMessage(result.message); // 显示订阅结果
+      setMessage(result.message);
     } catch (error) {
       setMessage("订阅失败，请稍后重试");
     }
