@@ -1,30 +1,44 @@
-import React from "react";
 import Slider from "react-slick";
+import React, { useState } from "react";
 import { Grid, Box, Typography, TextField, Button, Paper, Container } from "@mui/material";
+
 import "./HomePage.css";
 import shadows from "@mui/material/styles/shadows";
 
 
-
 function Subscription() {
+  const [email, setEmail] = useState(""); // 用于存储用户输入的邮箱
+  const [message, setMessage] = useState(""); // 用于显示订阅结果消息
+
+  const handleSubscribe = async () => {
+    if (!email) {
+      setMessage("请输入有效的邮箱地址");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://kxstudio-jia4zytrc-nikos-projects-c38f9458.vercel.app/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const result = await response.json();
+      setMessage(result.message); // 显示订阅结果
+    } catch (error) {
+      setMessage("订阅失败，请稍后重试");
+    }
+  };
+
   return (
-    <Container sx={{ bgcolor: 'secondary.main', }}>
-      <Grid container spacing={2} sx={{ justifyContent: 'center', alignItems: 'center', height: '100%', }}>
-        <Grid item xs={12} md={6} sx={{
-          display: 'flex',
-          justifyContent: 'center', // Centers horizontally
-          alignItems: 'center', // Centers vertically
-          height: '100%',
-        }}>
+    <Container sx={{ bgcolor: 'secondary.main' }}>
+      <Grid container spacing={2} sx={{ justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
           <Box
             component="img"
-            sx={{
-              width: '90%',
-              height: 'auto',
-              maxWidth: '100%',
-              maxHeight: '100%',
-              borderRadius: 2, // Optionally add a border radius
-            }}
+            sx={{ width: '90%', height: 'auto', maxWidth: '100%', maxHeight: '100%', borderRadius: 2 }}
             alt="Descriptive Alt Text"
             src="/images/homepage/homepage-pic1.png"
           />
@@ -41,16 +55,69 @@ function Subscription() {
             立即订阅，共同探索!
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-            <TextField label="Enter your email" variant="outlined" sx={{ flexGrow: 1, mr: 1 }} />
-            <Button variant="contained" color="primary">
+            <TextField
+              label="Enter your email"
+              variant="outlined"
+              sx={{ flexGrow: 1, mr: 1 }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // 更新邮箱状态
+            />
+            <Button variant="contained" color="primary" onClick={handleSubscribe}>
               订阅
             </Button>
           </Box>
+          {message && <Typography sx={{ mt: 2, color: message.includes("成功") ? "green" : "red" }}>{message}</Typography>}
         </Grid>
       </Grid>
     </Container>
-  )
+  );
 }
+
+// function Subscription() {
+//   return (
+//     <Container sx={{ bgcolor: 'secondary.main', }}>
+//       <Grid container spacing={2} sx={{ justifyContent: 'center', alignItems: 'center', height: '100%', }}>
+//         <Grid item xs={12} md={6} sx={{
+//           display: 'flex',
+//           justifyContent: 'center', // Centers horizontally
+//           alignItems: 'center', // Centers vertically
+//           height: '100%',
+//         }}>
+//           <Box
+//             component="img"
+//             sx={{
+//               width: '90%',
+//               height: 'auto',
+//               maxWidth: '100%',
+//               maxHeight: '100%',
+//               borderRadius: 2, // Optionally add a border radius
+//             }}
+//             alt="Descriptive Alt Text"
+//             src="/images/homepage/homepage-pic1.png"
+//           />
+//         </Grid>
+
+//         <Grid item xs={12} md={6} component={Paper} elevation={0} sx={{ p: 2, bgcolor: 'secondary.main' }}>
+//           <Typography variant="h1" gutterBottom>
+//             欢迎来到 KXStudio
+//           </Typography>
+//           <Typography variant="body1" sx={{ mb: 2 }}>
+//             在这里，我们将带您以最酷的方式了解最前沿的动态。我们的宗旨是传递最前沿信息。让我们一起发掘每个角落的奇迹及妙用等等。
+//           </Typography>
+//           <Typography variant="h2" gutterBottom>
+//             立即订阅，共同探索!
+//           </Typography>
+//           <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+//             <TextField label="Enter your email" variant="outlined" sx={{ flexGrow: 1, mr: 1 }} />
+//             <Button variant="contained" color="primary">
+//               订阅
+//             </Button>
+//           </Box>
+//         </Grid>
+//       </Grid>
+//     </Container>
+//   )
+// }
 
 
 function CarouselSection() {

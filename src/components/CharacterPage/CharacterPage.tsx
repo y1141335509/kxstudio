@@ -109,7 +109,7 @@ const characters = [
     id: 9, name: '韩星辰', image: '/images/character-page/韩星辰.png',
     country: '与你的1001次初遇', description: 
     <Typography>
-    星座：摩羯座    <br />
+    星座：摩羯座    <br />``
     性格类型：INFJ  <br />
     性格特征：
     <li>内向且自卑：韩星辰是一个非常内向的人，常常感到自卑，尤其是在面对与自己背景或年龄有较大差异的人时。</li>
