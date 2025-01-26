@@ -10,6 +10,7 @@ function Subscription() {
   const [email, setEmail] = useState(""); // 用于存储用户输入的邮箱
   const [message, setMessage] = useState(""); // 用于显示订阅结果消息
 
+  // Claude.ai
   const handleSubscribe = async () => {
     if (!email) {
       setMessage("请输入有效的邮箱地址");
@@ -17,11 +18,9 @@ function Subscription() {
     }
   
     try {
-      // 动态设置 API URL
-      const apiUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/subscribe`
-        : "/api/subscribe"; // 本地开发时使用相对路径
-  
+      const apiUrl = window.location.origin + '/api/subscribe';
+      console.log('hehehe', apiUrl);
+      
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -31,7 +30,7 @@ function Subscription() {
       });
   
       const result = await response.json();
-      setMessage(result.message); // 显示订阅结果
+      setMessage(result.message);
     } catch (error) {
       setMessage("订阅失败，请稍后重试");
     }
