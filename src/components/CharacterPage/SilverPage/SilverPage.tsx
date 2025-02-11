@@ -8,8 +8,8 @@ import 'slick-carousel/slick/slick-theme.css';
 const Silver = () => {
   // Assume these are the images for the carousel dots
   const dotImages = [
-    '/images/silver-page/silver-01.png',
-    '/images/silver-page/silver-02.png',
+    // '/images/silver-page/silver-01.png',
+    // '/images/silver-page/silver-02.png',
     '/images/silver-page/silver-03.png',
     '/images/silver-page/silver-04.png',
     '/images/silver-page/silver-05.png',
@@ -62,12 +62,12 @@ const Silver = () => {
           <Box sx={{ padding: 2, height: 500, '.slick-slide img': { margin: '-0px 0px 30px' } }}> 
             <Slider {...settings}>
               {/* Slides with images for the character "Silver" */}
-              <div>
+              {/* <div>
                 <img src="/images/silver-page/silver-01.png" alt="Silver 1" style={{ width: '100%', height: 'auto' }} />
               </div>
               <div>
                 <img src="/images/silver-page/silver-02.png" alt="Silver 4" style={{ width: '100%', height: 'auto' }} />
-              </div>
+              </div> */}
               <div>
                 <img src="/images/silver-page/silver-03.png" alt="Silver 4" style={{ width: '100%', height: 'auto' }} />
               </div>
