@@ -8,13 +8,12 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
-import HomePage from './components/HomePage/HomePage'; // Your homepage component
-import GamesPage from './components/GamesPage/GamesPage'; // Component for Games
-import ResourcesPage from './components/ResourcesPage/ResourcesPage'; // Component for Resources
-import AboutUsPage from './components/AboutUsPage/AboutUsPage'; // Component for About Us
-import CharacterPage from './components/CharacterPage/CharacterPage'; // Component for Character Page
-import SilverPage from './components/CharacterPage/SilverPage/SilverPage';  // component from Silver Page
-import Games from './pages/Games'; // Component for Games
+import HomePage from './components/HomePage/HomePage';
+import ResourcesPage from './components/ResourcesPage/ResourcesPage';
+import AboutUsPage from './components/AboutUsPage/AboutUsPage';
+import CharacterPage from './components/CharacterPage/CharacterPage';
+import SilverPage from './components/CharacterPage/SilverPage/SilverPage';
+import Games from './pages/Games'; // 主要的游戏页面组件
 
 export default function App() {
   const theme = useTheme();
@@ -26,15 +25,12 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        {/* <Route path="/games" element={<GamesPage />} /> */}
-        <Route path="/games/" element={<Games />} />
+        <Route path="/games" element={<Games />} />
+        <Route path="/games/watermelon" element={<Games />} />
         <Route path="/character-page" element={<CharacterPage />} />
         <Route path="/character-page/silver" element={<SilverPage />} />
         <Route path="/resources" element={<ResourcesPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
-
-        {/* 新增游戏路由 */}
-        <Route path="/games" element={<Games />} />
       </Routes>
       <Footer />
     </Container>
