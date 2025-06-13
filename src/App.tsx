@@ -26,7 +26,8 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/games" element={<GamesPage />} />
+        {/* <Route path="/games" element={<GamesPage />} /> */}
+        <Route path="/games/" element={<Games />} />
         <Route path="/character-page" element={<CharacterPage />} />
         <Route path="/character-page/silver" element={<SilverPage />} />
         <Route path="/resources" element={<ResourcesPage />} />
