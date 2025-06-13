@@ -1,31 +1,28 @@
-
 {
   "functions": {
     "api/*.js": {
       "maxDuration": 10
     }
   },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    }
-  ],
   "headers": [
     {
       "source": "/games/watermelon/(.*)",
       "headers": [
         {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": "same-origin"
-        },
-        {
           "key": "Cross-Origin-Embedder-Policy",
           "value": "require-corp"
         },
         {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "cross-origin"
+        },
+        {
           "key": "Cache-Control",
-          "value": "public, max-age=3600"
+          "value": "public, max-age=31536000"
         }
       ]
     },
@@ -33,20 +30,24 @@
       "source": "/games/(.*)",
       "headers": [
         {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        },
+        {
           "key": "Cross-Origin-Opener-Policy",
           "value": "same-origin"
         },
         {
-          "key": "Cross-Origin-Embedder-Policy",
-          "value": "require-corp"
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "cross-origin"
         }
       ]
     }
   ],
   "rewrites": [
     {
-      "source": "/games/:path*",
-      "destination": "/games/:path*"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     }
   ]
 }
