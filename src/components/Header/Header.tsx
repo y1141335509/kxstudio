@@ -2,8 +2,6 @@ import * as React from 'react';
 import { AppBar, Toolbar, Button, IconButton, Container, styled } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
-
-
 const Header: React.FC = () => {
 
   return (
@@ -23,9 +21,19 @@ const Header: React.FC = () => {
 
           <div style={{ display: 'flex', marginRight: '2em' }}>
             {/* Navigation Links */}
-            {/* <Button color="inherit" component={RouterLink} to="/games">
-              游戏
-            </Button> */}
+            <Button 
+              color="inherit" 
+              component={RouterLink} 
+              to="/games"
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  borderRadius: '8px',
+                }
+              }}
+            >
+              🎮 游戏
+            </Button>
             <Button color="inherit" component={RouterLink} to="/character-page">
               角色
             </Button>

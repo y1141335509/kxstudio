@@ -14,7 +14,7 @@ import ResourcesPage from './components/ResourcesPage/ResourcesPage'; // Compone
 import AboutUsPage from './components/AboutUsPage/AboutUsPage'; // Component for About Us
 import CharacterPage from './components/CharacterPage/CharacterPage'; // Component for Character Page
 import SilverPage from './components/CharacterPage/SilverPage/SilverPage';  // component from Silver Page
-
+import Games from './pages/Games'; // Component for Games
 
 export default function App() {
   const theme = useTheme();
@@ -31,6 +31,9 @@ export default function App() {
         <Route path="/character-page/silver" element={<SilverPage />} />
         <Route path="/resources" element={<ResourcesPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
+
+        {/* 新增游戏路由 */}
+        <Route path="/games" element={<Games />} />
       </Routes>
       <Footer />
     </Container>
