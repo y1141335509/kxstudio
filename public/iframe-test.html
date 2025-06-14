@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>iframe 调试测试</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .debug-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        iframe {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 800px;
+            height: 600px;
+            max-width: 100%;
+        }
+        .error-log {
+            background: #ffe6e6;
+            border: 1px solid #ffcccc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 iframe 嵌入调试</h1>
+    
+    <div class="debug-info">
+        <h3>测试信息：</h3>
+        <p><strong>当前页面URL:</strong> <span id="currentUrl"></span></p>
+        <p><strong>iframe 目标URL:</strong> /games/watermelon/</p>
+        <p><strong>CrossOriginIsolated:</strong> <span id="crossOriginIsolated"></span></p>
+        <p><strong>SharedArrayBuffer:</strong> <span id="sharedArrayBuffer"></span></p>
+    </div>
+
+    <div class="debug-info">
+        <h3>iframe 测试：</h3>
+        <iframe 
+            id="gameFrame"
+            src="/games/watermelon/"
+            allow="cross-origin-isolated; web-share"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        ></iframe>
+    </div>
+
+    <div class="debug-info">
+        <h3>错误日志：</h3>
+        <div id="errorLog" class="error-log">等待加载...</div>
+    </div>
+
+    <div class="debug-info">
+        <h3>解决方案：</h3>
+        <a href="/games/watermelon/" target="_blank" style="
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-right: 10px;
+        ">🎮 在新标签页打开游戏</a>
+        
+        <button onclick="reloadIframe()" style="
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+        ">🔄 重新加载 iframe</button>
+    </div>
+
+    <script>
+        // 显示当前页面信息
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('crossOriginIsolated').textContent = window.crossOriginIsolated ? '✅ 是' : '❌ 否';
+        document.getElementById('sharedArrayBuffer').textContent = typeof SharedArrayBuffer !== 'undefined' ? '✅ 支持' : '❌ 不支持';
+
+        const errorLog = document.getElementById('errorLog');
+        const iframe = document.getElementById('gameFrame');
+        
+        // 捕获控制台错误
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+            errorLog.textContent += new Date().toLocaleTimeString() + ': ' + args.join(' ') + '\n';
+            originalConsoleError.apply(console, args);
+        };
+
+        // 监听 iframe 加载事件
+        iframe.addEventListener('load', function() {
+            errorLog.textContent += new Date().toLocaleTimeString() + ': iframe 加载完成\n';
+            
+            // 尝试访问 iframe 内容（可能会因为 CORS 失败）
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                errorLog.textContent += new Date().toLocaleTimeString() + ': ✅ 可以访问 iframe 内容\n';
+            } catch (e) {
+                errorLog.textContent += new Date().toLocaleTimeString() + ': ❌ 无法访问 iframe 内容: ' + e.message + '\n';
+            }
+        });
+
+        iframe.addEventListener('error', function(e) {
+            errorLog.textContent += new Date().toLocaleTimeString() + ': iframe 加载错误: ' + e.message + '\n';
+        });
+
+        // 监听来自 iframe 的消息
+        window.addEventListener('message', function(event) {
+            if (event.origin === window.location.origin) {
+                errorLog.textContent += new Date().toLocaleTimeString() + ': 收到 iframe 消息: ' + JSON.stringify(event.data) + '\n';
+            }
+        });
+
+        // 重新加载 iframe
+        function reloadIframe() {
+            errorLog.textContent += new Date().toLocaleTimeString() + ': 重新加载 iframe\n';
+            iframe.src = iframe.src;
+        }
+
+        // 监听全局错误
+        window.addEventListener('error', function(e) {
+            errorLog.textContent += new Date().toLocaleTimeString() + ': 全局错误: ' + e.message + '\n';
+        });
+
+        errorLog.textContent = new Date().toLocaleTimeString() + ': 开始加载调试页面\n';
+    </script>
+</body>
+</html>
