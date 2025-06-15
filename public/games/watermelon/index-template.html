@@ -1,483 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>🍉 切西瓜游戏</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        
-        .game-header {
-            color: white;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .game-header h1 {
-            font-size: 2.5em;
-            margin: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        #gameContainer {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            position: relative;
-            max-width: 90vw;
-        }
-        
-        canvas {
-            display: block;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            background: #000;
-            width: 800px;
-            height: 600px;
-            max-width: 100%;
-            max-height: 70vh;
-        }
-        
-        #status {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            text-align: center;
-            z-index: 1000;
-            background: rgba(0,0,0,0.9);
-            padding: 30px;
-            border-radius: 15px;
-            min-width: 350px;
-            max-width: 90vw;
-        }
-        
-        .status-progress {
-            width: 280px;
-            height: 25px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 12px;
-            overflow: hidden;
-            margin: 15px auto;
-            position: relative;
-        }
-        
-        .status-progress-inner {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88 0%, #00aaff 100%);
-            width: 0%;
-            transition: width 0.5s ease;
-            border-radius: 12px;
-        }
-        
-        .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-        }
-        
-        .loading-text {
-            color: #00ff88;
-            font-size: 18px;
-            margin: 10px 0;
-        }
-        
-        .loading-subtitle {
-            color: #ccc;
-            font-size: 14px;
-            margin: 5px 0;
-        }
-        
-        .error-text {
-            color: #ff6b6b;
-            font-size: 16px;
-            margin: 10px 0;
-        }
-        
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.2);
-            border-top: 4px solid #00ff88;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 15px auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .instructions {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: center;
-            max-width: 600px;
-        }
-        
-        .retry-button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px 5px;
-            transition: background 0.3s ease;
-        }
-        
-        .retry-button:hover {
-            background: #5a6fd8;
-        }
-        
-        .skip-button {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            margin: 5px;
-        }
-    </style>
-</head>
-<body>
-    <div class="game-header">
-        <h1>🍉 切西瓜游戏</h1>
-        <p>平衡饥饿度和血糖，挑战你的生存技巧！</p>
-    </div>
-    
-    <div id="gameContainer">
-        <canvas id="canvas"></canvas>
-        
-        <div id="status">
-            <div class="loading-spinner"></div>
-            <div class="loading-text" id="main-text">🎮 准备加载游戏...</div>
-            <div class="loading-subtitle" id="sub-text">正在检查游戏文件...</div>
-            
-            <div class="status-progress">
-                <div class="status-progress-inner" id="progress"></div>
-                <div class="progress-text" id="progress-text">0%</div>
-            </div>
-            
-            <div id="detailed-status">
-                <div style="font-size: 12px; color: #aaa; margin-top: 10px;">
-                    游戏文件较大(~50MB)，首次加载需要一些时间
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="instructions">
-        <strong>🕹️ 操作说明：</strong>
-        鼠标滑动切割西瓜 | 空格键暂停 | 平衡饥饿度和血糖
-    </div>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no">
+		<title>Demo-01</title>
+		<style>
+body {
+	touch-action: none;
+	margin: 0;
+	border: 0 none;
+	padding: 0;
+	text-align: center;
+	background-color: black;
+}
 
-    <script src="./index.js"></script>
-    <script>
-        const canvas = document.getElementById('canvas');
-        const statusDiv = document.getElementById('status');
-        const mainText = document.getElementById('main-text');
-        const subText = document.getElementById('sub-text');
-        const progress = document.getElementById('progress');
-        const progressText = document.getElementById('progress-text');
-        const detailedStatus = document.getElementById('detailed-status');
-        
-        let gameStarted = false;
-        let loadingStartTime = Date.now();
-        let retryCount = 0;
-        const maxRetries = 3;
-        
-        function updateStatus(main, sub = '', progressValue = null) {
-            console.log('📊', main, sub);
-            mainText.textContent = main;
-            subText.textContent = sub;
-            
-            if (progressValue !== null && isFinite(progressValue)) {
-                const percent = Math.min(Math.max(progressValue, 0), 100);
-                progress.style.width = percent + '%';
-                progressText.textContent = Math.round(percent) + '%';
-            }
-            
-            // 显示加载时间
-            const elapsed = Math.round((Date.now() - loadingStartTime) / 1000);
-            if (elapsed > 5) {
-                subText.textContent = sub + (sub ? ' | ' : '') + `已加载 ${elapsed}秒`;
-            }
-        }
-        
-        function showError(message, canRetry = true) {
-            console.error('❌ 错误:', message);
-            
-            let retryHtml = '';
-            if (canRetry && retryCount < maxRetries) {
-                retryHtml = `
-                    <button class="retry-button" onclick="retryLoading()">
-                        🔄 重试加载 (${retryCount + 1}/${maxRetries})
-                    </button>
-                `;
-            }
-            
-            statusDiv.innerHTML = `
-                <div class="error-text">😢 游戏加载失败</div>
-                <div class="error-text">${message}</div>
-                <div style="margin-top: 20px;">
-                    <button class="retry-button" onclick="location.reload()">🔄 刷新页面</button>
-                    ${retryHtml}
-                </div>
-                <div style="margin-top: 15px;">
-                    <button class="skip-button" onclick="showAlternatives()">🔧 其他选项</button>
-                </div>
-                <div style="font-size: 12px; color: #aaa; margin-top: 15px;">
-                    建议使用Chrome浏览器获得最佳体验
-                </div>
-            `;
-        }
-        
-        function hideStatus() {
-            if (!gameStarted) {
-                gameStarted = true;
-                console.log('✅ 游戏启动成功，隐藏加载界面');
-                statusDiv.style.opacity = '0';
-                setTimeout(() => {
-                    statusDiv.style.display = 'none';
-                }, 500);
-            }
-        }
-        
-        // 重试加载函数
-        window.retryLoading = function() {
-            retryCount++;
-            loadingStartTime = Date.now();
-            statusDiv.innerHTML = `
-                <div class="loading-spinner"></div>
-                <div class="loading-text" id="main-text">🔄 重新加载中...</div>
-                <div class="loading-subtitle" id="sub-text">第 ${retryCount} 次尝试</div>
-                <div class="status-progress">
-                    <div class="status-progress-inner" id="progress"></div>
-                    <div class="progress-text" id="progress-text">0%</div>
-                </div>
-            `;
-            
-            // 重新获取元素引用
-            const newMainText = document.getElementById('main-text');
-            const newSubText = document.getElementById('sub-text');
-            const newProgress = document.getElementById('progress');
-            const newProgressText = document.getElementById('progress-text');
-            
-            setTimeout(() => {
-                startGame();
-            }, 1000);
-        };
-        
-        // 显示替代选项
-        window.showAlternatives = function() {
-            statusDiv.innerHTML = `
-                <div class="loading-text">🔧 其他选项</div>
-                <div style="margin: 20px 0; text-align: left; color: #ddd;">
-                    <p><strong>如果游戏一直无法加载，请尝试：</strong></p>
-                    <ul style="margin: 10px 0; padding-left: 20px;">
-                        <li>清除浏览器缓存并刷新</li>
-                        <li>使用Chrome或Firefox浏览器</li>
-                        <li>检查网络连接是否稳定</li>
-                        <li>稍后再试（服务器可能繁忙）</li>
-                    </ul>
-                </div>
-                <div style="margin-top: 20px;">
-                    <button class="retry-button" onclick="location.reload()">🔄 刷新页面</button>
-                    <button class="retry-button" onclick="window.open('/', '_blank')">🏠 返回主页</button>
-                </div>
-            `;
-        };
+#canvas {
+	display: block;
+	margin: 0;
+	color: white;
+}
 
-        async function startGame() {
-            try {
-                updateStatus('🔍 检查浏览器兼容性...', '正在验证WebGL和WebAssembly支持', 5);
-                
-                // 检查WebAssembly支持
-                if (typeof WebAssembly === 'undefined') {
-                    throw new Error('浏览器不支持WebAssembly，请更新到最新版本');
-                }
-                
-                // 检查WebGL支持
-                const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-                if (!gl) {
-                    console.warn('⚠️ WebGL不可用，尝试兼容模式');
-                }
-                
-                updateStatus('🚀 初始化游戏引擎...', '正在加载Godot引擎', 10);
-                
-                // 检查Engine是否可用
-                if (typeof Engine === 'undefined') {
-                    throw new Error('游戏引擎脚本未正确加载');
-                }
-                
-                // 检查缺失功能
-                const missing = Engine.getMissingFeatures();
-                if (missing.length > 0) {
-                    console.warn('⚠️ 部分功能缺失，使用兼容模式:', missing);
-                    updateStatus('⚙️ 使用兼容模式...', '检测到浏览器限制，正在适配', 15);
-                } else {
-                    updateStatus('✅ 完整功能模式...', '浏览器完全兼容', 15);
-                }
-                
-                updateStatus('📦 准备下载游戏文件...', '文件大小约50MB，请耐心等待', 20);
-                
-                // 创建引擎实例
-                const engine = new Engine();
-                
-                // 设置超时
-                const loadingTimeout = setTimeout(() => {
-                    throw new Error('加载超时，文件可能过大或网络不稳定');
-                }, 120000); // 2分钟超时
-                
-                try {
-                    updateStatus('⬇️ 下载WebAssembly文件...', '正在下载index.wasm (约50MB)', 25);
-                    
-                    // 分步加载，先初始化引擎
-                    await engine.init('./index.wasm');
-                    console.log('✅ WebAssembly文件加载成功');
-                    
-                    clearTimeout(loadingTimeout);
-                    
-                    updateStatus('🎮 启动游戏...', '正在加载游戏资源包', 70);
-                    
-                    // 然后启动游戏
-                    await engine.startGame('./index.pck', {
-                        'onProgress': function(current, total) {
-                            if (total > 0 && isFinite(current) && isFinite(total)) {
-                                const percent = 70 + Math.round((current / total) * 25); // 70-95%
-                                const currentMB = Math.round(current / 1024 / 1024);
-                                const totalMB = Math.round(total / 1024 / 1024);
-                                updateStatus('📦 加载游戏资源...', `${currentMB}MB / ${totalMB}MB`, percent);
-                            } else if (current > 0) {
-                                const currentMB = Math.round(current / 1024 / 1024);
-                                const estimatedPercent = 70 + Math.min((current / 10000000) * 25, 25);
-                                updateStatus('📦 加载游戏资源...', `已加载 ${currentMB}MB`, estimatedPercent);
-                            }
-                        }
-                    });
-                    
-                } catch (loadError) {
-                    clearTimeout(loadingTimeout);
-                    throw loadError;
-                }
-                
-                console.log('🎉 游戏启动完成');
-                updateStatus('🎉 游戏准备就绪！', '即将进入游戏...', 100);
-                
-                // 等待渲染开始
-                setTimeout(() => {
-                    hideStatus();
-                    canvas.focus();
-                }, 3000);
-                
-            } catch (error) {
-                console.error('💥 游戏启动失败:', error);
-                
-                let errorMessage = error.message;
-                let canRetry = true;
-                
-                if (error.message.includes('超时')) {
-                    errorMessage = '网络加载超时，文件较大请稍后重试';
-                } else if (error.message.includes('SharedArrayBuffer')) {
-                    errorMessage = '浏览器安全限制，建议使用Chrome浏览器';
-                    canRetry = false;
-                } else if (error.message.includes('WebAssembly')) {
-                    errorMessage = '浏览器不支持WebAssembly，请更新浏览器';
-                    canRetry = false;
-                } else if (error.message.includes('fetch') || error.message.includes('network')) {
-                    errorMessage = '网络连接问题或文件损坏';
-                }
-                
-                showError(errorMessage, canRetry);
-            }
-        }
-        
-        // 监听游戏渲染
-        function monitorGameRendering() {
-            let checkCount = 0;
-            const maxChecks = 60; // 1分钟
-            
-            const renderCheck = setInterval(() => {
-                checkCount++;
-                
-                if (gameStarted || checkCount > maxChecks) {
-                    clearInterval(renderCheck);
-                    return;
-                }
-                
-                try {
-                    const ctx = canvas.getContext('2d');
-                    if (ctx) {
-                        const imageData = ctx.getImageData(50, 50, 100, 100);
-                        let hasContent = false;
-                        
-                        for (let i = 0; i < imageData.data.length; i += 4) {
-                            const r = imageData.data[i];
-                            const g = imageData.data[i + 1];
-                            const b = imageData.data[i + 2];
-                            if (r > 30 || g > 30 || b > 30) {
-                                hasContent = true;
-                                break;
-                            }
-                        }
-                        
-                        if (hasContent) {
-                            console.log('🎨 检测到游戏渲染内容');
-                            hideStatus();
-                            clearInterval(renderCheck);
-                        }
-                    }
-                } catch (e) {
-                    // 忽略错误，继续检查
-                }
-            }, 1000);
-        }
-        
-        // 开始加载
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                startGame();
-                monitorGameRendering();
-            });
-        } else {
-            startGame();
-            monitorGameRendering();
-        }
-        
-        // 防止空格键滚动页面
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-            }
-        });
-        
-        console.log('🎮 大文件加载器已准备就绪');
-    </script>
-</body>
+#canvas:focus {
+	outline: none;
+}
+
+.godot {
+	font-family: 'Noto Sans', 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+	color: #e0e0e0;
+	background-color: #3b3943;
+	background-image: linear-gradient(to bottom, #403e48, #35333c);
+	border: 1px solid #45434e;
+	box-shadow: 0 0 1px 1px #2f2d35;
+}
+
+/* Status display */
+
+#status {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* don't consume click events - make children visible explicitly */
+	visibility: hidden;
+}
+
+#status-progress {
+	width: 366px;
+	height: 7px;
+	background-color: #38363A;
+	border: 1px solid #444246;
+	padding: 1px;
+	box-shadow: 0 0 2px 1px #1B1C22;
+	border-radius: 2px;
+	visibility: visible;
+}
+
+@media only screen and (orientation:portrait) {
+	#status-progress {
+		width: 61.8%;
+	}
+}
+
+#status-progress-inner {
+	height: 100%;
+	width: 0;
+	box-sizing: border-box;
+	transition: width 0.5s linear;
+	background-color: #202020;
+	border: 1px solid #222223;
+	box-shadow: 0 0 1px 1px #27282E;
+	border-radius: 3px;
+}
+
+#status-indeterminate {
+	height: 42px;
+	visibility: visible;
+	position: relative;
+}
+
+#status-indeterminate > div {
+	width: 4.5px;
+	height: 0;
+	border-style: solid;
+	border-width: 9px 3px 0 3px;
+	border-color: #2b2b2b transparent transparent transparent;
+	transform-origin: center 21px;
+	position: absolute;
+}
+
+#status-indeterminate > div:nth-child(1) { transform: rotate( 22.5deg); }
+#status-indeterminate > div:nth-child(2) { transform: rotate( 67.5deg); }
+#status-indeterminate > div:nth-child(3) { transform: rotate(112.5deg); }
+#status-indeterminate > div:nth-child(4) { transform: rotate(157.5deg); }
+#status-indeterminate > div:nth-child(5) { transform: rotate(202.5deg); }
+#status-indeterminate > div:nth-child(6) { transform: rotate(247.5deg); }
+#status-indeterminate > div:nth-child(7) { transform: rotate(292.5deg); }
+#status-indeterminate > div:nth-child(8) { transform: rotate(337.5deg); }
+
+#status-notice {
+	margin: 0 100px;
+	line-height: 1.3;
+	visibility: visible;
+	padding: 4px 6px;
+	visibility: visible;
+}
+		</style>
+		<link id='-gd-engine-icon' rel='icon' type='image/png' href='index.icon.png' />
+<link rel='apple-touch-icon' href='index.apple-touch-icon.png'/>
+
+	</head>
+	<body>
+		<canvas id="canvas">
+			HTML5 canvas appears to be unsupported in the current browser.<br >
+			Please try updating or use a different browser.
+		</canvas>
+		<div id="status">
+			<div id="status-progress" style="display: none;" oncontextmenu="event.preventDefault();">
+				<div id ="status-progress-inner"></div>
+			</div>
+			<div id="status-indeterminate" style="display: none;" oncontextmenu="event.preventDefault();">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+			<div id="status-notice" class="godot" style="display: none;"></div>
+		</div>
+
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":7673568,"index.wasm":35708238},"focusCanvas":true,"gdextensionLibs":[]};
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const INDETERMINATE_STATUS_STEP_MS = 100;
+	const statusProgress = document.getElementById('status-progress');
+	const statusProgressInner = document.getElementById('status-progress-inner');
+	const statusIndeterminate = document.getElementById('status-indeterminate');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = 'hidden';
+
+	let animationCallbacks = [];
+	function animate(time) {
+		animationCallbacks.forEach((callback) => callback(time));
+		requestAnimationFrame(animate);
+	}
+	requestAnimationFrame(animate);
+
+	function animateStatusIndeterminate(ms) {
+		const i = Math.floor((ms / INDETERMINATE_STATUS_STEP_MS) % 8);
+		if (statusIndeterminate.children[i].style.borderTopColor === '') {
+			Array.prototype.slice.call(statusIndeterminate.children).forEach((child) => {
+				child.style.borderTopColor = '';
+			});
+			statusIndeterminate.children[i].style.borderTopColor = '#dfdfdf';
+		}
+	}
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		[statusProgress, statusIndeterminate, statusNotice].forEach((elem) => {
+			elem.style.display = 'none';
+		});
+		animationCallbacks = animationCallbacks.filter(function (value) {
+			return (value !== animateStatusIndeterminate);
+		});
+		switch (mode) {
+		case 'progress':
+			statusProgress.style.display = 'block';
+			break;
+		case 'indeterminate':
+			statusIndeterminate.style.display = 'block';
+			animationCallbacks.push(animateStatusIndeterminate);
+			break;
+		case 'notice':
+			statusNotice.style.display = 'block';
+			break;
+		case 'hidden':
+			break;
+		default:
+			throw new Error('Invalid status mode');
+		}
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		const msg = err.message || err;
+		console.error(msg);
+		setStatusNotice(msg);
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures();
+	if (missing.length !== 0) {
+		const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+		displayFailureNotice(missingMsg + missing.join('\n'));
+	} else {
+		setStatusMode('indeterminate');
+		engine.startGame({
+			'onProgress': function (current, total) {
+				if (total > 0) {
+					statusProgressInner.style.width = `${(current / total) * 100}%`;
+					setStatusMode('progress');
+					if (current === total) {
+						// wait for progress bar animation
+						setTimeout(() => {
+							setStatusMode('indeterminate');
+						}, 500);
+					}
+				} else {
+					setStatusMode('indeterminate');
+				}
+			},
+		}).then(() => {
+			setStatusMode('hidden');
+			initializing = false;
+		}, displayFailureNotice);
+	}
+}());
+		</script>
+	</body>
 </html>
+
