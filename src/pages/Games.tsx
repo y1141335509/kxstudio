@@ -89,7 +89,7 @@ const Games: React.FC = () => {
         
         .page-header h1 {
           font-size: 3em;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #bfd9d7 0%, #ddbb4d 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           margin-bottom: 10px;
@@ -119,7 +119,7 @@ const Games: React.FC = () => {
           font-size: 8em;
           min-width: 200px;
           text-align: center;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #bfd9d7 0%, #ddbb4d 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
@@ -149,7 +149,7 @@ const Games: React.FC = () => {
         }
         
         .feature-tag {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #bfd9d7 0%, #ddbb4d 100%);
           color: white;
           padding: 6px 12px;
           border-radius: 20px;
@@ -178,24 +178,24 @@ const Games: React.FC = () => {
         }
         
         .play-button.primary {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #bfd9d7 0%, #ddbb4d 100%);
           color: white;
-          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+          box-shadow: 0 4px 15px rgba(191, 217, 215, 0.4);
         }
         
         .play-button.primary:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+          box-shadow: 0 6px 20px rgba(191, 217, 215, 0.6);
         }
         
         .play-button.secondary {
           background: transparent;
-          color: #667eea;
-          border: 2px solid #667eea;
+          color: #bfd9d7;
+          border: 2px solid #bfd9d7;
         }
         
         .play-button.secondary:hover {
-          background: #667eea;
+          background: #bfd9d7;
           color: white;
           transform: translateY(-2px);
         }

@@ -41,7 +41,7 @@ const GameEmbed: React.FC<GameEmbedProps> = ({
           width: width,
           height: height,
           maxWidth: '100%',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #bfd9d7 0%, #ddbb4d 100%)',
           borderRadius: '10px',
           display: 'flex',
           flexDirection: 'column',
@@ -163,7 +163,7 @@ const GameEmbed: React.FC<GameEmbedProps> = ({
           className="play-fullscreen"
           style={{
             display: 'inline-block',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'linear-gradient(135deg, #bfd9d7 0%, #ddbb4d 100%)',
             color: 'white',
             padding: '12px 24px',
             borderRadius: '25px',
