@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>永生之战 · MVP进阶版（修复＋隐藏数值）</title>
+  <style>
+    :root{--bg:#0a0d12;--panel:#11151a;--text:#e8edf2;--muted:#8590a2;--card:#0f1318;--border:#171c24}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    .wrap{max-width:900px;margin:24px auto;padding:16px}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .panel{background:var(--panel);border-radius:16px;padding:16px;border:1px solid #1b212a}
+    .card{background:var(--card);border-radius:14px;padding:12px;border:1px solid var(--border)}
+    .choices{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+    button{border:1px solid #263243;background:#1f2937;color:var(--text);padding:10px;border-radius:12px;cursor:pointer;font-weight:600}
+    button:hover{background:#273244}
+    .controls{display:flex;justify-content:flex-end;gap:8px}
+    .log{font-size:14px;color:#cfd8e3;margin-top:12px;min-height:40px}
+    .primary{border-color:#2b78ff;background:#1a2332}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>永生之战 · MVP进阶版（修复＋隐藏数值）</h1>
+      <div class="meta">
+        <span id="agePill">年龄：0</span>
+        <span id="yearPill">年份：1991</span>
+      </div>
+    </header>
+    <div class="panel">
+      <!-- 行动区（仅展示行动点与可选行动；隐藏任何数值条） -->
+      <div id="actionChoices" class="choices"><div style="margin-bottom: 8px;">可用行动点：1</div><button>吃饭 · 长身体</button><button>睡觉 · 恢复精力</button><button>玩耍 · 开心成长</button></div>
+
+      <!-- 事件/结局写入区域 -->
+      <div id="eventCard" class="card"></div>
+
+      <!-- 可选：手动结束今年（行动点>0时不会生效） -->
+      <div class="controls"><button id="btnNext">结束今年 ▶</button></div>
+
+      <div id="log" class="log"><p>你突然明白了某件事。</p></div>
+
+      <details class="tests" id="testReport" style="margin-top:12px;color:#a5b4c3;font-size:13px"><summary>开发测试报告（点击展开）</summary><ul id="testList"><li>✅ 存在按钮 #btnNext（防止空绑定）</li><li>✅ 存在结果显示容器 #eventCard</li><li>✅ 执行行动后，行动点会减少 1</li><li>✅ 渲染动作列表不会重置行动点</li><li>✅ 年终总结弹层出现（含进入下一年按钮）</li><li>✅ 年终触发了一个随机事件并写入日志</li></ul></details>
+    </div>
+  </div>
+
+<script>
+// ===== Config =====
+const START_YEAR=1991, GOAL_AGE=100;
+
+// ===== State =====
+let state={
+  age:0, year:START_YEAR,
+  health:55, wealth:40, mind:45,   // 隐藏展示，但后台计算
+  actions:0, alive:true, run:1,
+  learn:0, practice:0, job:'none', // 学习&实践水平，职业路线
+  missedReason:null                 // 失之交臂的原因
+};
+
+// ===== Utils =====
+const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
+const rnd=()=>Math.random();
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function log(msg){const p=document.createElement('p');p.textContent=msg;document.getElementById('log').prepend(p)}
+function refreshMeta(){
+  document.getElementById('agePill').textContent=`年龄：${state.age}`;
+  document.getElementById('yearPill').textContent=`年份：${state.year}`;
+}
+
+// ===== Age-based actions =====
+function actionsForAge(age){
+  if(age<=12){
+    return [
+      {key:'eat', name:'吃饭', desc:'长身体', apply:()=>{state.health+=8; state.wealth-=2;}},
+      {key:'sleep', name:'睡觉', desc:'恢复精力', apply:()=>{state.health+=6; state.mind+=3;}},
+      {key:'play', name:'玩耍', desc:'开心成长', apply:()=>{state.mind+=5; state.health+=2;}}
+    ];
+  }
+  if(age<=18){
+    return [
+      {key:'study', name:'学习', desc:'为未来打底', apply:()=>{state.mind+=8; state.wealth-=2; state.learn+=1;}},
+      {key:'rest', name:'休息', desc:'调整节奏', apply:()=>{state.health+=6; state.mind+=3;}},
+      {key:'fun', name:'娱乐', desc:'缓解压力', apply:()=>{state.mind+=5; state.wealth-=4;}}
+    ];
+  }
+  // 成人默认
+  return [
+    {key:'work', name:'工作', desc:'积累经验与收入', apply:()=>{state.wealth+=10+Math.min(8,(state.learn+state.practice)/2); state.health-=4; state.practice+=1;}},
+    {key:'study', name:'学习', desc:'提升能力', apply:()=>{state.mind+=8; state.wealth-=4; state.learn+=1;}},
+    {key:'exercise', name:'锻炼', desc:'增强体魄', apply:()=>{state.health+=8; state.wealth-=2; if(state.age>55&&rnd()<.2){state.health-=12; log('一次拉伤让你停了几天。');}}},
+    {key:'social', name:'社交', desc:'拓展人脉', apply:()=>{state.mind+=5; state.wealth-=6; state.health+=2;}},
+    {key:'rest', name:'休息', desc:'恢复状态', apply:()=>{state.health+=6; state.mind+=4;}}
+  ];
+}
+
+function actionsPerYear(age){ return age<=12?2 : age<56?3 : 2; }
+
+// ===== Career special event: 考研 or 工作 =====
+function maybeCareerDecision(){
+  if(state.job!=='none') return false;
+  if(state.age>=21 && state.age<=26){
+    const box=document.getElementById('actionChoices');
+    box.innerHTML='';
+    const title=document.getElementById('eventCard');
+    title.innerHTML = `<h2>人生抉择：考研还是工作？</h2><p>你的学习与实践将影响结果。</p>`;
+    const makeBtn=(txt,fn)=>{const b=document.createElement('button'); b.textContent=txt; b.onclick=fn; return b};
+    const passProb = Math.min(0.85, 0.25 + state.learn*0.1); // 简化概率
+    const btn1 = makeBtn('考研', ()=>{
+      if(rnd()<passProb){
+        state.mind+=12; state.wealth-=8; state.job='student'; log(`你考研成功，进入更高学府。`);
+      }else{
+        state.mind+=4; state.wealth-=4; log('你差了一点点，未能上岸。');
+      }
+      endOfYear();
+    });
+    const btn2 = makeBtn('工作', ()=>{
+      const base = 8 + Math.floor((state.learn+state.practice)/2);
+      state.wealth += base; state.practice += 1; state.job='worker';
+      log(`你选择工作，起薪取决于过往积累（本年收益 +${base}）。`);
+      endOfYear();
+    });
+    box.appendChild(btn1); box.appendChild(btn2);
+    return true;
+  }
+  return false;
+}
+
+// ===== Random yearly event =====
+function randomEvent(){
+  const events=[
+    {t: '你收到「临床志愿者」筛查邀请。', eff:()=>{
+      if(rnd()<.5){ state.missedReason='你曾拒绝临床志愿者筛查'; log('你觉得太冒险，婉拒了。'); }
+      else { state.health+=4; log('你留了联系方式，或许将来有用。'); }
+    }},
+    {t: '金融风波席卷街头。', eff:()=>{ state.wealth-=10; log('你紧了紧钱包。'); }},
+    {t: '一本书改变了你的看法。', eff:()=>{ state.mind+=8; log('你突然明白了某件事。'); }},
+    {t: '意外的小手术。', eff:()=>{ state.health-=8; log('你决定保守治疗。'); }},
+    {t: '导师/上司的不悦。', eff:()=>{ if(rnd()<.5){ state.missedReason='你与关键推荐人闹翻'; log('一封邮件火药味十足。'); } else { state.practice+=1; log('你忍了下来，继续干活。'); } }}
+  ];
+  pick(events).eff();
+}
+
+// ===== Coupling: 恶性循环（后台计算） =====
+function coupling(){
+  if(state.wealth<40) state.health -= (40 - state.wealth)*0.12; // 贫穷→健康差
+  if(state.mind<40)   state.wealth -= (40 - state.mind)*0.12;   // 低智→致富难
+  if(state.health<40) state.mind   -= (40 - state.health)*0.12; // 体差→心智差
+  state.health=clamp(state.health); state.wealth=clamp(state.wealth); state.mind=clamp(state.mind);
+}
+
+// ===== Year flow =====
+function beginYear(){
+  refreshMeta();
+  // 只在"新的一年开始"时设置行动点；不要在渲染时重置（修复：行动点不减少的错误）
+  state.actions = actionsPerYear(state.age);
+  renderActions();
+  // 若进入职业抉择，拦截当年常规行动
+  if(maybeCareerDecision()) return;
+}
+
+function renderActions(){
+  const box=document.getElementById('actionChoices');
+  const actions = actionsForAge(state.age);
+  box.innerHTML='';
+  const ap=document.createElement('div'); ap.style.marginBottom='8px'; ap.textContent=`可用行动点：${state.actions}`; box.appendChild(ap);
+  actions.forEach(a=>{ const b=document.createElement('button'); b.textContent=`${a.name} · ${a.desc}`; b.onclick=()=>handleAction(a.apply); box.appendChild(b); });
+}
+
+function handleAction(applyFn){
+  if(state.actions<=0) return;
+  applyFn();
+  state.actions--;                // ✅ 确保行动点减少
+  refreshMeta();
+  if(state.actions<=0){ endOfYear(); } else { renderActions(); }
+}
+
+function endOfYear(){
+  randomEvent();           // 每年一个随机事件
+  state.health -= 1;       // 轻微老化（后台）
+  coupling();              // 恶性循环耦合（后台）
+  showSummary();           // 年度总结（屏幕中央）
+}
+
+function showSummary(){
+  const summary = document.createElement('div');
+  summary.style.position='fixed'; summary.style.left='50%'; summary.style.top='50%'; summary.style.transform='translate(-50%,-50%)';
+  summary.style.background='#0f1318'; summary.style.border='1px solid #1b2331'; summary.style.borderRadius='12px'; summary.style.padding='16px 18px'; summary.style.maxWidth='560px'; summary.style.zIndex='9999'; summary.style.textAlign='center';
+  const vibes=[];
+  vibes.push(state.health>60?'你感觉更有精神':state.health<30?'你有点吃不消了':'你的身体还在撑着');
+  vibes.push(state.wealth>60?'你稍微富足了':state.wealth<30?'钱袋子越来越紧':'收支勉强平衡');
+  vibes.push(state.mind>60?'你的头脑很清醒':state.mind<30?'你有些茫然':'你还在思考');
+  summary.innerHTML = `<div style="font-weight:700;font-size:18px;margin-bottom:6px;">【${state.year} 年总结】</div><div style="color:#c8d2df;margin-bottom:10px;">${vibes.join('、')}。</div><button id="sumOk" class="primary" style="border-color:#2b78ff;background:#1a2332;padding:10px 14px;border-radius:10px">进入下一年 ▶</button>`;
+  document.body.appendChild(summary);
+  document.getElementById('sumOk').onclick=()=>{ document.body.removeChild(summary); advanceYear(); };
+}
+
+function advanceYear(){
+  if(state.health<=0||state.wealth<=0||state.mind<=0){
+    const twist = `第二天，永生药物获批上市；${state.missedReason?state.missedReason:'你错过了最后一次预约' }，你与永生擦肩而过。`;
+    return gameOver(`你在 ${state.age} 岁离世。${twist}`);
+  }
+  if(state.age>=GOAL_AGE){ return win('永生药物正式上市，你顺利获得用药资格。'); }
+  state.age++; state.year++;
+  beginYear();
+}
+
+function gameOver(msg){ state.alive=false; log(msg); document.getElementById('eventCard').innerHTML=`<h2>人生终结</h2><p>${msg}</p>`; }
+function win(msg){ state.alive=false; log(msg); document.getElementById('eventCard').innerHTML=`<h2>抵达「永生日」</h2><p>${msg}</p>`; }
+
+// 手动按钮（可保留作兜底）
+const btnNextEl=document.getElementById('btnNext');
+if(btnNextEl){ btnNextEl.onclick=()=>{ if(state.actions>0){ log('行动点用完会自动进入总结'); return;} endOfYear(); }; }
+
+function start(){
+  state.age=0; state.year=START_YEAR; state.health=55; state.wealth=40; state.mind=45; state.learn=0; state.practice=0; state.job='none'; state.missedReason=null;
+  document.getElementById('log').innerHTML='';
+  refreshMeta();
+  beginYear();
+}
+start();
+
+// ===============
+// 简易测试（新增/修正，确保行动点不会被渲染时重置）
+// ===============
+(function runTests(){
+  const list=document.getElementById('testList');
+  const add=(ok,msg)=>{const li=document.createElement('li'); li.textContent=(ok?'✅ ':'❌ ')+msg; list.appendChild(li); if(!ok) console.error('TEST FAIL:',msg);}
+  try{
+    // 1) DOM存在性
+    add(!!document.getElementById('btnNext'),'存在按钮 #btnNext（防止空绑定）');
+    add(!!document.getElementById('eventCard'),'存在结果显示容器 #eventCard');
+
+    // 2) 年度行动点只在年初设定
+    const apInit = state.actions; // 年初
+    const before = state.actions;
+    handleAction(()=>{}); // 执行一次空行动
+    add(state.actions === before-1, '执行行动后，行动点会减少 1');
+    const afterRender = state.actions; renderActions(); // 渲染不应重置
+    add(state.actions === afterRender, '渲染动作列表不会重置行动点');
+
+    // 3) 结束今年应生成年度总结弹层
+    state.actions = 0; const logCountBefore = document.getElementById('log').children.length; endOfYear();
+    add(!!document.getElementById('sumOk'),'年终总结弹层出现（含进入下一年按钮）');
+    const logCountAfter = document.getElementById('log').children.length;
+    add(logCountAfter >= logCountBefore+1,'年终触发了一个随机事件并写入日志');
+
+  }catch(e){ add(false,'测试运行抛出异常：'+e.message); }
+})();
+</script>
+
+</body>
+</html>

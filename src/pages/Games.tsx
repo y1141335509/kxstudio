@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const Games: React.FC = () => {
   const [isHovering, setIsHovering] = useState(false);
+  const [isHoveringImmortal, setIsHoveringImmortal] = useState(false);
 
   const handlePlayGame = () => {
     window.location.href = '/games/watermelon/';
@@ -9,6 +10,14 @@ const Games: React.FC = () => {
 
   const handlePlayInNewTab = () => {
     window.open('/games/watermelon/', '_blank');
+  };
+
+  const handlePlayImmortalGame = () => {
+    window.location.href = '/games/immortality/';
+  };
+
+  const handlePlayImmortalInNewTab = () => {
+    window.open('/games/immortality/', '_blank');
   };
 
   return (
@@ -29,14 +38,14 @@ const Games: React.FC = () => {
       </header>
       
       <main className="games-content">
-        <div className="featured-game">
+        <div className="games-grid">
           <div className="game-card" onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
             <div className="game-preview">
               <div className="game-icon">
-                <span className={`watermelon-emoji ${isHovering ? 'bounce' : ''}`}>🍉</span>
+                <span className={`game-emoji ${isHovering ? 'bounce' : ''}`}>🍉</span>
                 <div className="icon-glow"></div>
               </div>
-              
+
               <div className="game-info">
                 <div className="game-badge">🏆 原创作品</div>
                 <h2 className="game-title">切西瓜大师</h2>
@@ -44,7 +53,7 @@ const Games: React.FC = () => {
                   一个融合策略与反应的创新小游戏。在享受切西瓜乐趣的同时，
                   你需要巧妙平衡饥饿度和血糖水平，体验前所未有的游戏机制！
                 </p>
-                
+
                 <div className="game-features">
                   <div className="feature-item">
                     <span className="feature-icon">🍉</span>
@@ -63,9 +72,9 @@ const Games: React.FC = () => {
                     <span>移动支持</span>
                   </div>
                 </div>
-                
+
                 <div className="game-actions">
-                  <button 
+                  <button
                     onClick={handlePlayGame}
                     className="play-button primary"
                   >
@@ -73,8 +82,63 @@ const Games: React.FC = () => {
                     开始游戏
                     <div className="button-shine"></div>
                   </button>
-                  <button 
+                  <button
                     onClick={handlePlayInNewTab}
+                    className="play-button secondary"
+                  >
+                    <span className="button-icon">🔗</span>
+                    新窗口打开
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="game-card" onMouseEnter={() => setIsHoveringImmortal(true)} onMouseLeave={() => setIsHoveringImmortal(false)}>
+            <div className="game-preview">
+              <div className="game-icon">
+                <span className={`game-emoji ${isHoveringImmortal ? 'bounce' : ''}`}>⚱️</span>
+                <div className="icon-glow"></div>
+              </div>
+
+              <div className="game-info">
+                <div className="game-badge">🏆 原创作品</div>
+                <h2 className="game-title">永生之战</h2>
+                <p className="game-description">
+                  一个关于人生选择与命运的策略游戏。从童年到老年，
+                  每一个决定都会影响你的健康、财富和心智，目标是活到100岁迎接永生时代！
+                </p>
+
+                <div className="game-features">
+                  <div className="feature-item">
+                    <span className="feature-icon">🎯</span>
+                    <span>人生策略</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">⚖️</span>
+                    <span>平衡机制</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🎭</span>
+                    <span>随机事件</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">📈</span>
+                    <span>成长系统</span>
+                  </div>
+                </div>
+
+                <div className="game-actions">
+                  <button
+                    onClick={handlePlayImmortalGame}
+                    className="play-button primary"
+                  >
+                    <span className="button-icon">🎮</span>
+                    开始游戏
+                    <div className="button-shine"></div>
+                  </button>
+                  <button
+                    onClick={handlePlayImmortalInNewTab}
                     className="play-button secondary"
                   >
                     <span className="button-icon">🔗</span>
@@ -156,17 +220,6 @@ const Games: React.FC = () => {
           </div>
         </div>
 
-        <div className="coming-soon-section">
-          <div className="coming-soon-card">
-            <h3>🚀 即将推出</h3>
-            <p>更多精彩游戏正在开发中，敬请期待...</p>
-            <div className="progress-dots">
-              <span className="dot active"></span>
-              <span className="dot"></span>
-              <span className="dot"></span>
-            </div>
-          </div>
-        </div>
       </main>
       
       <style>{`
@@ -265,15 +318,18 @@ const Games: React.FC = () => {
           z-index: 2;
         }
 
-        .featured-game {
+        .games-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+          gap: 40px;
           margin-bottom: 60px;
         }
 
         .game-card {
           background: rgba(255, 255, 255, 0.95);
           border-radius: 24px;
-          padding: 40px;
-          box-shadow: 
+          padding: 30px;
+          box-shadow:
             0 10px 40px rgba(0, 0, 0, 0.1),
             0 0 0 1px rgba(255, 255, 255, 0.5);
           backdrop-filter: blur(10px);
@@ -290,27 +346,29 @@ const Games: React.FC = () => {
 
         .game-preview {
           display: flex;
+          flex-direction: column;
           align-items: center;
-          gap: 50px;
+          gap: 30px;
+          text-align: center;
         }
 
         .game-icon {
           position: relative;
-          min-width: 200px;
-          height: 200px;
+          min-width: 120px;
+          height: 120px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
-        .watermelon-emoji {
-          font-size: 8rem;
+        .game-emoji {
+          font-size: 5rem;
           transition: transform 0.3s ease;
           position: relative;
           z-index: 2;
         }
 
-        .watermelon-emoji.bounce {
+        .game-emoji.bounce {
           animation: bounce 0.6s ease;
         }
 
@@ -333,7 +391,7 @@ const Games: React.FC = () => {
         }
 
         .game-info {
-          flex: 1;
+          width: 100%;
         }
 
         .game-badge {
@@ -348,25 +406,25 @@ const Games: React.FC = () => {
         }
 
         .game-title {
-          font-size: 2.8rem;
+          font-size: 2rem;
           color: #2d5a56;
-          margin-bottom: 20px;
+          margin-bottom: 15px;
           font-weight: 700;
           line-height: 1.2;
         }
 
         .game-description {
-          font-size: 1.2rem;
+          font-size: 1rem;
           color: #6b7d79;
-          line-height: 1.7;
-          margin-bottom: 30px;
+          line-height: 1.6;
+          margin-bottom: 25px;
         }
 
         .game-features {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-          gap: 15px;
-          margin-bottom: 35px;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+          margin-bottom: 25px;
         }
 
         .feature-item {
@@ -601,6 +659,11 @@ const Games: React.FC = () => {
 
         /* 响应式设计 */
         @media (max-width: 1024px) {
+          .games-grid {
+            grid-template-columns: 1fr;
+            gap: 30px;
+          }
+
           .details-grid {
             grid-template-columns: 1fr;
           }
@@ -611,27 +674,26 @@ const Games: React.FC = () => {
             padding: 40px 20px 30px;
           }
 
+          .games-grid {
+            grid-template-columns: 1fr;
+            gap: 25px;
+          }
+
           .game-card {
             padding: 25px;
           }
 
-          .game-preview {
-            flex-direction: column;
-            text-align: center;
-            gap: 30px;
-          }
-
           .game-icon {
             min-width: auto;
-            height: 150px;
+            height: 100px;
           }
 
-          .watermelon-emoji {
-            font-size: 6rem;
+          .game-emoji {
+            font-size: 4rem;
           }
 
           .game-title {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
           }
 
           .game-features {
@@ -668,16 +730,16 @@ const Games: React.FC = () => {
             padding: 20px;
           }
 
-          .watermelon-emoji {
-            font-size: 5rem;
+          .game-emoji {
+            font-size: 3.5rem;
           }
 
           .game-title {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
           }
 
           .game-description {
-            font-size: 1rem;
+            font-size: 0.95rem;
           }
         }
       `}</style>
