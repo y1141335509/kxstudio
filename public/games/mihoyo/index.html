@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <title>收购米哈游 · MVP 原型（自动月推进版）</title>
+ <style>
+   :root{
+     --bg:#0b0f14; --panel:#11161d; --card:#121a22; --muted:#8293a6; --text:#e6edf3; --accent:#6ee7ff; --good:#87f1b9; --bad:#ff8f8f; --warn:#ffd27a;
+     --br:16px; --shadow:0 10px 30px rgba(0,0,0,.35);
+   }
+   *{box-sizing:border-box}
+   body{margin:0;background:radial-gradient(1200px 700px at 10% -10%, #17202a 0%, #0b0f14 60%, #090d12 100%);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans",sans-serif}
+   .app{display:grid;grid-template-columns:320px 1fr 380px;gap:16px;max-width:1400px;margin:24px auto;padding:0 16px}
+   .panel{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));border:1px solid rgba(255,255,255,.06);border-radius:var(--br);box-shadow:var(--shadow)}
+   header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.06)}
+   header h1{font-size:18px;margin:0;letter-spacing:0.5px}
+   header .badge{font-size:12px;color:#0a1117;background:var(--accent);padding:4px 8px;border-radius:20px;font-weight:700}
+   .left{padding:16px;min-height:640px}
+   .stat{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid rgba(255,255,255,.06);border-radius:12px;margin-bottom:10px;background:rgba(255,255,255,.02)}
+   .center{display:flex;flex-direction:column;min-height:640px}
+   .date{padding:12px 16px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.06)}
+   .card{margin:16px;border:1px solid rgba(255,255,255,.06);background:var(--card);border-radius:var(--br);overflow:hidden}
+   .card h3{margin:0;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+   .card .content{padding:14px 16px;color:#cfd9e3}
+   .card .choices{display:grid;grid-template-columns:1fr;gap:8px;padding:14px;border-top:1px solid rgba(255,255,255,.06)}
+   button{appearance:none;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;transition:transform .05s ease, background .2s ease, border .2s ease}
+   button:hover{background:rgba(255,255,255,.08)}
+   button:active{transform:translateY(1px)}
+   .primary{background:linear-gradient(180deg,rgba(110,231,255,.25),rgba(110,231,255,.08));border-color:rgba(110,231,255,.4)}
+   .feed{padding:10px 12px;max-height:calc(100vh - 120px);overflow:auto}
+   .feed .item{border-bottom:1px dashed rgba(255,255,255,.08);padding:10px 2px}
+   .item small{color:var(--muted)}
+   .pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border:1px solid rgba(255,255,255,.08);border-radius:999px;font-size:12px;color:var(--muted)}
+   .pill.good{border-color:rgba(135,241,185,.4);color:var(--good)}
+   .pill.bad{border-color:rgba(255,143,143,.4);color:var(--bad)}
+   .ending{padding:18px 20px;border-top:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.0))}
+   .ending h2{margin:0 0 6px 0}
+   .ending p{margin:4px 0 12px 0;color:#cfd9e3}
+   .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:#0f1720;border:1px solid rgba(255,255,255,.08);padding:1px 6px;border-radius:6px;font-size:12px;color:#cde7ff}
+ </style>
+</head>
+<body>
+ <div class="app">
+   <div class="panel left">
+     <header>
+       <h1>资金面板</h1>
+       <span class="badge">MVP v0.2</span>
+     </header>
+     <div style="padding:10px 16px 0 16px;color:var(--muted)">快捷键：<span class="kbd">1</span>/<span class="kbd">2</span>/<span class="kbd">3</span> 选项</div>
+     <div class="stat"><small>你的现金（$）</small><b id="statCash">1,000,000,000</b></div>
+     <div class="stat"><small>对方估值（$）</small><b id="statVal">8,000,000,000</b></div>
+     <div class="stat"><small>已投资（$）</small><b id="statInvested">0</b></div>
+     <div class="stat"><small>持股 (%)</small><b id="statStake">0%</b></div>
+   </div>
+
+   <div class="panel center">
+     <div class="date" id="dateInfo">时间 2026-01</div>
+     <div class="card" id="eventCard"></div>
+     <div class="ending" id="ending" style="display:none"></div>
+   </div>
+
+   <div class="panel right">
+     <header>
+       <h1>新闻 / 舆论风向</h1>
+       <span class="badge">每月</span>
+     </header>
+     <div class="feed" id="feed"></div>
+   </div>
+ </div>
+
+ <script>
+ ;(() => {
+   // ======= 游戏状态（隐藏内部指标，不在UI显示） =======
+   const state = {
+     year: 2026, month: 1, ended: false,
+     cash: 1_000_000_000,
+     valuation: 8_000_000_000,
+     invested: 0,
+     stake: 0, // %
+     // 内部指标（不展示）
+     chaos: 0, tech: 40, fan: 10, liq: 50,
+     routeFlags: { overfeed: 0, hostile: 0, techRun: 0 },
+     _dumped: false
+   }
+
+   // ======= DOM refs =======
+   const $ = sel => document.querySelector(sel)
+   const statCash = $('#statCash'), statVal = $('#statVal'), statInv = $('#statInvested'), statStake = $('#statStake')
+   const feed = $('#feed'), dateInfo = $('#dateInfo'), eventCard = $('#eventCard'), ending = $('#ending')
+
+   // ======= 工具 =======
+   const fmt = n => n.toLocaleString('en-US', {maximumFractionDigits:0})
+   const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
+   const r = (a,b) => Math.random() * (b-a) + a
+
+   function pushFeed(text, tone=""){
+     const div = document.createElement('div');
+     div.className = 'item';
+     if(tone==='good') div.innerHTML = `<div class="pill good">GOOD</div>`
+     else if(tone==='bad') div.innerHTML = `<div class="pill bad">BAD</div>`
+     div.innerHTML += `<div>${text}</div><small>${state.year}-${String(state.month).padStart(2,'0')}</small>`
+     feed.prepend(div)
+   }
+
+   function render(){
+     statCash.textContent = fmt(state.cash)
+     statVal.textContent = fmt(state.valuation)
+     statInv.textContent = fmt(state.invested)
+     statStake.textContent = `${state.stake.toFixed(1)}%`
+     dateInfo.textContent = `时间 ${state.year}-${String(state.month).padStart(2,'0')}`
+   }
+
+   // ======= 时间推进：每次选完自动 +1 月 =======
+   function advanceMonth(){
+     if(state.month===12){ state.month=1; state.year++; } else state.month++
+     // 市场自然波动（简化版）
+     const mkt = (state.liq-50)/100
+     const drift = 1 + (r(-0.03,0.04) + mkt*0.05 + (state.fan/250) - (state.chaos/300))
+     state.valuation = Math.max(500_000_000, Math.round(state.valuation * drift))
+     state.chaos = clamp(Math.round(state.chaos - r(0,2)),0,100)
+     state.fan = clamp(Math.round(state.fan - r(0,1)), -50, 50)
+     render()
+   }
+
+   // ======= 事件系统（选项描述明确主体；不显示数值影响） =======
+   const EVENTS = [
+     { id:'intro', title:'战略开局：资金入场',
+       text:'你掌握一支新锐基金，目标是在合适的窗口控股"目标公司（米哈游）"。首先决定你的入场方式。',
+       choices:[
+         {label:'向目标公司注资 $100M（战略注资，温和）', act:()=> invest(100_000_000, {chaos:+4, tech:+2, fan:-1, route:'overfeed', val:+0.03})},
+         {label:'向目标公司注资 $500M（明显过载）', act:()=> invest(500_000_000, {chaos:+10, tech:+3, fan:-3, route:'overfeed', val:+0.08})},
+         {label:'我们先不注资，观察一个月（保持弹性）', act:()=> mutate({})},
+       ]
+     },
+     { id:'overfund', title:'融资提速：是否再加码？',
+       text:'顶级机构找上门。是否通过你继续放大对目标公司的弹药？',
+       choices:[
+         {label:'我们领投 $300M（放大控制力）', act:()=> invest(300_000_000, {chaos:+8, tech:+2, fan:-2, route:'overfeed', val:+0.05})},
+         {label:'我们跟投 $100M（维持影响）', act:()=> invest(100_000_000, {chaos:+3, tech:+1, fan:-1, route:'overfeed', val:+0.02})},
+         {label:'我们拒绝本轮（压住节奏）', act:()=> mutate({})},
+       ]
+     },
+     { id:'hiring', title:'组织扩张：控编还是放开？',
+       text:'目标公司计划一口气开500个HC。',
+       choices:[
+         {label:'我们支持其暴增HC（不设上限）', act:()=> mutate({chaos:+10, fan:-2, val:+0.04})},
+         {label:'我们要求稳健增员（控编与节奏）', act:()=> mutate({chaos:+2, tech:+2, val:+0.02})},
+         {label:'我们附加KPI硬指标（效率优先）', act:()=> mutate({chaos:+6, fan:-4, val:+0.03})},
+       ]
+     },
+     { id:'multigame', title:'产品线：多线并行还是押注旗舰？',
+       text:'管理层想同时开5款AAA。',
+       choices:[
+         {label:'允许目标公司全开（资源分散）', act:()=> mutate({chaos:+15, tech:+3, val:+0.01})},
+         {label:'只保留两条主线（砍一半）', act:()=> mutate({chaos:+6, tech:+2, val:+0.02})},
+         {label:'只押注一线旗舰大作', act:()=> mutate({chaos:+2, tech:+1, val:+0.03})},
+       ]
+     },
+     { id:'pr', title:'舆情：社区指责"资本毁创意"',
+       text:'是否以投资方身份干预公关？',
+       choices:[
+         {label:'我们为目标公司追加公关预算', act:()=> mutate({fan:+6, chaos:+2, val:+0.02})},
+         {label:'我们不介入（让其自行处理）', act:()=> mutate({fan:-6, chaos:+4, val:-0.02})},
+         {label:'我们要求高管直播道歉', act:()=> mutate({fan:+10, chaos:+6, val:+0.03})},
+       ]}
+     ,{ id:'tech_moonshot', title:'技术登月：AI+XR 专项',
+       text:'目标公司提出 AI 剧情引擎 + 沉浸式 XR。是否由我们提供专项资金？',
+       choices:[
+         {label:'我们重金支持目标公司登月计划', act:()=> { mutate({tech:+12, val:+0.06}); state.routeFlags.techRun+=1; }},
+         {label:'我们仅资助小额试点', act:()=> mutate({tech:+5, val:+0.03})},
+         {label:'我们否决该提案（聚焦现金流）', act:()=> mutate({fan:-4, chaos:+4, val:-0.01})},
+       ]
+     },
+     { id:'hostile', title:'路径选择：是否启动收购？',
+       text:'由我们自己的投资公司在二级市场悄悄吸筹，并联合少数股东。',
+       choices:[
+         {label:'我们启动敌意路径（本方吸筹）', act:()=> { state.routeFlags.hostile+=1; mutate({fan:-3, chaos:+6, val:+0.02}) }},
+         {label:'我们继续观望（不动作）', act:()=> mutate({})},
+         {label:'我们释放并购传闻（舆论试探）', act:()=> mutate({fan:-6, chaos:+8, val:+0.03})},
+       ]
+     },
+     { id:'ops_break', title:'交付：供应链 / 研发延期',
+       text:'目标公司核心管线延期，是否由我们追加资金硬顶进度？',
+       choices:[
+         {label:'我们追加资金给目标公司（短支撑）', act:()=> mutate({chaos:+8, val:+0.03})},
+         {label:'我们要求砍项目并止损', act:()=> mutate({fan:-8, chaos:+2, val:-0.02})},
+         {label:'我们推动更换负责人（组织调整）', act:()=> mutate({chaos:+10, fan:-2, val:+0.01})},
+       ]
+     },
+     { id:'boom_or_bust', title:'新品：评价两极',
+       text:'媒体给出"杰作/灾难"的对立评测。',
+       choices:[
+         {label:'我们为目标公司追加宣发预算', act:()=> mutate({fan:+3, chaos:+2, val:+0.02})},
+         {label:'我们要求继续打磨并延后上线', act:()=> mutate({tech:+4, val:+0.01})},
+         {label:'我们建议上调内购策略换取现金流', act:()=> mutate({fan:-6, val:+0.03})},
+       ]
+     },
+     { id:'audit', title:'内控：财务稽核',
+       text:'高速扩张带来的内控压力提升。',
+       choices:[
+         {label:'我们要求升级合规体系（降速换稳）', act:()=> mutate({chaos:-4, val:-0.01})},
+         {label:'我们默许继续狂飙（未来暴雷风险）', act:()=> mutate({chaos:+6, val:+0.03})},
+         {label:'我们建议将核算外包以提速', act:()=> mutate({fan:-3, val:+0.02})},
+       ]
+     },
+     { id:'market', title:'宏观：市场流动性变化',
+       text:'这与我们自家基金的仓位相关。',
+       choices:[
+         {label:'我们自家基金：对冲风险（降低波动）', act:()=> mutate({liq:+4, val:+0.01})},
+         {label:'我们自家基金：加杠杆（激进进攻）', act:()=> mutate({liq:+8, val:+0.03, chaos:+2})},
+         {label:'我们自家基金：降杠杆（保命为先）', act:()=> mutate({liq:-6, val:-0.02})},
+       ]
+     }
+   ]
+
+   // ======= 渲染事件卡 =======
+   function drawEvent(first=false){
+     let ev
+     if(first){
+       ev = EVENTS.find(e=>e.id==='intro')
+     } else {
+       // 非首月随机抽取（排除 intro）
+       const pool = EVENTS.filter(e=>e.id!=='intro')
+       ev = pool[Math.floor(Math.random()*pool.length)]
+     }
+     renderEventCard(ev)
+   }
+
+   function renderEventCard(ev){
+     eventCard.style.display = 'block'
+     eventCard.innerHTML = ''
+     const title = document.createElement('h3'); title.textContent = ev.title
+     const content = document.createElement('div'); content.className = 'content'; content.textContent = ev.text
+     const choices = document.createElement('div'); choices.className = 'choices'
+     ev.choices.forEach((c,i)=>{
+       const btn = document.createElement('button'); btn.textContent = `${i+1}. ${c.label}`
+       btn.onclick = ()=>{ c.act(); afterDecision(ev, c.label) }
+       choices.appendChild(btn)
+     })
+     eventCard.appendChild(title); eventCard.appendChild(content); eventCard.appendChild(choices)
+     // 键盘快捷键 1/2/3
+     window._choiceHandlers = ev.choices.map(c=>()=>{ c.act(); afterDecision(ev, c.label) })
+   }
+
+   function afterDecision(ev, label){
+     eventCard.style.display='none'
+     pushFeed(`<b>${ev.title}</b> · 你的选择：${label}`)
+     if(checkEnding()) return
+     advanceMonth()
+     if(checkEnding()) return
+     drawEvent(false)
+   }
+
+   // ======= 操作与数值（内部） =======
+   function invest(amount, eff){
+     if(state.cash < amount){ pushFeed('现金不足，投资失败。', 'bad'); return }
+     state.cash -= amount
+     state.invested += amount
+     // 按估值增发，粗略换算持股比例
+     const pre = state.valuation
+     const post = pre + amount
+     const newStake = (amount / post) * 100
+     state.stake += newStake
+     mutate(eff)
+     pushFeed(`完成投资 $${fmt(amount)}，稀释后新增持股 ${newStake.toFixed(2)}%。`)
+     if(eff && eff.route==='overfeed') state.routeFlags.overfeed += 1
+   }
+
+   function mutate({chaos=0, tech=0, fan=0, liq=0, val=0}={}){
+     state.chaos = clamp(Math.round(state.chaos + chaos),0,100)
+     state.tech = clamp(Math.round(state.tech + tech),0,100)
+     state.fan = clamp(Math.round(state.fan + fan),-50,50)
+     state.liq = clamp(Math.round(state.liq + liq),0,100)
+     if(val!==0){ state.valuation = Math.max(500_000_000, Math.round(state.valuation * (1+val))) }
+   }
+
+   // ======= 结局判定 =======
+   function checkEnding(){
+     if(state.ended) return true
+     // 直接胜利：持股 > 51%
+     if(state.stake >= 51){
+       return showEnding('并表成功 · 绝对控股', `你通过增发与市场吸筹，持股 ${state.stake.toFixed(1)}%，顺利并表。资本赢下了这局。`, 'good')
+     }
+     // 资本过载 → 低价收购机会（一次性窗口）
+     const overfed = state.routeFlags.overfeed >= 3 && state.chaos >= 35 && state.fan <= 0
+     if(overfed && !state._dumped){
+       state._dumped = true
+       const before = state.valuation
+       state.valuation = Math.max(800_000_000, Math.round(state.valuation * 0.55))
+       pushFeed(`多项目暴雷与管理失衡导致估值暴跌：$${fmt(before)} → $${fmt(state.valuation)}。窗口期打开！`, 'bad')
+       showAcquireOffer()
+       return true
+     }
+     // 技术突围（Bad Ending）
+     if(state.routeFlags.techRun>=3 && state.tech>=75 && state.chaos<=20){
+       return showEnding('技术突围 · 收购失败', '对方依靠 AI+XR 技术突围，估值创新高并反向收购了你。资本输给了创意与技术。', 'bad')
+     }
+     // 敌意路径 · 舆论失败
+     if(state.routeFlags.hostile>=2 && state.fan<=-30){
+       return showEnding('社区围城 · 舆论失败', '玩家社区发起"保卫创意"运动，你的敌意收购在舆论战中溃败。', 'bad')
+     }
+     return false
+   }
+
+   function showAcquireOffer(){
+     ending.style.display = 'block'
+     ending.innerHTML = `
+       <h2>低价收购窗口</h2>
+       <p>你可用现金直接收购 51% 股权。所需现金：按当前估值 $${fmt(Math.round(state.valuation*0.51))}。</p>
+       <div>
+         <button class="primary" id="btnAcquire">立即收购 51%</button>
+       </div>
+     `
+     $('#btnAcquire').onclick = ()=>{
+       const need = Math.round(state.valuation*0.51)
+       if(state.cash < need){ pushFeed('现金不足，错失并购良机。','bad'); return }
+       state.cash -= need; state.stake += 51
+       showEnding('并购完成 · 资本过载策略成功', '你在对方最脆弱的窗口完成控股并购。资本过载策略奏效。', 'good')
+     }
+   }
+
+   function showEnding(title, desc, tone){
+     state.ended = true
+     ending.style.display = 'block'
+     ending.innerHTML = `<h2>${title}</h2><p>${desc}</p>
+       <div style="display:flex;gap:8px;flex-wrap:wrap">
+         <span class="pill ${tone==='good'?'good':tone==='bad'?'bad':''}">${tone==='good'?'SUCCESS':'OUTCOME'}</span>
+       </div>`
+     return true
+   }
+
+   // ======= 初始化 =======
+   pushFeed('目标：通过资本化运作收购"米哈游"。')
+   render();
+   drawEvent(true); // 首月事件
+
+   // 键盘绑定
+   window.addEventListener('keydown', (e)=>{
+     if(['1','2','3'].includes(e.key) && window._choiceHandlers){ const i = +e.key-1; window._choiceHandlers[i] && window._choiceHandlers[i]() }
+   })
+
+   // ======= 轻量级测试（不影响实际游戏状态） =======
+   ;(function runTests(){
+     function snapshot(){ return JSON.parse(JSON.stringify(state)) }
+     const s0 = snapshot();
+     // 测试：投资函数应减少现金、增加已投与持股
+     (function(){
+       const s = snapshot();
+       const cashBefore = s.cash; const investedBefore = s.invested; const stakeBefore = s.stake;
+       const tmp = { ...s };
+       // 临时调用（不污染真实）
+       const amount = 100_000_000;
+       const preVal = tmp.valuation; const postVal = preVal + amount; const expectStakeAdd = (amount/postVal)*100;
+       // 影子执行
+       tmp.cash -= amount; tmp.invested += amount; tmp.stake += expectStakeAdd;
+       console.assert(Math.abs((cashBefore-amount) - tmp.cash) < 1e-6, 'TEST: cash decrease failed')
+       console.assert((investedBefore+amount) === tmp.invested, 'TEST: invested increase failed')
+       console.assert(tmp.stake > stakeBefore, 'TEST: stake increase failed')
+     })();
+     // 测试：选择后应推进1个月
+     (function(){
+       const m = state.month; const y = state.year;
+       // 影子推进
+       let nm = m===12?1:m+1; let ny = m===12?y+1:y;
+       console.assert(nm>=1 && nm<=12, 'TEST: month rollover failed')
+       console.assert(ny>=y, 'TEST: year non-decreasing failed')
+     })();
+     // 恢复快照（测试不改动真实）
+     Object.assign(state, s0); render();
+   })();
+
+ })()
+ </script>
+</body>
+</html>

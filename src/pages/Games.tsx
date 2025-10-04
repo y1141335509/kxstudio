@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const Games: React.FC = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [isHoveringImmortal, setIsHoveringImmortal] = useState(false);
+  const [isHoveringMihoyo, setIsHoveringMihoyo] = useState(false);
 
   const handlePlayGame = () => {
     window.location.href = '/games/watermelon/';
@@ -18,6 +19,14 @@ const Games: React.FC = () => {
 
   const handlePlayImmortalInNewTab = () => {
     window.open('/games/immortality/', '_blank');
+  };
+
+  const handlePlayMihoyoGame = () => {
+    window.location.href = '/games/mihoyo/';
+  };
+
+  const handlePlayMihoyoInNewTab = () => {
+    window.open('/games/mihoyo/', '_blank');
   };
 
   return (
@@ -148,8 +157,63 @@ const Games: React.FC = () => {
               </div>
             </div>
           </div>
+
+          <div className="game-card" onMouseEnter={() => setIsHoveringMihoyo(true)} onMouseLeave={() => setIsHoveringMihoyo(false)}>
+            <div className="game-preview">
+              <div className="game-icon">
+                <span className={`game-emoji ${isHoveringMihoyo ? 'bounce' : ''}`}>💼</span>
+                <div className="icon-glow"></div>
+              </div>
+
+              <div className="game-info">
+                <div className="game-badge">🏆 原创作品</div>
+                <h2 className="game-title">收购米哈游</h2>
+                <p className="game-description">
+                  一个关于资本运作与战略决策的模拟游戏。作为基金掌舵人，
+                  你需要通过精妙的投资策略、时机把握和风险管理，完成对目标公司的收购！
+                </p>
+
+                <div className="game-features">
+                  <div className="feature-item">
+                    <span className="feature-icon">💰</span>
+                    <span>资本运作</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">📊</span>
+                    <span>策略决策</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">📰</span>
+                    <span>舆论影响</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🎯</span>
+                    <span>多重结局</span>
+                  </div>
+                </div>
+
+                <div className="game-actions">
+                  <button
+                    onClick={handlePlayMihoyoGame}
+                    className="play-button primary"
+                  >
+                    <span className="button-icon">🎮</span>
+                    开始游戏
+                    <div className="button-shine"></div>
+                  </button>
+                  <button
+                    onClick={handlePlayMihoyoInNewTab}
+                    className="play-button secondary"
+                  >
+                    <span className="button-icon">🔗</span>
+                    新窗口打开
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        
+
         <div className="game-details-section">
           <div className="details-grid">
             <div className="detail-card">
