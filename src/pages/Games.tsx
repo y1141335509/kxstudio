@@ -214,7 +214,8 @@ const Games: React.FC = () => {
           </div>
         </div>
 
-        <div className="game-details-section">
+        {/* 游戏特色和操作指南部分已隐藏 */}
+        {/* <div className="game-details-section">
           <div className="details-grid">
             <div className="detail-card">
               <div className="card-header">
@@ -244,7 +245,7 @@ const Games: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="detail-card">
               <div className="card-header">
                 <h3>🕹️ 操作指南</h3>
@@ -282,7 +283,7 @@ const Games: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
       </main>
       
