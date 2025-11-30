@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>初心 · MVP Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #f8fdfc, #e8f5f3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #222;
+    }
+    .game-container {
+      width: 100%;
+      max-width: 720px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 18px;
+      padding: 24px 28px 20px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .game-title {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+    }
+    .game-subtitle {
+      font-size: 12px;
+      color: #777;
+    }
+    #stats {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+    }
+    #stats span {
+      white-space: nowrap;
+    }
+    .scene {
+      border-radius: 12px;
+      background: #fafbff;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      border: 1px solid #e3e7ff;
+    }
+    #scene-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    #scene-text {
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+    #options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .btn {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #d3d7ff;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      text-align: left;
+      transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.1s ease;
+    }
+    .btn:hover {
+      background: #f1f3ff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #bfd9d7, #94c5c1);
+      color: #fff;
+      border-color: #bfd9d7;
+      text-align: center;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #94c5c1, #7ab5b1);
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+    .input-row input {
+      flex: 1;
+      padding: 6px 10px;
+      font-size: 14px;
+      border-radius: 999px;
+      border: 1px solid #d0d4f0;
+      outline: none;
+    }
+    .input-row input:focus {
+      border-color: #bfd9d7;
+      box-shadow: 0 0 0 2px rgba(191, 217, 215, 0.15);
+    }
+    .footer-note {
+      font-size: 11px;
+      color: #999;
+      margin-top: 6px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="header">
+      <div>
+        <div class="game-title">初心</div>
+        <div class="game-subtitle">FOLLOW YOUR HEART · MVP DEMO</div>
+      </div>
+      <div class="game-subtitle" id="turn-indicator"></div>
+    </div>
+
+    <div id="stats"></div>
+
+    <div class="scene">
+      <div id="scene-title"></div>
+      <div id="scene-text"></div>
+    </div>
+
+    <div id="options"></div>
+
+    <div class="footer-note">
+      这是一个原型版本，用于测试系统与剧情结构。
+    </div>
+  </div>
+
+  <script>
+    // --- 核心状态 ---
+    const player = {
+      name: "",
+      skills: { math: 0, writing: 0, singing: 0, sport: 0 },
+      ip: { math: 0, writing: 0, singing: 0 }, // 内在拉力（隐藏）
+      turn: 0
+    };
+
+    let phase = "intro";        // intro / questionnaire / events / ending
+    let currentQuestion = 0;
+    let currentEvent = 0;
+
+    const statsEl = document.getElementById("stats");
+    const titleEl = document.getElementById("scene-title");
+    const textEl = document.getElementById("scene-text");
+    const optionsEl = document.getElementById("options");
+    const turnEl = document.getElementById("turn-indicator");
+
+    // --- 开场问卷 ---
+    const questionnaire = [
+      {
+        question: "Q1. 如果今天没有任何期待、也没有任何人看着你，你最想做什么？",
+        options: [
+          {
+            text: "写点东西、记录一下心情。",
+            effect: () => { player.ip.writing += 5; }
+          },
+          {
+            text: "听歌、唱歌，沉在音乐里。",
+            effect: () => { player.ip.singing += 5; }
+          },
+          {
+            text: "做几道题、看看知识类内容，让脑子安静下来。",
+            effect: () => { player.ip.math += 5; }
+          },
+          {
+            text: "出去走走、运动一下，让身体动起来。",
+            effect: () => { player.skills.sport += 3; } // 体育在MVP里只是干扰
+          }
+        ]
+      },
+      {
+        question: "Q2. 当你特别难过的时候，最想做的事情是？",
+        options: [
+          {
+            text: "写下来，让文字替我承受。",
+            effect: () => { player.ip.writing += 10; }
+          },
+          {
+            text: "听一首歌或唱歌，把情绪唱出去。",
+            effect: () => { player.ip.singing += 10; }
+          },
+          {
+            text: "做题、看书，让自己理智一点。",
+            effect: () => { player.ip.math += 10; }
+          },
+          {
+            text: "运动到筋疲力尽，什么都不去想。",
+            effect: () => { player.skills.sport += 5; }
+          }
+        ]
+      },
+      {
+        question: "Q3. 你小时候，别人最常夸你的是？",
+        options: [
+          {
+            text: "“你真聪明、成绩真好。”",
+            effect: () => { player.ip.math -= 3; } // 社会期待，略微抵消
+          },
+          {
+            text: "“你好有想象力，文笔/表达很好。”",
+            effect: () => { player.ip.writing -= 3; }
+          },
+          {
+            text: "“你声音好听、很有表现力。”",
+            effect: () => { player.ip.singing -= 3; }
+          },
+          {
+            text: "“你很能吃苦/很能坚持。”",
+            effect: () => { player.skills.sport += 2; }
+          }
+        ]
+      },
+      {
+        question: "Q4. 如果必须选一个，你更在意哪种“被看见”？",
+        options: [
+          {
+            text: "别人读完我写的东西，被打动。",
+            effect: () => { player.ip.writing += 5; }
+          },
+          {
+            text: "别人听完我唱歌，记住了我的声音。",
+            effect: () => { player.ip.singing += 5; }
+          },
+          {
+            text: "别人发现：原来这些复杂的问题，我能解开。",
+            effect: () => { player.ip.math += 5; }
+          },
+          {
+            text: "别人觉得：我是一个很可靠、很稳的人。",
+            effect: () => { player.skills.sport += 3; }
+          }
+        ]
+      },
+      {
+        question: "Q5. 下面哪句话，更像是你心底的声音？",
+        options: [
+          {
+            text: "“我想创造一些只属于我的东西。”",
+            effect: () => { player.ip.writing += 4; player.ip.singing += 2; }
+          },
+          {
+            text: "“我想把混乱变成清晰。”",
+            effect: () => { player.ip.math += 4; }
+          },
+          {
+            text: "“我想让某个瞬间，永远留在别人心里。”",
+            effect: () => { player.ip.singing += 4; }
+          },
+          {
+            text: "“我想真正地活过，而不是被推着走。”",
+            effect: () => { player.ip.writing += 2; player.ip.math += 2; player.ip.singing += 2; }
+          }
+        ]
+      }
+    ];
+
+    // --- 事件列表（12回合） ---
+    const events = [
+      {
+        title: "回合 1 · 不知名的焦虑",
+        text: "开学/入职的第一个月，你的表现很好，几乎所有人都觉得你“什么都能做好”。\n\n晚上回到房间，你突然觉得有点烦躁，说不上来为什么。",
+        options: [
+          {
+            text: "做几道数学题，让大脑有一个明确的目标。",
+            effect: () => { player.skills.math += 5; player.ip.math += 3; }
+          },
+          {
+            text: "打开文档，写点东西，让情绪流出去。",
+            effect: () => { player.skills.writing += 5; player.ip.writing += 3; }
+          },
+          {
+            text: "戴上耳机，跟着喜欢的歌轻声唱。",
+            effect: () => { player.skills.singing += 5; player.ip.singing += 3; }
+          }
+        ]
+      },
+      {
+        title: "回合 2 · 数学男的邀请",
+        text: "你在自习室做题，一个学长注意到你写题的速度和准确度。\n\n“你这水平，去做科研真的会很有前途，要不要考虑来我们的课题组？”",
+        options: [
+          {
+            text: "答应下来，觉得“先试试”也没坏处。",
+            effect: () => { player.skills.math += 6; player.ip.math += 2; }
+          },
+          {
+            text: "婉拒，说自己还想多看看别的可能性。",
+            effect: () => { player.ip.writing += 1; player.ip.singing += 1; }
+          },
+          {
+            text: "说“我再想想”，先把注意力转回手头的题目。",
+            effect: () => { player.skills.math += 3; }
+          }
+        ]
+      },
+      {
+        title: "回合 3 · 第一篇作品",
+        text: "一门课要求写一篇短文/小报告。你没怎么花时间，却写出了全班最特别的一篇。\n老师当众夸你有“创作者的感觉”。",
+        options: [
+          {
+            text: "有点心动，开始认真思考写作是不是一条路。",
+            effect: () => { player.skills.writing += 6; player.ip.writing += 3; }
+          },
+          {
+            text: "有点受宠若惊，但还是觉得写作没“科研”踏实。",
+            effect: () => { player.skills.math += 3; }
+          },
+          {
+            text: "下意识觉得“这只是偶然”，不想继续想太多。",
+            effect: () => { player.skills.sport += 2; }
+          }
+        ]
+      },
+      {
+        title: "回合 4 · 舞台上的灯光",
+        text: "社团排练时，有人临时缺席，你被拉上去试唱一段。灯光打下来的瞬间，所有人都安静地听你唱完。",
+        options: [
+          {
+            text: "心跳很快，觉得有点害怕，但也有一点点上瘾。",
+            effect: () => { player.skills.singing += 6; player.ip.singing += 3; }
+          },
+          {
+            text: "觉得这只是个插曲，不想改变原来的计划。",
+            effect: () => { player.skills.math += 2; player.skills.writing += 2; }
+          },
+          {
+            text: "决定之后再也不临时顶替这种事了，太紧张。",
+            effect: () => { player.skills.sport += 2; }
+          }
+        ]
+      },
+      {
+        title: "回合 5 · 写作男出现",
+        text: "一个负责校刊/内容的同学找到你：\n“你之前那篇作业我看到了，很想邀请你帮我们写点东西。”",
+        options: [
+          {
+            text: "答应下来，尝试把写作变成固定输出。",
+            effect: () => { player.skills.writing += 6; player.ip.writing += 2; }
+          },
+          {
+            text: "犹豫：写东西好像很花时间，怕影响“更重要的事”。",
+            effect: () => { player.skills.math += 2; }
+          },
+          {
+            text: "婉拒：只是一次作业发挥正常而已，不想认真。",
+            effect: () => { player.skills.sport += 2; }
+          }
+        ]
+      },
+      {
+        title: "回合 6 · 情绪的出口",
+        text: "某天，你因为一件小事突然情绪崩了。没人做错什么，只是所有压力叠在一起的一刻。",
+        options: [
+          {
+            text: "写一长段话，把自己所有委屈都写出来。",
+            effect: () => { player.skills.writing += 5; player.ip.writing += 3; }
+          },
+          {
+            text: "唱到嗓子有点哑，才慢慢平静下来。",
+            effect: () => { player.skills.singing += 5; player.ip.singing += 3; }
+          },
+          {
+            text: "疯狂做题，把注意力全部塞进题目里。",
+            effect: () => { player.skills.math += 5; player.ip.math += 3; }
+          }
+        ]
+      },
+      {
+        title: "回合 7 · 歌手男的肯定",
+        text: "那位在舞台上很耀眼的学长/同事对你说：\n“你知道吗，你站在灯光下的时候，是会被记住的那种人。”",
+        options: [
+          {
+            text: "第一次认真地想：“如果我一直唱下去，会怎样？”",
+            effect: () => { player.skills.singing += 6; player.ip.singing += 2; }
+          },
+          {
+            text: "有点紧张，觉得自己不适合那么被看见。",
+            effect: () => { player.skills.writing += 3; }
+          },
+          {
+            text: "嘴上敷衍过去，心里告诉自己“别当真”。",
+            effect: () => { player.skills.math += 2; }
+          }
+        ]
+      },
+      {
+        title: "回合 8 · 别人的路",
+        text: "家里人/身边的人开始给你建议：\n“读研、进大厂、稳定、拿头衔，这些才是正常、正确的路。”",
+        options: [
+          {
+            text: "点头，说“是啊”，并开始朝那个方向努力。",
+            effect: () => { player.skills.math += 6; player.ip.math += 2; }
+          },
+          {
+            text: "嘴上说“好”，但心里隐隐有一点抗拒。",
+            effect: () => { player.ip.writing += 2; player.ip.singing += 2; }
+          },
+          {
+            text: "直接说“我还没想好”，坚持保留余地。",
+            effect: () => { player.skills.writing += 3; player.skills.singing += 3; }
+          }
+        ]
+      },
+      {
+        title: "回合 9 · 意外的小成功",
+        text: "这一段时间里，有一件事意外地“爆了一下”：",
+        options: [
+          {
+            text: "你交的科研/数学作业，拿了极高评价。",
+            effect: () => { player.skills.math += 6; player.ip.math += 1; }
+          },
+          {
+            text: "你写的一篇东西，在小范围内传开了。",
+            effect: () => { player.skills.writing += 6; player.ip.writing += 1; }
+          },
+          {
+            text: "你唱的一个片段，被人录下来夸了一圈。",
+            effect: () => { player.skills.singing += 6; player.ip.singing += 1; }
+          }
+        ]
+      },
+      {
+        title: "回合 10 · 三个方向的拉扯",
+        text: "某一天，三条路几乎同时出现在你面前：\n- 科研项目要你给出答复\n- 写作机会需要你投入时间\n- 舞台演出希望你加入长期排练",
+        options: [
+          {
+            text: "选科研项目：至少这条路是“清晰”的。",
+            effect: () => { player.skills.math += 8; player.ip.math += 2; }
+          },
+          {
+            text: "选写作机会：觉得那一刻自己的心更靠近那里。",
+            effect: () => { player.skills.writing += 8; player.ip.writing += 2; }
+          },
+          {
+            text: "选演出：想看看，如果继续站在台上，会发生什么。",
+            effect: () => { player.skills.singing += 8; player.ip.singing += 2; }
+          }
+        ]
+      },
+      {
+        title: "回合 11 · 静室试炼",
+        text: "没有任何人来找你，没有任何任务，也没有任何人催你。\n\n这一天，你难得真正什么都可以不做，只剩一个问题：\n“如果世界安静下来，只剩我自己——\n我，现在最想做什么？”",
+        options: [
+          {
+            text: "找一个地方，把这些年的心路写下来。",
+            effect: () => { player.skills.writing += 5; player.ip.writing += 10; }
+          },
+          {
+            text: "去练歌、录一段只唱给自己听的歌。",
+            effect: () => { player.skills.singing += 5; player.ip.singing += 10; }
+          },
+          {
+            text: "做一道真正难的题，证明自己依然能“解开世界”。",
+            effect: () => { player.skills.math += 5; player.ip.math += 10; }
+          }
+        ]
+      },
+      {
+        title: "回合 12 · 最后一回合",
+        text: "你隐约感觉到，一个阶段要结束了。\n\n你知道，这一回合的选择，会在某种程度上，成为这段人生的注脚。",
+        options: [
+          {
+            text: "把时间留给最想做的那件事：写。",
+            effect: () => { player.skills.writing += 10; }
+          },
+          {
+            text: "把时间留给最想做的那件事：唱。",
+            effect: () => { player.skills.singing += 10; }
+          },
+          {
+            text: "把时间留给最想做的那件事：解题。",
+            effect: () => { player.skills.math += 10; }
+          }
+        ]
+      }
+    ];
+
+    // --- UI 渲染辅助函数 ---
+    function clearOptions() {
+      optionsEl.innerHTML = "";
+    }
+
+    function setScene(title, text) {
+      titleEl.textContent = title || "";
+      textEl.textContent = text || "";
+    }
+
+    function addButton(label, onClick, primary = false) {
+      const btn = document.createElement("button");
+      btn.className = "btn" + (primary ? " btn-primary" : "");
+      btn.textContent = label;
+      btn.onclick = onClick;
+      optionsEl.appendChild(btn);
+    }
+
+    function updateStats() {
+      const { math, writing, singing, sport } = player.skills;
+      statsEl.innerHTML = `
+        <span>数学：${math}</span>
+        <span>写作：${writing}</span>
+        <span>唱歌：${singing}</span>
+        <span>体育：${sport}</span>
+      `;
+      if (phase === "events") {
+        turnEl.textContent = `回合 ${player.turn} / 12`;
+      } else {
+        turnEl.textContent = "";
+      }
+    }
+
+    // --- 游戏阶段逻辑 ---
+
+    function startIntro() {
+      phase = "intro";
+      updateStats();
+      setScene("开场 · 你拥有所有天赋", "系统评估完毕：\n你的所有天赋值，都是满分。\n\n数学、写作、唱歌、体育……你似乎“什么都能做好”。\n\n但有一个问题，谁也回答不了：\n“你真正想要走向的成就，到底是什么？”\n\n在这段旅程开始之前，先告诉我：你希望我怎么称呼你？");
+      clearOptions();
+
+      const row = document.createElement("div");
+      row.className = "input-row";
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "输入你的名字或昵称";
+      row.appendChild(input);
+      optionsEl.appendChild(row);
+
+      addButton("确认，并继续", () => {
+        const name = input.value.trim();
+        player.name = name || "你";
+        startQuestionnaire();
+      }, true);
+    }
+
+    function startQuestionnaire() {
+      phase = "questionnaire";
+      currentQuestion = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      updateStats();
+      const q = questionnaire[currentQuestion];
+      setScene(`开场问卷 ${currentQuestion + 1} / ${questionnaire.length}`, q.question);
+      clearOptions();
+      q.options.forEach((opt, idx) => {
+        addButton(opt.text, () => {
+          opt.effect();
+          currentQuestion++;
+          if (currentQuestion < questionnaire.length) {
+            showQuestion();
+          } else {
+            startEvents();
+          }
+        });
+      });
+    }
+
+    function startEvents() {
+      phase = "events";
+      player.turn = 0;
+      currentEvent = 0;
+      showEvent();
+    }
+
+    function showEvent() {
+      updateStats();
+      if (currentEvent >= events.length) {
+        showEnding();
+        return;
+      }
+      player.turn = currentEvent + 1;
+      updateStats();
+      const e = events[currentEvent];
+      setScene(e.title, e.text);
+      clearOptions();
+      e.options.forEach((opt, idx) => {
+        addButton(opt.text, () => {
+          opt.effect();
+          currentEvent++;
+          showEvent();
+        });
+      });
+    }
+
+    function showEnding() {
+      phase = "ending";
+      updateStats();
+      clearOptions();
+
+      // 计算 IP 最高方向
+      const ipEntries = Object.entries(player.ip);
+      ipEntries.sort((a, b) => b[1] - a[1]);
+      const [topKey, topIP] = ipEntries[0];
+
+      // 计算技能最高方向
+      const skillEntries = Object.entries(player.skills);
+      skillEntries.sort((a, b) => b[1] - a[1]);
+      const [topSkillKey, topSkillValue] = skillEntries[0];
+
+      const keyMap = {
+        math: "数学",
+        writing: "写作",
+        singing: "唱歌",
+        sport: "体育"
+      };
+
+      const heartName = keyMap[topKey] || "某个方向";
+      const skillName = keyMap[topSkillKey] || "某个方向";
+
+      let endingTitle = "";
+      let endingText = "";
+
+      if (topKey === topSkillKey && topSkillValue >= 25) {
+        // 真·初心结局
+        endingTitle = "结局 · 初心被看见的那一刻";
+        endingText =
+          `${player.name}，这一段路走下来，你经历了很多选择、很多拉扯。\n\n` +
+          `系统记录到，你最真实的内在拉力，指向的是「${heartName}」。\n你最终投入最多、走得最深的，也是「${skillName}」。\n\n` +
+          `你没有浪费你的天赋，也没有完全被别人的期待带走。\n你绕了一个圈，试过别的路，最后还是走回了自己的心。\n\n` +
+          `你的人生不会因此变得容易，但它会变得——属于你。`;
+      } else {
+        // 偏离结局
+        endingTitle = "结局 · 你努力成了“别人眼中的成功”";
+        endingText =
+          `这段旅程结束时，系统看到两组数据：\n\n` +
+          `你的内在拉力，最高的是「${heartName}」。\n但你实际投入最多、走到最高成就的，是「${skillName}」。\n\n` +
+          `你非常努力，也很优秀。\n你完成了许多人梦寐以求的路径，证明了你的天赋和执行力。\n\n` +
+          `只是，在那些真正只属于你的可能性面前，你选择了沉默。\n\n` +
+          `这不叫失败。\n这只是——你还没有真正为自己，做一次彻底的选择。`;
+      }
+
+      setScene(endingTitle, endingText);
+
+      // 显示统计信息
+      const statsText =
+        `最终技能：\n` +
+        `· 数学：${player.skills.math}\n` +
+        `· 写作：${player.skills.writing}\n` +
+        `· 唱歌：${player.skills.singing}\n` +
+        `· 体育：${player.skills.sport}\n\n` +
+        `系统推算的「初心方向」：${heartName}\n` +
+        `你实际最高的技能方向：${skillName}`;
+
+      const statsDiv = document.createElement("div");
+      statsDiv.style.whiteSpace = "pre-line";
+      statsDiv.style.fontSize = "13px";
+      statsDiv.style.marginTop = "12px";
+      statsDiv.style.paddingTop = "8px";
+      statsDiv.style.borderTop = "1px dashed #ddd";
+      statsDiv.textContent = statsText;
+      textEl.appendChild(statsDiv);
+
+      addButton("再走一遍不同的路", () => {
+        // 重置状态，重新开始
+        player.skills = { math: 0, writing: 0, singing: 0, sport: 0 };
+        player.ip = { math: 0, writing: 0, singing: 0 };
+        player.turn = 0;
+        startIntro();
+      }, true);
+    }
+
+    // 启动游戏
+    startIntro();
+  </script>
+</body>
+</html>

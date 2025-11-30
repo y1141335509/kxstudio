@@ -4,6 +4,7 @@ const Games: React.FC = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [isHoveringImmortal, setIsHoveringImmortal] = useState(false);
   const [isHoveringMihoyo, setIsHoveringMihoyo] = useState(false);
+  const [isHoveringChuxin, setIsHoveringChuxin] = useState(false);
 
   const handlePlayGame = () => {
     window.location.href = '/games/watermelon/';
@@ -27,6 +28,14 @@ const Games: React.FC = () => {
 
   const handlePlayMihoyoInNewTab = () => {
     window.open('/games/mihoyo/', '_blank');
+  };
+
+  const handlePlayChuxinGame = () => {
+    window.location.href = '/games/chuxin/';
+  };
+
+  const handlePlayChuxinInNewTab = () => {
+    window.open('/games/chuxin/', '_blank');
   };
 
   return (
@@ -203,6 +212,61 @@ const Games: React.FC = () => {
                   </button>
                   <button
                     onClick={handlePlayMihoyoInNewTab}
+                    className="play-button secondary"
+                  >
+                    <span className="button-icon">🔗</span>
+                    新窗口打开
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="game-card" onMouseEnter={() => setIsHoveringChuxin(true)} onMouseLeave={() => setIsHoveringChuxin(false)}>
+            <div className="game-preview">
+              <div className="game-icon">
+                <span className={`game-emoji ${isHoveringChuxin ? 'bounce' : ''}`}>💫</span>
+                <div className="icon-glow"></div>
+              </div>
+
+              <div className="game-info">
+                <div className="game-badge">🏆 原创作品</div>
+                <h2 className="game-title">初心</h2>
+                <p className="game-description">
+                  一个探索内心与选择的互动叙事游戏。在天赋与期待之间，
+                  你将经历12回合的人生旅程，最终发现你真正想要走向的方向。
+                </p>
+
+                <div className="game-features">
+                  <div className="feature-item">
+                    <span className="feature-icon">🎭</span>
+                    <span>互动叙事</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">💭</span>
+                    <span>深度问卷</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🎯</span>
+                    <span>多重结局</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">✨</span>
+                    <span>内心探索</span>
+                  </div>
+                </div>
+
+                <div className="game-actions">
+                  <button
+                    onClick={handlePlayChuxinGame}
+                    className="play-button primary"
+                  >
+                    <span className="button-icon">🎮</span>
+                    开始游戏
+                    <div className="button-shine"></div>
+                  </button>
+                  <button
+                    onClick={handlePlayChuxinInNewTab}
                     className="play-button secondary"
                   >
                     <span className="button-icon">🔗</span>

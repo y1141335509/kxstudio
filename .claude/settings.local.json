@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npm run:*)",
       "Bash(npm start)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(curl:*)",
+      "Bash(open \"http://localhost:3000/games/chuxin/\")",
+      "Bash(open:*)"
     ],
     "deny": [],
     "ask": []
