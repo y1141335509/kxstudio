@@ -106,6 +106,20 @@ const characters = [
     </Typography>, avatar: '/images/character-page/盛泽-avatar.png'
   },
   {
+    id: 13, name: '昌平君', image: '/images/character-page/昌平君.png',
+    country: 'Others',
+    description: <Typography>
+      他不是失败者。<br />
+      他只是比所有人更早意识到——<br />
+      有些胜利，本身就是灾难。<br />
+      他是大秦最精密的仪器，也是旧时代最后的一块碎玉。<br /><br />
+      <Link to="/character-page/changpingjun" style={{ color: '#4a8a84', textDecoration: 'none' }}>
+        陪他听雨 →
+      </Link>
+    </Typography>,
+    avatar: '/images/character-page/昌平君-avatar.png'
+  },
+  {
     id: 9, name: '韩星辰', image: '/images/character-page/韩星辰.png',
     country: '与你的1001次初遇', description: 
     <Typography>

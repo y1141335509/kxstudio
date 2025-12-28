@@ -13,6 +13,7 @@ import ResourcesPage from './components/ResourcesPage/ResourcesPage';
 import AboutUsPage from './components/AboutUsPage/AboutUsPage';
 import CharacterPage from './components/CharacterPage/CharacterPage';
 import SilverPage from './components/CharacterPage/SilverPage/SilverPage';
+import ChangPingJunPage from './components/CharacterPage/ChangPingJunPage/ChangPingJunPage';
 import Games from './pages/Games'; // 主要的游戏页面组件
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/games/watermelon" element={<Games />} />
         <Route path="/character-page" element={<CharacterPage />} />
         <Route path="/character-page/silver" element={<SilverPage />} />
+        <Route path="/character-page/changpingjun" element={<ChangPingJunPage />} />
         <Route path="/resources" element={<ResourcesPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
       </Routes>
