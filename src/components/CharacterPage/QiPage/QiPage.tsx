@@ -4,11 +4,13 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const ChangPingJunPage = () => {
+const Qi = () => {
   // Assume these are the images for the carousel dots
   const dotImages = [
-    '/images/changpingjun-page/changpingjun01.png',
-    '/images/changpingjun-page/changpingjun02.png',
+    '/images/qi-page/qi01.png',
+    '/images/qi-page/qi02.png',
+    '/images/qi-page/qi03.png',
+    '/images/qi-page/qi04.png',
   ];
 
   // Settings for the carousel
@@ -112,7 +114,7 @@ const ChangPingJunPage = () => {
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Box sx={{ padding: 2, height: 500, display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h4" gutterBottom>昌平君</Typography>
+            <Typography variant="h4" gutterBottom>昌平君（启）</Typography>
             <Box
               sx={{
                 flex: 1,
@@ -144,10 +146,16 @@ const ChangPingJunPage = () => {
           <Box sx={{ padding: 2, height: 500, '.slick-slide img': { margin: '-0px 0px 30px' } }}>
             <Slider {...settings}>
               <div>
-                <img src="/images/changpingjun-page/changpingjun01.png" alt="昌平君 1" style={{ width: '100%', height: 'auto' }} />
+                <img src="/images/qi-page/qi01.png" alt="昌平君（启） 1" style={{ width: '100%', height: 'auto' }} />
               </div>
               <div>
-                <img src="/images/changpingjun-page/changpingjun02.png" alt="昌平君 2" style={{ width: '100%', height: 'auto' }} />
+                <img src="/images/qi-page/qi02.png" alt="昌平君（启） 2" style={{ width: '100%', height: 'auto' }} />
+              </div>
+              <div>
+                <img src="/images/qi-page/qi03.png" alt="昌平君（启） 3" style={{ width: '100%', height: 'auto' }} />
+              </div>
+              <div>
+                <img src="/images/qi-page/qi04.png" alt="昌平君（启） 4" style={{ width: '100%', height: 'auto' }} />
               </div>
             </Slider>
           </Box>
@@ -157,4 +165,4 @@ const ChangPingJunPage = () => {
   );
 };
 
-export default ChangPingJunPage;
+export default Qi;

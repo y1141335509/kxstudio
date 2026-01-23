@@ -28,8 +28,82 @@ interface Character {
 
 
 // Mock data for countries and characters
-const countries = ['与你的1001次初遇', '最后的战役', 'Others', ];
+const countries = ['纸上秦', '与你的1001次初遇', '最后的战役', 'Others', ];
 const characters = [
+  {
+    id: 14, name: '纸上秦', image: '/images/character-page/纸上秦CG.png',
+    country: '纸上秦',
+    description: <Typography>
+      你不是历史中的人。<br />
+      你是执笔人，负责校验并修订历史。<br />
+      这一次，你被派往战国末年·秦。<br />
+      在那里，你将遇见四个男人——<br />
+      他们都站在历史即将定稿的边缘。<br />
+      你可以靠近他们、信任他们、甚至爱上他们。<br />
+      但每一次选择，都会让某一段历史成立，<br />
+      也意味着，另一种可能被永久删除。<br />
+      这里没有正确答案。<br />
+      只有你愿不愿意承担代价。<br />
+      当你离开时，历史会继续。<br />
+      只有你，记得他们。
+    </Typography>,
+    avatar: '/images/character-page/纸上秦CG-avatar.png'
+  },
+  {
+    id: 15, name: '政', image: '/images/character-page/政.png',
+    country: '纸上秦',
+    description: <Typography>
+      他相信秩序胜过仁慈，法度高于一切。<br />
+      为了统一天下，他可以牺牲任何人，包括自己。<br />
+      直到你出现。<br />
+      无法预测的你，是他不愿解开的谜。
+    </Typography>,
+    avatar: '/images/character-page/政-avatar.png'
+  },
+  {
+    id: 16, name: '启', image: '/images/character-page/启.png',
+    country: '纸上秦',
+    description: <Typography>
+      他生来高贵，也始终克制。<br />
+      知礼、守界、从不越线，是他给自己的枷锁。<br />
+      启看得懂局势，却不急着赢。<br />
+      他习惯替别人收拾残局，把锋芒藏在风雅之下。<br />
+      对你亦是如此。<br />
+      他从不索取，也不逼迫，只在你身后，替你挡住看不见的代价。<br />
+      如果说有人能在这场历史里全身而退，<br />
+      那个人本该是他。<br /><br />
+      <Link to="/character-page/qipage" style={{ color: '#4a8a84', textDecoration: 'none' }}>
+        陪他听雨 →
+      </Link>
+    </Typography>,
+    avatar: '/images/character-page/启-avatar.png'
+  },
+  {
+    id: 17, name: '丹', image: '/images/character-page/丹.png',
+    country: '纸上秦',
+    description: <Typography>
+      他把一切都押得太重。<br />
+      理想、尊严、性命，从不留后路。<br />
+      丹相信情义，也愿为此走向极端。<br />
+      在他眼中，失败不是失去天下，而是失去你。<br />
+      你是他唯一的赌注。<br />
+      也是他无法回头的理由。
+    </Typography>,
+    avatar: '/images/character-page/丹-avatar.png'
+  },
+  {
+    id: 18, name: '成蛟', image: '/images/character-page/成蛟.png',
+    country: '纸上秦',
+    description: <Typography>
+      他看得很清楚，却从不说破。<br />
+      聪明、敏锐，擅长在夹缝中生存。<br />
+      在别人面前，他锋芒毕露。<br />
+      在你面前，却总是笑着退让。<br />
+      他知道那些人不会放过他，<br />
+      所以这一次，他选择先放过你。
+    </Typography>,
+    avatar: '/images/character-page/成蛟-avatar.png'
+  },
   {
     id: 1, name: 'Silver（银）', image: '/images/character-page/Silver.png', country: 'Others',
     description: <Typography>
@@ -104,20 +178,6 @@ const characters = [
         <li>浪漫与克制并存</li>
       经典台词：“这不是我的婚戒，也可以是我们的婚戒。” 💍
     </Typography>, avatar: '/images/character-page/盛泽-avatar.png'
-  },
-  {
-    id: 13, name: '昌平君', image: '/images/character-page/昌平君.png',
-    country: 'Others',
-    description: <Typography>
-      他不是失败者。<br />
-      他只是比所有人更早意识到——<br />
-      有些胜利，本身就是灾难。<br />
-      他是大秦最精密的仪器，也是旧时代最后的一块碎玉。<br /><br />
-      <Link to="/character-page/changpingjun" style={{ color: '#4a8a84', textDecoration: 'none' }}>
-        陪他听雨 →
-      </Link>
-    </Typography>,
-    avatar: '/images/character-page/昌平君-avatar.png'
   },
   {
     id: 9, name: '韩星辰', image: '/images/character-page/韩星辰.png',
@@ -199,7 +259,7 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
   
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: filteredCharacters.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -258,93 +318,10 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
   );
 }
 
-// function CarouselSection({ selectedCountry }: CarouselSectionProps) {
-//   // 确保数据唯一
-//   const filteredCharacters = Array.from(
-//     new Map(
-//       characters
-//         .filter((char) => char.country === selectedCountry)
-//         .map((char) => [char.id, char])
-//     ).values()
-//   );
-
-//   filteredCharacters.forEach(character => console.log(character));
-
-//   const settings = {
-//     dots: true,
-//     infinite: true,
-//     speed: 500,
-//     slidesToShow: 1,
-//     slidesToScroll: 1,
-//     autoplay: false,
-//     autoplaySpeed: 3000,
-//     customPaging: (i: number) => {
-//       const char = filteredCharacters[i];
-//       if (char && char.avatar) {
-//         return (
-//           <img
-//             src={char.avatar}
-//             alt={char.name}
-//             style={{ width: 50, height: 50, margin: '-20px 10px' }}
-//           />
-//         );
-//       } else {
-//         return <div style={{ width: 50, height: 50, margin: '10px', backgroundColor: '#eee' }} />;
-//       }
-//     },
-//     dotsClass: 'slick-dots custom-dots',
-//   };
-
-//   return (
-//     <Box
-//       sx={{
-//         marginBottom: '70px',
-//         width: '100%',
-//         py: 4,
-//         marginTop: '2em',
-//         '.slick-slider': { marginBottom: '20px' },
-//         '.slick-dots': { paddingTop: '20px' },
-//       }}
-//     >
-//       <Slider {...settings}>
-//         {filteredCharacters.length > 0 ? (
-//           filteredCharacters.map((character, index) => (
-//             <div key={`${character.id}-${index}`}>
-//               <Paper
-//                 sx={{
-//                   padding: 2,
-//                   display: 'flex',
-//                   alignItems: 'center',
-//                   justifyContent: 'space-around',
-//                   height: 424,
-//                   boxShadow: 'none',
-//                 }}
-//               >
-//                 <Box sx={{ marginLeft: '6em', marginRight: '3em', boxShadow: 'none' }}>
-//                   <Typography variant="h5">{character.name}</Typography>
-//                   <Typography>{character.description}</Typography>
-//                   {character.name === 'Silver（银）' && (
-//                     <Link to="/character-page/silver" style={{ textDecoration: 'none' }}>
-//                       <Typography sx={{ mt: 2, color: 'blue' }}>走近他</Typography>
-//                     </Link>
-//                   )}
-//                 </Box>
-//                 <img src={character.image} alt={character.name} style={{ width: 375, height: 400 }} />
-//               </Paper>
-//             </div>
-//           ))
-//         ) : (
-//           <Typography>No characters found for this country.</Typography>
-//         )}
-//       </Slider>
-//     </Box>
-//   );
-// }
-
 
 
 function CharacterPage() {
-  const [selectedCountry, setSelectedCountry] = useState<string>('与你的1001次初遇'); // Default selection
+  const [selectedCountry, setSelectedCountry] = useState<string>('纸上秦'); // Default selection
 
 
   return (
