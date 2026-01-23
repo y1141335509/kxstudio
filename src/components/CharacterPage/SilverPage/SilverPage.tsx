@@ -31,7 +31,7 @@ const Silver = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ mb: 4 }}>    {/* mb: 4 -> 调节footer与carousel的上下间距 */}
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Box sx={{ padding: 2 }}>

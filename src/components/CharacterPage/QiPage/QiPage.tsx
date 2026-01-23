@@ -110,11 +110,11 @@ const Qi = () => {
 想来,用不了多久,总要再见一面。`;
 
   return (
-    <Container maxWidth="lg" sx={{ mb: 8 }}>
+    <Container maxWidth="lg" sx={{ mb: 18 }}>     {/* mb: 18 -> 调节footer与carousel的上下间距 */}
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Box sx={{ padding: 2, height: 500, display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h4" gutterBottom>昌平君（启）</Typography>
+            <Typography variant="h4" gutterBottom>启</Typography>
             <Box
               sx={{
                 flex: 1,
@@ -146,16 +146,16 @@ const Qi = () => {
           <Box sx={{ padding: 2, height: 500, '.slick-slide img': { margin: '-0px 0px 30px' } }}>
             <Slider {...settings}>
               <div>
-                <img src="/images/qi-page/qi01.png" alt="昌平君（启） 1" style={{ width: '100%', height: 'auto' }} />
+                <img src="/images/qi-page/qi01.png" alt="启 1" style={{ width: '100%', height: 'auto' }} />
               </div>
               <div>
-                <img src="/images/qi-page/qi02.png" alt="昌平君（启） 2" style={{ width: '100%', height: 'auto' }} />
+                <img src="/images/qi-page/qi02.png" alt="启 2" style={{ width: '100%', height: 'auto' }} />
               </div>
               <div>
-                <img src="/images/qi-page/qi03.png" alt="昌平君（启） 3" style={{ width: '100%', height: 'auto' }} />
+                <img src="/images/qi-page/qi03.png" alt="启 3" style={{ width: '100%', height: 'auto' }} />
               </div>
               <div>
-                <img src="/images/qi-page/qi04.png" alt="昌平君（启） 4" style={{ width: '100%', height: 'auto' }} />
+                <img src="/images/qi-page/qi04.png" alt="启 4" style={{ width: '100%', height: 'auto' }} />
               </div>
             </Slider>
           </Box>
