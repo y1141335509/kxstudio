@@ -5,6 +5,7 @@ const Games: React.FC = () => {
   const [isHoveringImmortal, setIsHoveringImmortal] = useState(false);
   const [isHoveringMihoyo, setIsHoveringMihoyo] = useState(false);
   const [isHoveringChuxin, setIsHoveringChuxin] = useState(false);
+  const [isHoveringDahunye, setIsHoveringDahunye] = useState(false);
 
   const handlePlayGame = () => {
     window.location.href = '/games/watermelon/';
@@ -36,6 +37,14 @@ const Games: React.FC = () => {
 
   const handlePlayChuxinInNewTab = () => {
     window.open('/games/chuxin/', '_blank');
+  };
+
+  const handlePlayDahunyeGame = () => {
+    window.location.href = '/games/dahunye/';
+  };
+
+  const handlePlayDahunyeInNewTab = () => {
+    window.open('/games/dahunye/', '_blank');
   };
 
   return (
@@ -267,6 +276,61 @@ const Games: React.FC = () => {
                   </button>
                   <button
                     onClick={handlePlayChuxinInNewTab}
+                    className="play-button secondary"
+                  >
+                    <span className="button-icon">🔗</span>
+                    新窗口打开
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="game-card" onMouseEnter={() => setIsHoveringDahunye(true)} onMouseLeave={() => setIsHoveringDahunye(false)}>
+            <div className="game-preview">
+              <div className="game-icon">
+                <span className={`game-emoji ${isHoveringDahunye ? 'bounce' : ''}`}>👑</span>
+                <div className="icon-glow"></div>
+              </div>
+
+              <div className="game-info">
+                <div className="game-badge">🆕 修史馆系列 · 纸上秦</div>
+                <h2 className="game-title">大婚之夜</h2>
+                <p className="game-description">
+                  【嬴政×你】纸上秦章节的互动改编demo。大婚当夜，
+                  他问你怕不怕、问你喜不喜欢这份礼物——你的每一个选择，他都会记住。
+                </p>
+
+                <div className="game-features">
+                  <div className="feature-item">
+                    <span className="feature-icon">📖</span>
+                    <span>原著改编</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🔀</span>
+                    <span>分支选择</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🎯</span>
+                    <span>4种结局</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">💭</span>
+                    <span>专一被记得</span>
+                  </div>
+                </div>
+
+                <div className="game-actions">
+                  <button
+                    onClick={handlePlayDahunyeGame}
+                    className="play-button primary"
+                  >
+                    <span className="button-icon">🎮</span>
+                    开始游戏
+                    <div className="button-shine"></div>
+                  </button>
+                  <button
+                    onClick={handlePlayDahunyeInNewTab}
                     className="play-button secondary"
                   >
                     <span className="button-icon">🔗</span>
