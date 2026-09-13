@@ -312,7 +312,7 @@ const Games: React.FC = () => {
                   </div>
                   <div className="feature-item">
                     <span className="feature-icon">🎯</span>
-                    <span>4种结局</span>
+                    <span>3种结局</span>
                   </div>
                   <div className="feature-item">
                     <span className="feature-icon">💭</span>
