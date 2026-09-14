@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>至少此刻与薄冰 · 大婚之夜</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@400;500;600;700&family=Ma+Shan+Zheng&display=swap">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VCQEGLYTS2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VCQEGLYTS2');
+</script>
 <style>
   :root {
     --bg: #ede7d9;
@@ -376,7 +384,12 @@ var state = { ending: null, choices: {} };
 var navStack = [];
 var current = 's0';
 
-function recordChoice(key, value) { state.choices[key] = value; }
+function ga(name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} }
+
+function recordChoice(key, value) {
+  state.choices[key] = value;
+  ga('choice_click', { game_id: 'dahunye', choice_key: key, choice_value: value });
+}
 
 var FLAVOR_LINES = {
   c1: {
@@ -449,6 +462,7 @@ function showEnding(key) {
   state.ending = key;
   navStack.push(current);
   current = 'endcg:' + key;
+  ga('complete', { game_id: 'dahunye', ending: key });
   renderCurrent();
 }
 
@@ -1148,6 +1162,7 @@ SCREENS.s6 = function () {
   return html;
 };
 
+ga('start', { game_id: 'dahunye' });
 renderCurrent();
 </script>
 </body>

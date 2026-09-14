@@ -3,7 +3,15 @@
 <head>
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1" />
- <title>收购米哈游 · MVP 原型（自动月推进版）</title>
+ <title>收购米哈游</title>
+ <!-- Google tag (gtag.js) -->
+ <script async src="https://www.googletagmanager.com/gtag/js?id=G-VCQEGLYTS2"></script>
+ <script>
+   window.dataLayer = window.dataLayer || [];
+   function gtag(){dataLayer.push(arguments);}
+   gtag('js', new Date());
+   gtag('config', 'G-VCQEGLYTS2');
+ </script>
  <style>
    :root{
      --bg:#0b0f14; --panel:#11161d; --card:#121a22; --muted:#8293a6; --text:#e6edf3; --accent:#6ee7ff; --good:#87f1b9; --bad:#ff8f8f; --warn:#ffd27a;
@@ -45,7 +53,6 @@
    <div class="panel left">
      <header>
        <h1>资金面板</h1>
-       <span class="badge">MVP v0.2</span>
      </header>
      <div style="padding:10px 16px 0 16px;color:var(--muted)">快捷键：<span class="kbd">1</span>/<span class="kbd">2</span>/<span class="kbd">3</span> 选项</div>
      <div class="stat"><small>你的现金（$）</small><b id="statCash">1,000,000,000</b></div>
@@ -90,6 +97,7 @@
    const feed = $('#feed'), dateInfo = $('#dateInfo'), eventCard = $('#eventCard'), ending = $('#ending')
 
    // ======= 工具 =======
+   function ga(name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} }
    const fmt = n => n.toLocaleString('en-US', {maximumFractionDigits:0})
    const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
    const r = (a,b) => Math.random() * (b-a) + a
@@ -244,6 +252,7 @@
    }
 
    function afterDecision(ev, label){
+     ga('choice_click', { game_id:'mihoyo', event_id: ev.id, choice_label: label })
      eventCard.style.display='none'
      pushFeed(`<b>${ev.title}</b> · 你的选择：${label}`)
      if(checkEnding()) return
@@ -322,6 +331,7 @@
 
    function showEnding(title, desc, tone){
      state.ended = true
+     ga('complete', { game_id:'mihoyo', ending: title, tone: tone })
      ending.style.display = 'block'
      ending.innerHTML = `<h2>${title}</h2><p>${desc}</p>
        <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -331,6 +341,7 @@
    }
 
    // ======= 初始化 =======
+   ga('start', { game_id:'mihoyo' })
    pushFeed('目标：通过资本化运作收购"米哈游"。')
    render();
    drawEvent(true); // 首月事件

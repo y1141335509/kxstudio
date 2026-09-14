@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>初心 · MVP Demo</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VCQEGLYTS2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VCQEGLYTS2');
+  </script>
   <style>
     * {
       box-sizing: border-box;
@@ -165,6 +173,8 @@
     let phase = "intro";        // intro / questionnaire / events / ending
     let currentQuestion = 0;
     let currentEvent = 0;
+
+    function ga(name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} }
 
     const statsEl = document.getElementById("stats");
     const titleEl = document.getElementById("scene-title");
@@ -538,6 +548,7 @@
 
     function startIntro() {
       phase = "intro";
+      ga('start', { game_id: 'chuxin' });
       updateStats();
       setScene("开场 · 你拥有所有天赋", "系统评估完毕：\n你的所有天赋值，都是满分。\n\n数学、写作、唱歌、体育……你似乎“什么都能做好”。\n\n但有一个问题，谁也回答不了：\n“你真正想要走向的成就，到底是什么？”\n\n在这段旅程开始之前，先告诉我：你希望我怎么称呼你？");
       clearOptions();
@@ -571,6 +582,7 @@
       q.options.forEach((opt, idx) => {
         addButton(opt.text, () => {
           opt.effect();
+          ga('choice_click', { game_id: 'chuxin', phase: 'questionnaire', step: currentQuestion + 1, option_index: idx });
           currentQuestion++;
           if (currentQuestion < questionnaire.length) {
             showQuestion();
@@ -602,6 +614,7 @@
       e.options.forEach((opt, idx) => {
         addButton(opt.text, () => {
           opt.effect();
+          ga('choice_click', { game_id: 'chuxin', phase: 'events', step: currentEvent + 1, option_index: idx });
           currentEvent++;
           showEvent();
         });
@@ -636,7 +649,10 @@
       let endingTitle = "";
       let endingText = "";
 
-      if (topKey === topSkillKey && topSkillValue >= 25) {
+      const isTrueEnding = topKey === topSkillKey && topSkillValue >= 25;
+      ga('complete', { game_id: 'chuxin', ending: isTrueEnding ? 'zhenchuxin' : 'pianli', heart_direction: topKey, skill_direction: topSkillKey });
+
+      if (isTrueEnding) {
         // 真·初心结局
         endingTitle = "结局 · 初心被看见的那一刻";
         endingText =

@@ -5,7 +5,32 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no">
 		<title>切西瓜游戏</title>
-		
+
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-VCQEGLYTS2"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-VCQEGLYTS2');
+			function ga(name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} }
+			ga('start', { game_id: 'watermelon' });
+		</script>
+
+		<!-- 锁定标签页标题：Godot引擎运行后会用项目内部名称（"Demo-01"）覆盖document.title，这里强制锁回正式标题 -->
+		<script>
+			(function () {
+				var fixedTitle = '切西瓜游戏';
+				document.title = fixedTitle;
+				try {
+					Object.defineProperty(document, 'title', {
+						get: function () { return fixedTitle; },
+						set: function () { /* ignore attempts from the engine to overwrite it */ }
+					});
+				} catch (e) {}
+			})();
+		</script>
+
 		<!-- 添加Google Fonts中文字体支持 -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
