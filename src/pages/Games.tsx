@@ -66,153 +66,43 @@ const Games: React.FC = () => {
       
       <main className="games-content">
         <div className="games-grid">
-          <div className="game-card" onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+          <div className="game-card" onMouseEnter={() => setIsHoveringDahunye(true)} onMouseLeave={() => setIsHoveringDahunye(false)}>
             <div className="game-preview">
               <div className="game-icon">
-                <span className={`game-emoji ${isHovering ? 'bounce' : ''}`}>🍉</span>
+                <span className={`game-emoji ${isHoveringDahunye ? 'bounce' : ''}`}>👑</span>
                 <div className="icon-glow"></div>
               </div>
 
               <div className="game-info">
-                <div className="game-badge">🏆 原创作品</div>
-                <h2 className="game-title">切西瓜大师</h2>
+                <div className="game-badge">🆕 修史馆系列 · 纸上秦</div>
+                <h2 className="game-title">大婚之夜</h2>
                 <p className="game-description">
-                  一个融合策略与反应的创新小游戏。在享受切西瓜乐趣的同时，
-                  你需要巧妙平衡饥饿度和血糖水平，体验前所未有的游戏机制！
+                  【嬴政×你】纸上秦章节的互动改编demo。大婚当夜，
+                  他问你怕不怕、问你喜不喜欢这份礼物——你的每一个选择，他都会记住。
                 </p>
 
                 <div className="game-features">
                   <div className="feature-item">
-                    <span className="feature-icon">🍉</span>
-                    <span>多种特殊西瓜</span>
+                    <span className="feature-icon">📖</span>
+                    <span>原著改编</span>
                   </div>
                   <div className="feature-item">
-                    <span className="feature-icon">⚖️</span>
-                    <span>平衡策略</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">✨</span>
-                    <span>华丽特效</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">📱</span>
-                    <span>移动支持</span>
-                  </div>
-                </div>
-
-                <div className="game-actions">
-                  <button
-                    onClick={handlePlayGame}
-                    className="play-button primary"
-                  >
-                    <span className="button-icon">🎮</span>
-                    开始游戏
-                    <div className="button-shine"></div>
-                  </button>
-                  <button
-                    onClick={handlePlayInNewTab}
-                    className="play-button secondary"
-                  >
-                    <span className="button-icon">🔗</span>
-                    新窗口打开
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="game-card" onMouseEnter={() => setIsHoveringImmortal(true)} onMouseLeave={() => setIsHoveringImmortal(false)}>
-            <div className="game-preview">
-              <div className="game-icon">
-                <span className={`game-emoji ${isHoveringImmortal ? 'bounce' : ''}`}>⚱️</span>
-                <div className="icon-glow"></div>
-              </div>
-
-              <div className="game-info">
-                <div className="game-badge">🏆 原创作品</div>
-                <h2 className="game-title">永生之战</h2>
-                <p className="game-description">
-                  一个关于人生选择与命运的策略游戏。从童年到老年，
-                  每一个决定都会影响你的健康、财富和心智，目标是活到100岁迎接永生时代！
-                </p>
-
-                <div className="game-features">
-                  <div className="feature-item">
-                    <span className="feature-icon">🎯</span>
-                    <span>人生策略</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">⚖️</span>
-                    <span>平衡机制</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">🎭</span>
-                    <span>随机事件</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">📈</span>
-                    <span>成长系统</span>
-                  </div>
-                </div>
-
-                <div className="game-actions">
-                  <button
-                    onClick={handlePlayImmortalGame}
-                    className="play-button primary"
-                  >
-                    <span className="button-icon">🎮</span>
-                    开始游戏
-                    <div className="button-shine"></div>
-                  </button>
-                  <button
-                    onClick={handlePlayImmortalInNewTab}
-                    className="play-button secondary"
-                  >
-                    <span className="button-icon">🔗</span>
-                    新窗口打开
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="game-card" onMouseEnter={() => setIsHoveringMihoyo(true)} onMouseLeave={() => setIsHoveringMihoyo(false)}>
-            <div className="game-preview">
-              <div className="game-icon">
-                <span className={`game-emoji ${isHoveringMihoyo ? 'bounce' : ''}`}>💼</span>
-                <div className="icon-glow"></div>
-              </div>
-
-              <div className="game-info">
-                <div className="game-badge">🏆 原创作品</div>
-                <h2 className="game-title">收购米哈游</h2>
-                <p className="game-description">
-                  一个关于资本运作与战略决策的模拟游戏。作为基金掌舵人，
-                  你需要通过精妙的投资策略、时机把握和风险管理，完成对目标公司的收购！
-                </p>
-
-                <div className="game-features">
-                  <div className="feature-item">
-                    <span className="feature-icon">💰</span>
-                    <span>资本运作</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">📊</span>
-                    <span>策略决策</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">📰</span>
-                    <span>舆论影响</span>
+                    <span className="feature-icon">🔀</span>
+                    <span>分支选择</span>
                   </div>
                   <div className="feature-item">
                     <span className="feature-icon">🎯</span>
-                    <span>多重结局</span>
+                    <span>3种结局</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">💭</span>
+                    <span>专一被记得</span>
                   </div>
                 </div>
 
                 <div className="game-actions">
                   <button
-                    onClick={handlePlayMihoyoGame}
+                    onClick={handlePlayDahunyeGame}
                     className="play-button primary"
                   >
                     <span className="button-icon">🎮</span>
@@ -220,7 +110,7 @@ const Games: React.FC = () => {
                     <div className="button-shine"></div>
                   </button>
                   <button
-                    onClick={handlePlayMihoyoInNewTab}
+                    onClick={handlePlayDahunyeInNewTab}
                     className="play-button secondary"
                   >
                     <span className="button-icon">🔗</span>
@@ -286,43 +176,43 @@ const Games: React.FC = () => {
             </div>
           </div>
 
-          <div className="game-card" onMouseEnter={() => setIsHoveringDahunye(true)} onMouseLeave={() => setIsHoveringDahunye(false)}>
+          <div className="game-card" onMouseEnter={() => setIsHoveringMihoyo(true)} onMouseLeave={() => setIsHoveringMihoyo(false)}>
             <div className="game-preview">
               <div className="game-icon">
-                <span className={`game-emoji ${isHoveringDahunye ? 'bounce' : ''}`}>👑</span>
+                <span className={`game-emoji ${isHoveringMihoyo ? 'bounce' : ''}`}>💼</span>
                 <div className="icon-glow"></div>
               </div>
 
               <div className="game-info">
-                <div className="game-badge">🆕 修史馆系列 · 纸上秦</div>
-                <h2 className="game-title">大婚之夜</h2>
+                <div className="game-badge">🏆 原创作品</div>
+                <h2 className="game-title">收购米哈游</h2>
                 <p className="game-description">
-                  【嬴政×你】纸上秦章节的互动改编demo。大婚当夜，
-                  他问你怕不怕、问你喜不喜欢这份礼物——你的每一个选择，他都会记住。
+                  一个关于资本运作与战略决策的模拟游戏。作为基金掌舵人，
+                  你需要通过精妙的投资策略、时机把握和风险管理，完成对目标公司的收购！
                 </p>
 
                 <div className="game-features">
                   <div className="feature-item">
-                    <span className="feature-icon">📖</span>
-                    <span>原著改编</span>
+                    <span className="feature-icon">💰</span>
+                    <span>资本运作</span>
                   </div>
                   <div className="feature-item">
-                    <span className="feature-icon">🔀</span>
-                    <span>分支选择</span>
+                    <span className="feature-icon">📊</span>
+                    <span>策略决策</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">📰</span>
+                    <span>舆论影响</span>
                   </div>
                   <div className="feature-item">
                     <span className="feature-icon">🎯</span>
-                    <span>3种结局</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">💭</span>
-                    <span>专一被记得</span>
+                    <span>多重结局</span>
                   </div>
                 </div>
 
                 <div className="game-actions">
                   <button
-                    onClick={handlePlayDahunyeGame}
+                    onClick={handlePlayMihoyoGame}
                     className="play-button primary"
                   >
                     <span className="button-icon">🎮</span>
@@ -330,7 +220,117 @@ const Games: React.FC = () => {
                     <div className="button-shine"></div>
                   </button>
                   <button
-                    onClick={handlePlayDahunyeInNewTab}
+                    onClick={handlePlayMihoyoInNewTab}
+                    className="play-button secondary"
+                  >
+                    <span className="button-icon">🔗</span>
+                    新窗口打开
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="game-card" onMouseEnter={() => setIsHoveringImmortal(true)} onMouseLeave={() => setIsHoveringImmortal(false)}>
+            <div className="game-preview">
+              <div className="game-icon">
+                <span className={`game-emoji ${isHoveringImmortal ? 'bounce' : ''}`}>⚱️</span>
+                <div className="icon-glow"></div>
+              </div>
+
+              <div className="game-info">
+                <div className="game-badge">🏆 原创作品</div>
+                <h2 className="game-title">永生之战</h2>
+                <p className="game-description">
+                  一个关于人生选择与命运的策略游戏。从童年到老年，
+                  每一个决定都会影响你的健康、财富和心智，目标是活到100岁迎接永生时代！
+                </p>
+
+                <div className="game-features">
+                  <div className="feature-item">
+                    <span className="feature-icon">🎯</span>
+                    <span>人生策略</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">⚖️</span>
+                    <span>平衡机制</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🎭</span>
+                    <span>随机事件</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">📈</span>
+                    <span>成长系统</span>
+                  </div>
+                </div>
+
+                <div className="game-actions">
+                  <button
+                    onClick={handlePlayImmortalGame}
+                    className="play-button primary"
+                  >
+                    <span className="button-icon">🎮</span>
+                    开始游戏
+                    <div className="button-shine"></div>
+                  </button>
+                  <button
+                    onClick={handlePlayImmortalInNewTab}
+                    className="play-button secondary"
+                  >
+                    <span className="button-icon">🔗</span>
+                    新窗口打开
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="game-card" onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
+            <div className="game-preview">
+              <div className="game-icon">
+                <span className={`game-emoji ${isHovering ? 'bounce' : ''}`}>🍉</span>
+                <div className="icon-glow"></div>
+              </div>
+
+              <div className="game-info">
+                <div className="game-badge">🏆 原创作品</div>
+                <h2 className="game-title">切西瓜大师</h2>
+                <p className="game-description">
+                  一个融合策略与反应的创新小游戏。在享受切西瓜乐趣的同时，
+                  你需要巧妙平衡饥饿度和血糖水平，体验前所未有的游戏机制！
+                </p>
+
+                <div className="game-features">
+                  <div className="feature-item">
+                    <span className="feature-icon">🍉</span>
+                    <span>多种特殊西瓜</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">⚖️</span>
+                    <span>平衡策略</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">✨</span>
+                    <span>华丽特效</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">📱</span>
+                    <span>移动支持</span>
+                  </div>
+                </div>
+
+                <div className="game-actions">
+                  <button
+                    onClick={handlePlayGame}
+                    className="play-button primary"
+                  >
+                    <span className="button-icon">🎮</span>
+                    开始游戏
+                    <div className="button-shine"></div>
+                  </button>
+                  <button
+                    onClick={handlePlayInNewTab}
                     className="play-button secondary"
                   >
                     <span className="button-icon">🔗</span>
