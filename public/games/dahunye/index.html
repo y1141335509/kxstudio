@@ -122,7 +122,7 @@
   .quiz-card { border-radius: 14px; padding: 18px; border: 1px solid var(--surface-line); }
   .quiz-card.he-tone { background: var(--vermillion-soft); border-color: color-mix(in srgb, var(--vermillion) 30%, var(--surface-line)); }
   .quiz-card.be-tone { background: var(--frost-soft); border-color: color-mix(in srgb, var(--frost) 30%, var(--surface-line)); }
-  .quiz-tag { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+  .quiz-tag { font-family: var(--font-script); font-size: 30px; line-height: 1; margin-bottom: 10px; }
   .he-tone .quiz-tag { color: var(--vermillion); }
   .be-tone .quiz-tag { color: var(--frost); }
   .quiz-choice { font-size: 13px; color: var(--ink-soft); margin: 0 0 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--surface-line); }
@@ -256,11 +256,7 @@ var ENDINGS = {
       "心死，大约就是从这一刻，悄悄开始的。"
     ],
     judgment: "如果你分不清楚国公主和你自己的关系，必然，你也分不清作为秦王的‘孤’和‘我’的不同。",
-    quizTag: "心死",
-    quizChoice: "当他追问“我问的是你”，你答的是——“……都一样吧。”",
-    poem: "此情可待成追忆，只是当时已惘然。",
-    poemSrc: "——李商隐《锦瑟》",
-    quizBody: "你不是不在乎，是太在乎，才不敢承认。“都一样吧”这四个字说出口的时候，你大概也知道，有些东西正在悄悄关上门——只是当时的你，还来不及说服自己，值得冒险说真话。"
+    quizChoice: "当他追问“我问的是你”，你答的是——“……都一样吧。”"
   },
   cuoguo: {
     title: "错过", tone: "be",
@@ -275,11 +271,7 @@ var ENDINGS = {
       "或许，你曾有过机会，只是在那一夜，你亲手把它推远了。"
     ],
     judgment: "若楚公主从未为楚国想过，那秦王后也不会为秦国着想；若是想过，便是骗孤。想与不想，孤都想不到一个信你的理由。",
-    quizTag: "错过",
-    quizChoice: "当他问“你可曾想过，让楚国拿回本该属于它的天下”，你答的是——“没有。我从未想过这些。”",
-    poem: "人面不知何处去，桃花依旧笑春风。",
-    poemSrc: "——崔护《题都城南庄》",
-    quizBody: "你能对他说真心话，却在真正要紧的那句上，退了半步。不是不信他，是怕一旦说出口，就再没有回头路。等你想明白的时候，桃花年年开，可那个愿意听你说真话的人，未必肯年年等。"
+    quizChoice: "当他问“你可曾想过，让楚国拿回本该属于它的天下”，你答的是——“没有。我从未想过这些。”"
   },
   zhishaocike: {
     title: "至少此刻", tone: "he",
@@ -295,13 +287,73 @@ var ENDINGS = {
       "他伸手，一边帮你整理散落的发，一边喃喃：“你的实话，于我，弥足珍贵。”"
     ],
     judgment: "孤这一生，听了许多真假难辨的话——你这一句，孤愿意信到底。",
-    quizTag: "至少此刻",
-    quizChoice: "当他问“你可曾想过，让楚国拿回本该属于它的天下”，你答的是——“想过。可秦楚之争，是天下的事，不是政和我之间的事。”",
-    poem: "两情若是久长时，又岂在朝朝暮暮。",
-    poemSrc: "——秦观《鹊桥仙》",
-    quizBody: "你知道说真话会让一切变复杂，还是说了。不是因为你天生勇敢，是你清楚，比起地久天长的承诺，你更想要一个不必伪装的此刻——哪怕看见真实的你的人，是秦王。至少此刻，你没有辜负这份诚实。"
+    quizChoice: "当他问“你可曾想过，让楚国拿回本该属于它的天下”，你答的是——“想过。可秦楚之争，是天下的事，不是政和我之间的事。”"
   }
 };
+
+var POINTS = {
+  c1: { A: 0, B: 1 },
+  c2: { A: 1, B: 0 },
+  c3: { A: 2, B: -2 },
+  c4: { A: 1, B: 0 },
+  c5: { A: 1, B: -1 },
+  c6: { A: 2, B: -2 }
+};
+
+function computeScore() {
+  var total = 0;
+  for (var k in state.choices) {
+    if (POINTS[k] && POINTS[k][state.choices[k]] !== undefined) total += POINTS[k][state.choices[k]];
+  }
+  return total;
+}
+
+var REPORT_VARIANTS = {
+  xinsi: [
+    {
+      max: -1, name: "惘然",
+      poem: "此情可待成追忆，只是当时已惘然。", poemSrc: "——李商隐《锦瑟》",
+      body: "你不是不在乎，是太在乎，才不敢承认。“都一样吧”这四个字说出口的时候，你大概也知道，有些东西正在悄悄关上门——只是当时的你，还来不及说服自己，值得冒险说真话，到头来只剩一场惘然。"
+    },
+    {
+      max: Infinity, name: "画扇",
+      poem: "人生若只如初见，何事秋风悲画扇。", poemSrc: "——纳兰性德《木兰花令》",
+      body: "你不是从一开始就防备森严——闲聊调侃时，你甚至难得地松弛过。可越靠近真正重要的那句话，你反而收得越紧，最后一句“都一样吧”，把自己重新藏了回去。人生若只如初见，可惜后来，秋风一起，画扇便凉了。"
+    }
+  ],
+  cuoguo: [
+    {
+      max: 2, name: "桃花",
+      poem: "人面不知何处去，桃花依旧笑春风。", poemSrc: "——崔护《题都城南庄》",
+      body: "你能对他说真心话，却在真正要紧的那句上，退了半步。不是不信他，是怕一旦说出口，就再没有回头路。等你想明白的时候，桃花年年开，可那个愿意听你说真话的人，未必肯年年等。"
+    },
+    {
+      max: Infinity, name: "此恨",
+      poem: "天长地久有时尽，此恨绵绵无绝期。", poemSrc: "——白居易《长恨歌》",
+      body: "你几乎一路都是坦诚的——接剑时的心事，烛火前的犹豫，你都没有选择躲。可到了最后，被问及最要紧的那句，你还是退了半步。天长地久尚且有时尽，何况人心——此恨，大概就是差了那最后一步的意思。"
+    }
+  ],
+  zhishaocike: [
+    {
+      max: 6, name: "难全",
+      poem: "人有悲欢离合，月有阴晴圆缺，此事古难全。", poemSrc: "——苏轼《水调歌头》",
+      body: "你不是一路都毫无保留——有过嘴硬，有过害羞，也有过僵住的瞬间。可到了真正要紧的那一刻，你还是选择了说真话。此事古难全，你没有做到完美，但至少在最重要的时候，没有辜负自己。"
+    },
+    {
+      max: Infinity, name: "久长",
+      poem: "两情若是久长时，又岂在朝朝暮暮。", poemSrc: "——秦观《鹊桥仙》",
+      body: "你知道说真话会让一切变复杂，还是说了。不是因为你天生勇敢，是你清楚，比起地久天长的承诺，你更想要一个不必伪装的此刻——哪怕看见真实的你的人，是秦王。至少此刻，你没有辜负这份诚实。"
+    }
+  ]
+};
+
+function pickVariant(endingKey, score) {
+  var list = REPORT_VARIANTS[endingKey];
+  for (var i = 0; i < list.length; i++) {
+    if (score <= list[i].max) return list[i];
+  }
+  return list[list.length - 1];
+}
 
 var state = { ending: null, choices: {} };
 var navStack = [];
@@ -399,15 +451,17 @@ function showReport() {
 
 function renderReport() {
   var e = ENDINGS[state.ending];
+  var score = computeScore();
+  var variant = pickVariant(state.ending, score);
   var toneClass = e.tone === 'he' ? 'he-tone' : 'be-tone';
   var html = '<div class="fade-in">';
   html += '<div class="comp-eyebrow">通关</div><div class="comp-title">你的结局报告</div>';
   html += '<div class="quiz-card ' + toneClass + '">';
-  html += '<div class="quiz-tag">结局 · ' + e.quizTag + '</div>';
+  html += '<div class="quiz-tag">' + variant.name + '</div>';
   html += '<div class="quiz-choice">' + e.quizChoice + '</div>';
-  html += '<div class="quiz-poem">「' + e.poem + '」</div>';
-  html += '<div class="quiz-poem-src">' + e.poemSrc + '</div>';
-  html += '<p class="quiz-body">' + e.quizBody + '</p>';
+  html += '<div class="quiz-poem">「' + variant.poem + '」</div>';
+  html += '<div class="quiz-poem-src">' + variant.poemSrc + '</div>';
+  html += '<p class="quiz-body">' + variant.body + '</p>';
   html += '</div>';
 
   var sideNotes = [];
@@ -782,8 +836,8 @@ SCREENS.s2c2b = function () {
   var html = renderStory(p);
   html += '<div class="choice-prompt">接剑那一刻，你如何回答这句追问</div>';
   html += '<div class="choices">';
-  html += '<button class="choice-btn" onclick="showEnding(\'xinsi\')">“……都一样吧。”</button>';
-  html += '<button class="choice-btn" onclick="goto(\'c3a\')">“我不喜欢杀戮。”</button>';
+  html += '<button class="choice-btn" onclick="recordChoice(\'c3\',\'B\');showEnding(\'xinsi\')">“……都一样吧。”</button>';
+  html += '<button class="choice-btn" onclick="recordChoice(\'c3\',\'A\');goto(\'c3a\')">“我不喜欢杀戮。”</button>';
   html += '</div>';
   return html;
 };
@@ -1046,8 +1100,8 @@ SCREENS.s6 = function () {
   var html = renderStory(p);
   html += '<div class="choice-prompt">终局分岔：你如何回应这句质问</div>';
   html += '<div class="choices">';
-  html += '<button class="choice-btn" onclick="showEnding(\'zhishaocike\')">坦诚面对：“想过。”</button>';
-  html += '<button class="choice-btn" onclick="showEnding(\'cuoguo\')">否认到底：“没有。”</button>';
+  html += '<button class="choice-btn" onclick="recordChoice(\'c6\',\'A\');showEnding(\'zhishaocike\')">坦诚面对：“想过。”</button>';
+  html += '<button class="choice-btn" onclick="recordChoice(\'c6\',\'B\');showEnding(\'cuoguo\')">否认到底：“没有。”</button>';
   html += '</div>';
   return html;
 };
