@@ -82,23 +82,21 @@
   }
   .mute-btn:hover { color: var(--bronze); }
   html, body, #stage, #app { overflow-anchor: none; }
-  .story-with-cg { display: flex; flex-direction: column; gap: 14px; }
-  .cg-wrap { width: 100%; }
-  .cg { width: 100%; max-height: 40vh; object-fit: cover; border-radius: 12px; display: block; }
-  .story p, .story-text p {
+  .cg-screen {
+    display: flex; justify-content: center; align-items: center;
+    min-height: calc(100vh - 260px);
+  }
+  .cg-full-wrap { width: 100%; text-align: center; }
+  .cg-full {
+    max-width: 100%; width: auto; max-height: 62vh; object-fit: contain;
+    border-radius: 14px; display: inline-block;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+  }
+  .story p {
     font-size: 15.5px; line-height: 2; color: var(--ink); margin: 0 0 14px;
   }
   @media (min-width: 880px) {
-    #stage.has-cg { max-width: 900px; }
-    .story-with-cg { flex-direction: row; align-items: flex-start; gap: 32px; }
-    .cg-wrap { flex: 0 0 340px; position: sticky; top: 24px; }
-    .cg { max-height: 74vh; }
-    .story-text { flex: 1; min-width: 0; max-width: 540px; }
-    #stage.has-cg .end-eyebrow, #stage.has-cg .end-title, #stage.has-cg .divider,
-    #stage.has-cg .judgment-card {
-      max-width: 540px; margin-left: auto; margin-right: auto;
-    }
-    #stage.has-cg .action-bar { max-width: 540px; }
+    .cg-full { max-height: 78vh; }
   }
   .fade-in { animation: fadeIn 0.5s ease both; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -174,7 +172,6 @@
 </style>
 </head>
 <body>
-
 <div id="stage">
   <div class="top-bar">
     <button id="backBtn" class="back-btn" onclick="goBack()" hidden>← 返回上一步</button>
@@ -400,19 +397,14 @@ var FLAVOR_LINES = {
 };
 var FLAVOR_ORDER = ['c1', 'c2', 'c4', 'c5'];
 
-function renderStory(paragraphs, opts) {
-  opts = opts || {};
-  var stageEl = document.getElementById('stage');
-  if (stageEl) stageEl.classList.toggle('has-cg', !!opts.image);
+function renderStory(paragraphs) {
   var textHtml = '';
   for (var i = 0; i < paragraphs.length; i++) textHtml += '<p>' + paragraphs[i] + '</p>';
-  if (opts.image) {
-    return '<div class="story-with-cg fade-in">' +
-      '<div class="cg-wrap"><img class="cg" src="' + opts.image + '" alt="CG" /></div>' +
-      '<div class="story-text">' + textHtml + '</div>' +
-    '</div>';
-  }
   return '<div class="story fade-in">' + textHtml + '</div>';
+}
+
+function renderCGScreen(image) {
+  return '<div class="cg-screen fade-in"><div class="cg-full-wrap"><img class="cg-full" src="' + image + '" alt="CG" /></div></div>';
 }
 
 var MUSIC_CUES = { s0: 'calm', s1b: 'romantic', report: 'calm' };
@@ -422,6 +414,8 @@ function renderCurrent() {
   else attemptPlay();
   if (current === 'report') {
     renderReport();
+  } else if (current.indexOf('endcg:') === 0) {
+    renderEndingCG(current.slice(6));
   } else if (current.indexOf('end:') === 0) {
     renderEnding(current.slice(4));
   } else {
@@ -453,13 +447,20 @@ function restart() {
 function showEnding(key) {
   state.ending = key;
   navStack.push(current);
-  current = 'end:' + key;
+  current = 'endcg:' + key;
   renderCurrent();
+}
+
+function renderEndingCG(key) {
+  var e = ENDINGS[key];
+  var html = renderCGScreen(e.cg);
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'end:' + key + '\')">继续</button></div></div>';
+  document.getElementById('app').innerHTML = html;
 }
 
 function renderEnding(key) {
   var e = ENDINGS[key];
-  var html = renderStory(e.body, { image: e.cg });
+  var html = renderStory(e.body);
   html += '<div class="end-eyebrow">结局</div>';
   html += '<div class="end-title ' + e.tone + '">' + e.title + '</div>';
   html += '<div class="divider">政的心声</div>';
@@ -818,6 +819,12 @@ SCREENS.s2c1 = function () {
     "他却已经笑着收起了那点认真，转身取来榻边一柄秦剑，递到你面前。"
   ];
   var html = renderStory(p);
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2c2_cg\')">继续</button></div></div>';
+  return html;
+};
+
+SCREENS.s2c2_cg = function () {
+  var html = renderCGScreen(CG.jiejian);
   html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2c2\')">继续</button></div></div>';
   return html;
 };
@@ -837,7 +844,7 @@ SCREENS.s2c2 = function () {
     "又一下。",
     "和你的乱在一起。"
   ];
-  var html = renderStory(p, { image: CG.jiejian });
+  var html = renderStory(p);
   html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2c2b\')">继续</button></div></div>';
   return html;
 };
@@ -1136,6 +1143,5 @@ SCREENS.s6 = function () {
 
 renderCurrent();
 </script>
-
 </body>
 </html>
