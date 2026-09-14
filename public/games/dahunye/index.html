@@ -74,9 +74,23 @@
   }
   .mute-btn:hover { color: var(--bronze); }
   html, body, #stage, #app { overflow-anchor: none; }
-  .cg { width: 100%; border-radius: 12px; margin: 6px 0 20px; display: block; }
-  .story p {
+  .story-with-cg { display: flex; flex-direction: column; gap: 14px; }
+  .cg-wrap { width: 100%; }
+  .cg { width: 100%; max-height: 40vh; object-fit: cover; border-radius: 12px; display: block; }
+  .story p, .story-text p {
     font-size: 15.5px; line-height: 2; color: var(--ink); margin: 0 0 14px;
+  }
+  @media (min-width: 880px) {
+    #stage.has-cg { max-width: 900px; }
+    .story-with-cg { flex-direction: row; align-items: flex-start; gap: 32px; }
+    .cg-wrap { flex: 0 0 340px; position: sticky; top: 24px; }
+    .cg { max-height: 74vh; }
+    .story-text { flex: 1; min-width: 0; max-width: 540px; }
+    #stage.has-cg .end-eyebrow, #stage.has-cg .end-title, #stage.has-cg .divider,
+    #stage.has-cg .judgment-card, #stage.has-cg .cta-row,
+    #stage.has-cg .choices, #stage.has-cg .choice-prompt {
+      max-width: 540px; margin-left: auto; margin-right: auto;
+    }
   }
   .fade-in { animation: fadeIn 0.5s ease both; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -128,13 +142,10 @@
   .quiz-choice { font-size: 13px; color: var(--ink-soft); margin: 0 0 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--surface-line); }
   .quiz-poem { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin: 0 0 4px; line-height: 1.6; }
   .quiz-poem-src { font-size: 11.5px; color: var(--ink-faint); margin: 0 0 10px; }
-  .quiz-body { font-size: 13.3px; line-height: 1.85; color: var(--ink); margin: 0; }
-
-  .side-notes { display: flex; flex-direction: column; gap: 10px; }
-  .side-note {
-    font-size: 12.8px; line-height: 1.75; color: var(--ink-soft); margin: 0;
-    padding: 10px 14px; background: var(--surface); border-left: 2px solid var(--bronze);
-    border-radius: 0 8px 8px 0;
+  .quiz-body { font-size: 13.3px; line-height: 1.85; color: var(--ink); margin: 0 0 12px; }
+  .quiz-extra {
+    font-size: 12.8px; line-height: 1.8; color: var(--ink-soft); margin: 0;
+    padding-top: 12px; border-top: 1px dashed var(--surface-line);
   }
 
   .divination { margin-top: 20px; background: var(--surface); border: 1px solid var(--surface-line); border-radius: 14px; padding: 18px; text-align: center; }
@@ -363,31 +374,37 @@ function recordChoice(key, value) { state.choices[key] = value; }
 
 var FLAVOR_LINES = {
   c1: {
-    A: "面对“怕吗”，你选择先说不怕——你习惯先稳住场面，再决定要不要卸防。",
-    B: "面对“怕吗”，你没有硬撑——遇到让你安心的人，你愿意先松口认怂。"
+    A: "连“怕吗”这种小事你都要嘴硬到底——这是你的第一层伪装。",
+    B: "连“怕不怕”这种小事你都没舍得撒谎——看来诚实是刻在你骨子里的。"
   },
   c2: {
-    A: "被他打趣，你选择接着闹——比起冷场，你更怕气氛僵住。",
-    B: "被他打趣，你选择了害羞——你的俏皮藏得比较深，得靠人一点点撬开。"
+    A: "被打趣就接着闹——你骨子里就是闲不住、爱撩拨的那型。",
+    B: "一被打趣就红了耳朵——嘴硬和害羞，在你身上永远同时在线。"
   },
   c4: {
-    A: "烛火将灭时，你没怎么犹豫——身体比脑子先一步说了实话。",
-    B: "烛火将灭时，你先僵住了——警惕心，比心动来得快一点。"
+    A: "关键时刻从不含糊——你的身体，比脑子诚实。",
+    B: "关键时刻先僵住——你的警惕心，永远比心动快半拍。"
   },
   c5: {
-    A: "面对追问，你选择先坦白——宁愿自己担着风险，也不想让他从别人嘴里知道真相。",
-    B: "面对追问，你选择先搪塞——你习惯把麻烦留给自己扛，不想让他因你为难。"
+    A: "宁愿自己扛下风险也要先说实话——你从来不等被拆穿。",
+    B: "第一反应是搪塞——比起说清楚，你更习惯自己把麻烦扛下来。"
   }
 };
 var FLAVOR_ORDER = ['c1', 'c2', 'c4', 'c5'];
 
 function renderStory(paragraphs, opts) {
   opts = opts || {};
-  var html = '<div class="story fade-in">';
-  if (opts.image) html += '<img class="cg" src="' + opts.image + '" alt="CG" />';
-  for (var i = 0; i < paragraphs.length; i++) html += '<p>' + paragraphs[i] + '</p>';
-  html += '</div>';
-  return html;
+  var stageEl = document.getElementById('stage');
+  if (stageEl) stageEl.classList.toggle('has-cg', !!opts.image);
+  var textHtml = '';
+  for (var i = 0; i < paragraphs.length; i++) textHtml += '<p>' + paragraphs[i] + '</p>';
+  if (opts.image) {
+    return '<div class="story-with-cg fade-in">' +
+      '<div class="cg-wrap"><img class="cg" src="' + opts.image + '" alt="CG" /></div>' +
+      '<div class="story-text">' + textHtml + '</div>' +
+    '</div>';
+  }
+  return '<div class="story fade-in">' + textHtml + '</div>';
 }
 
 var MUSIC_CUES = { s0: 'calm', s1b: 'romantic', report: 'calm' };
@@ -462,7 +479,6 @@ function renderReport() {
   html += '<div class="quiz-poem">「' + variant.poem + '」</div>';
   html += '<div class="quiz-poem-src">' + variant.poemSrc + '</div>';
   html += '<p class="quiz-body">' + variant.body + '</p>';
-  html += '</div>';
 
   var sideNotes = [];
   for (var i = 0; i < FLAVOR_ORDER.length; i++) {
@@ -471,13 +487,9 @@ function renderReport() {
     if (v && FLAVOR_LINES[k] && FLAVOR_LINES[k][v]) sideNotes.push(FLAVOR_LINES[k][v]);
   }
   if (sideNotes.length) {
-    html += '<div class="divider">沿途的你</div>';
-    html += '<div class="side-notes">';
-    for (var j = 0; j < sideNotes.length; j++) {
-      html += '<p class="side-note">' + sideNotes[j] + '</p>';
-    }
-    html += '</div>';
+    html += '<p class="quiz-extra">往前翻一翻你的选择——' + sideNotes.join(' ') + '</p>';
   }
+  html += '</div>';
 
   html += '<div class="divination">';
   html += '<div class="div-title">你的今日占卜</div>';
