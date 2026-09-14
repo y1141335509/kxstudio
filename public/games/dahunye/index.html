@@ -175,7 +175,7 @@
 <div id="stage">
   <div class="top-bar">
     <button id="backBtn" class="back-btn" onclick="goBack()" hidden>← 返回上一步</button>
-    <div class="chapter-tag" id="chapterTag">第二章 · 大婚之夜</div>
+    <div class="chapter-tag" id="chapterTag">大婚之夜</div>
     <button id="muteBtn" class="mute-btn" onclick="toggleMute()">🔊</button>
   </div>
   <div id="app"></div>
@@ -393,7 +393,7 @@ var FLAVOR_LINES = {
   },
   c5: {
     A: "宁愿自己扛下风险也要先说实话——你从来不等被拆穿。",
-    B: "第一反应是搪塞——比起说清楚，你更习惯自己把麻烦扛下来。"
+    B: "第一反应是搪塞——比起把话说开，你更习惯把心事自己咽下去。"
   }
 };
 var FLAVOR_ORDER = ['c1', 'c2', 'c4', 'c5'];
@@ -613,8 +613,8 @@ SCREENS.c1b = function () {
   var p = [
     "他又解了一会儿，仍没有解开，索性收回手，望着你笑。",
     "“不怕？”",
-    "你故意提高音量：“不怕。”",
-    "“好。”他点点头，继续去解缨结。",
+    "你顿了顿，没有立刻答话。",
+    "“好。”他点点头，也不追问，转而继续去解缨结。",
     "你下意识地握住他的手。",
     "缓缓地，你低声说：“有点……”"
   ];
@@ -1084,7 +1084,7 @@ SCREENS.s4b2 = function () {
     "来日方长。"
   ];
   var html = renderStory(p);
-  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s5\')">继续（第三章）</button></div></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s5\')">继续</button></div></div>';
   return html;
 };
 
