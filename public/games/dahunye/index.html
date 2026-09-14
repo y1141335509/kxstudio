@@ -57,6 +57,14 @@
     background: var(--bg); padding: 28px 22px 60px;
     display: flex; flex-direction: column;
   }
+  #app { padding-bottom: 150px; }
+  .action-bar {
+    position: fixed; left: 50%; bottom: 0; transform: translateX(-50%);
+    width: 100%; max-width: 520px; box-sizing: border-box;
+    background: linear-gradient(to top, var(--bg) 70%, rgba(0,0,0,0));
+    padding: 24px 22px calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 20;
+  }
   .top-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-bottom: 18px; }
   .chapter-tag {
     font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase;
@@ -87,17 +95,17 @@
     .cg { max-height: 74vh; }
     .story-text { flex: 1; min-width: 0; max-width: 540px; }
     #stage.has-cg .end-eyebrow, #stage.has-cg .end-title, #stage.has-cg .divider,
-    #stage.has-cg .judgment-card, #stage.has-cg .cta-row,
-    #stage.has-cg .choices, #stage.has-cg .choice-prompt {
+    #stage.has-cg .judgment-card {
       max-width: 540px; margin-left: auto; margin-right: auto;
     }
+    #stage.has-cg .action-bar { max-width: 540px; }
   }
   .fade-in { animation: fadeIn 0.5s ease both; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   @media (prefers-reduced-motion: reduce) { .fade-in { animation: none; } }
 
-  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
-  .choice-prompt { font-size: 13px; color: var(--ink-faint); margin: 4px 0 4px; text-align: center; }
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .choice-prompt { font-size: 13px; color: var(--ink-faint); margin: 0; text-align: center; }
   .choice-btn {
     padding: 14px 18px; border-radius: 12px; border: 1px solid var(--surface-line);
     background: var(--surface); color: var(--ink); font-family: var(--font-body);
@@ -124,7 +132,7 @@
   .judgment-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; display: block; }
   .judgment-text { font-family: var(--font-display); font-size: 13.5px; line-height: 1.85; color: var(--ink-soft); }
 
-  .cta-row { margin-top: 22px; display: flex; justify-content: center; }
+  .cta-row { display: flex; justify-content: center; }
   .cta { padding: 12px 26px; border-radius: 10px; border: 1px solid var(--frost); background: transparent; color: var(--frost); font-family: var(--font-body); font-size: 13.5px; font-weight: 600; cursor: pointer; }
   .cta.he-cta { border-color: var(--vermillion); color: var(--vermillion); }
   .cta:hover { background: var(--frost-soft); }
@@ -161,7 +169,7 @@
   .div-reading { font-size: 12.8px; color: var(--ink); line-height: 1.8; margin: 10px 0 14px; text-align: left; padding-top: 10px; border-top: 1px dashed var(--surface-line); }
   .draw-btn { padding: 10px 22px; border-radius: 999px; border: 1px solid var(--bronze); background: var(--bronze-soft); color: var(--bronze); font-family: var(--font-body); font-weight: 600; font-size: 13px; cursor: pointer; }
 
-  .restart-row { margin-top: 24px; text-align: center; }
+  .restart-row { text-align: center; }
   .restart-btn { padding: 10px 24px; border-radius: 999px; border: 1px solid var(--ink-faint); background: transparent; color: var(--ink-soft); font-size: 12.5px; cursor: pointer; }
 </style>
 </head>
@@ -456,7 +464,7 @@ function renderEnding(key) {
   html += '<div class="end-title ' + e.tone + '">' + e.title + '</div>';
   html += '<div class="divider">政的心声</div>';
   html += '<div class="judgment-card"><div class="judgment-avatar"><img src="' + CG.cuoguo + '" alt="政" /></div><div class="judgment-text">“' + e.judgment + '”</div></div>';
-  html += '<div class="cta-row"><button class="cta ' + (e.tone === 'he' ? 'he-cta' : '') + '" onclick="showReport()">查看你的结局报告 →</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="cta ' + (e.tone === 'he' ? 'he-cta' : '') + '" onclick="showReport()">查看你的结局报告 →</button></div></div>';
   document.getElementById('app').innerHTML = html;
 }
 
@@ -499,7 +507,7 @@ function renderReport() {
   html += '<div id="resultView" hidden><div class="div-symbol" id="hexSymbol">䷉</div><div class="div-name" id="hexName">履卦</div><div class="div-line" id="hexJudge"></div><div class="div-reading" id="hexReading"></div><button class="draw-btn" onclick="resetDivination()">再摇一次</button></div>';
   html += '</div>';
 
-  html += '<div class="restart-row"><button class="restart-btn" onclick="restart()">重新开始</button></div>';
+  html += '<div class="action-bar"><div class="restart-row"><button class="restart-btn" onclick="restart()">重新开始</button></div></div>';
   html += '</div>';
   document.getElementById('app').innerHTML = html;
 }
@@ -535,39 +543,39 @@ SCREENS.s0 = function () {
     "抑或，他本就是个铁石心肠的冰冷男人？",
     "夕阳渐渐沉下去。",
     "祭告、拜礼，一切都算顺利。余光中，太后的神色很是欣慰，你本该松一口气。",
-    "可越接近寝殿，你的心跳得越快。",
-    "接下来是共牢而食，合卺而饮。",
-    "然后，便是婚仪中的最后一件事。",
-    "也是你最没有把握的一件事。",
-    "临行前，傅姆教过你许多遍。她甚至用木箸在席上画出大致的形态，告诉你，这本该是一件快乐的事，只是最初或许会有些痛。",
-    "“完婚是完婚，册后另有大典。”她还特意叮嘱，“你且宽心，今日只成夫妻之礼。”",
-    "可你依然莫名地担心。"
+    "可越接近寝殿，你的心跳得越快。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s0b\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s0b\')">继续</button></div></div>';
   return html;
 };
 
 SCREENS.s0b = function () {
   var p = [
+    "接下来是共牢而食，合卺而饮。",
+    "然后，便是婚仪中的最后一件事。",
+    "也是你最没有把握的一件事。",
+    "临行前，傅姆教过你许多遍。她甚至用木箸在席上画出大致的形态，告诉你，这本该是一件快乐的事，只是最初或许会有些痛。",
+    "“完婚是完婚，册后另有大典。”她还特意叮嘱，“你且宽心，今日只成夫妻之礼。”",
+    "可你依然莫名地担心。",
     "冕旒被侍者取下后，你第一次在这样近的地方，真正看清政的脸。",
     "鼻梁高挺，眼形狭长。",
     "他比你记忆中更高。",
-    "起身向你走来时，身影几乎覆住了整间寝殿。",
-    "门在他身后缓缓合拢，也遮住了门外宫人的目光。",
-    "“后面的礼，”他问，“你学过吗？”",
-    "“学过。”",
-    "“学过什么？”",
-    "“就是……后面的礼。”",
-    "他被你逗笑。"
+    "起身向你走来时，身影几乎覆住了整间寝殿。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s0c\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s0c\')">继续</button></div></div>';
   return html;
 };
 
 SCREENS.s0c = function () {
   var p = [
+    "门在他身后缓缓合拢，也遮住了门外宫人的目光。",
+    "“后面的礼，”他问，“你学过吗？”",
+    "“学过。”",
+    "“学过什么？”",
+    "“就是……后面的礼。”",
+    "他被你逗笑。",
     "“那接下来，该做什么？”",
     "明明知道，却偏要你说。",
     "“依婚仪，最后一枚缨结，应由王亲手解下。”",
@@ -578,11 +586,11 @@ SCREENS.s0c = function () {
     "“怕吗？”"
   ];
   var html = renderStory(p);
-  html += '<div class="choice-prompt">面对这句询问，你如何回答</div>';
+  html += '<div class="action-bar"><div class="choice-prompt">面对这句询问，你如何回答</div>';
   html += '<div class="choices">';
   html += '<button class="choice-btn" onclick="recordChoice(\'c1\',\'A\');goto(\'c1a\')">摇头，回一句“不怕”</button>';
   html += '<button class="choice-btn" onclick="recordChoice(\'c1\',\'B\');goto(\'c1b\')">顿了顿，如实相告</button>';
-  html += '</div>';
+  html += '</div></div>';
   return html;
 };
 
@@ -595,7 +603,7 @@ SCREENS.c1a = function () {
     "“秦律里没写。”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s1\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s1\')">继续</button></div></div>';
   return html;
 };
 
@@ -609,7 +617,7 @@ SCREENS.c1b = function () {
     "缓缓地，你低声说：“有点……”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s1\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s1\')">继续</button></div></div>';
   return html;
 };
 
@@ -624,7 +632,7 @@ SCREENS.s1 = function () {
     "“这里还绣了一只楚地的凤鸟。像吗？”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s1a2\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s1a2\')">继续</button></div></div>';
   return html;
 };
 
@@ -639,7 +647,7 @@ SCREENS.s1a2 = function () {
     "“秦人也好看。”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s1b\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s1b\')">继续</button></div></div>';
   return html;
 };
 
@@ -655,11 +663,11 @@ SCREENS.s1b = function () {
     "“你们楚人身上的气味，都这样香吗？”他问。"
   ];
   var html = renderStory(p);
-  html += '<div class="choice-prompt">面对这句调侃，你怎么接</div>';
+  html += '<div class="action-bar"><div class="choice-prompt">面对这句调侃，你怎么接</div>';
   html += '<div class="choices">';
   html += '<button class="choice-btn" onclick="recordChoice(\'c2\',\'A\');goto(\'c2a\')">继续逗他</button>';
   html += '<button class="choice-btn" onclick="recordChoice(\'c2\',\'B\');goto(\'c2b\')">小声嘟囔，耳根先红了</button>';
-  html += '</div>';
+  html += '</div></div>';
   return html;
 };
 
@@ -676,7 +684,7 @@ SCREENS.c2a = function () {
     "“那还是算了。”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2\')">继续</button></div></div>';
   return html;
 };
 
@@ -693,7 +701,7 @@ SCREENS.c2b = function () {
     "“我看在眼里，便够了。”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2\')">继续</button></div></div>';
   return html;
 };
 
@@ -712,7 +720,7 @@ SCREENS.s2 = function () {
     "“嗯。”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2a2\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2a2\')">继续</button></div></div>';
   return html;
 };
 
@@ -732,7 +740,7 @@ SCREENS.s2a2 = function () {
     "“哦。”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2b1\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2b1\')">继续</button></div></div>';
   return html;
 };
 
@@ -747,7 +755,7 @@ SCREENS.s2b1 = function () {
     "过了许久，才缓缓开口。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2b1b\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2b1b\')">继续</button></div></div>';
   return html;
 };
 
@@ -762,7 +770,7 @@ SCREENS.s2b1b = function () {
     "“傅姆是不是只教了你‘不知道’？”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2b2\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2b2\')">继续</button></div></div>';
   return html;
 };
 
@@ -779,7 +787,7 @@ SCREENS.s2b2 = function () {
     "“不是。”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2b2b\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2b2b\')">继续</button></div></div>';
   return html;
 };
 
@@ -796,7 +804,7 @@ SCREENS.s2b2b = function () {
     "“喜欢。”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2c1\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2c1\')">继续</button></div></div>';
   return html;
 };
 
@@ -810,7 +818,7 @@ SCREENS.s2c1 = function () {
     "他却已经笑着收起了那点认真，转身取来榻边一柄秦剑，递到你面前。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2c2\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2c2\')">继续</button></div></div>';
   return html;
 };
 
@@ -830,7 +838,7 @@ SCREENS.s2c2 = function () {
     "和你的乱在一起。"
   ];
   var html = renderStory(p, { image: CG.jiejian });
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s2c2b\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s2c2b\')">继续</button></div></div>';
   return html;
 };
 
@@ -846,11 +854,11 @@ SCREENS.s2c2b = function () {
     "“我问的是你。”"
   ];
   var html = renderStory(p);
-  html += '<div class="choice-prompt">接剑那一刻，你如何回答这句追问</div>';
+  html += '<div class="action-bar"><div class="choice-prompt">接剑那一刻，你如何回答这句追问</div>';
   html += '<div class="choices">';
   html += '<button class="choice-btn" onclick="recordChoice(\'c3\',\'B\');showEnding(\'xinsi\')">“……都一样吧。”</button>';
   html += '<button class="choice-btn" onclick="recordChoice(\'c3\',\'A\');goto(\'c3a\')">“我不喜欢杀戮。”</button>';
-  html += '</div>';
+  html += '</div></div>';
   return html;
 };
 
@@ -858,7 +866,15 @@ SCREENS.c3a = function () {
   var p = [
     "你沉默了片刻，想起入秦途中见过的那个百姓。",
     "他靠在路旁，袖管空荡荡的。旁人说，他的手臂是在战场上失去的。",
-    "“我不喜欢杀戮。”你轻声说，“可有些事，大约也由不得人。你给我的，我说不上真心喜欢——但我信，你给我的时候，是把我当自己人在给。”",
+    "“我不喜欢杀戮。”你轻声说，“可有些事，大约也由不得人。你给我的，我说不上真心喜欢——但我信，你给我的时候，是把我当自己人在给。”"
+  ];
+  var html = renderStory(p);
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a1b\')">继续</button></div></div>';
+  return html;
+};
+
+SCREENS.c3a1b = function () {
+  var p = [
     "政没有回答。",
     "他将剑从你手中接过去，横放在叠好的楚服旁。",
     "漆黑的剑鞘压住一角朱红的衣料。",
@@ -869,7 +885,7 @@ SCREENS.c3a = function () {
     "有些话，大婚之夜不必说尽。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a2\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a2\')">继续</button></div></div>';
   return html;
 };
 
@@ -886,7 +902,7 @@ SCREENS.c3a2 = function () {
     "直到这时，你才看见他背后的中衣已经湿了一片。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a2b\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a2b\')">继续</button></div></div>';
   return html;
 };
 
@@ -903,7 +919,7 @@ SCREENS.c3a2b = function () {
     "“没什么不敢的。想笑便笑吧。为人夫者，本该使妻子欢喜。”"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a3\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a3\')">继续</button></div></div>';
   return html;
 };
 
@@ -921,7 +937,7 @@ SCREENS.c3a3 = function () {
     "只有烛火在门缝下投出一道细长的影子。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a3b\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a3b\')">继续</button></div></div>';
   return html;
 };
 
@@ -939,7 +955,7 @@ SCREENS.c3a3b = function () {
     "“别怕。”他低声说。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a4\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a4\')">继续</button></div></div>';
   return html;
 };
 
@@ -955,7 +971,7 @@ SCREENS.c3a4 = function () {
     "他又唤了一声。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a4b\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'c3a4b\')">继续</button></div></div>';
   return html;
 };
 
@@ -971,11 +987,11 @@ SCREENS.c3a4b = function () {
     "起初只是轻轻试探，后来他像是不受控制了似的。"
   ];
   var html = renderStory(p);
-  html += '<div class="choice-prompt">烛火将灭，你如何回应</div>';
+  html += '<div class="action-bar"><div class="choice-prompt">烛火将灭，你如何回应</div>';
   html += '<div class="choices">';
   html += '<button class="choice-btn" onclick="recordChoice(\'c4\',\'A\');goto(\'c4a\')">顺着他主动回应</button>';
   html += '<button class="choice-btn" onclick="recordChoice(\'c4\',\'B\');goto(\'c4b\')">下意识僵住</button>';
-  html += '</div>';
+  html += '</div></div>';
   return html;
 };
 
@@ -993,7 +1009,7 @@ SCREENS.c4a = function () {
     "他直起身，替你理好鬓边散落的发丝。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s4\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s4\')">继续</button></div></div>';
   return html;
 };
 
@@ -1010,7 +1026,7 @@ SCREENS.c4b = function () {
     "你这才后知后觉地松了口气，那口气却松得有点心虚——好像辜负了他方才的等候。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s4\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s4\')">继续</button></div></div>';
   return html;
 };
 
@@ -1028,7 +1044,7 @@ SCREENS.s4 = function () {
     "可听见“来日方长”四个字，心里却忽然生出一点说不清的遗憾。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s4b\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s4b\')">继续</button></div></div>';
   return html;
 };
 
@@ -1044,7 +1060,7 @@ SCREENS.s4b = function () {
     "你怔了怔。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s4b2\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s4b2\')">继续</button></div></div>';
   return html;
 };
 
@@ -1060,7 +1076,7 @@ SCREENS.s4b2 = function () {
     "来日方长。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s5\')">继续（第三章）</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s5\')">继续（第三章）</button></div></div>';
   return html;
 };
 
@@ -1072,11 +1088,11 @@ SCREENS.s5 = function () {
     "“这是你让人送来的？”"
   ];
   var html = renderStory(p);
-  html += '<div class="choice-prompt">面对这个询问</div>';
+  html += '<div class="action-bar"><div class="choice-prompt">面对这个询问</div>';
   html += '<div class="choices">';
   html += '<button class="choice-btn" onclick="recordChoice(\'c5\',\'A\');goto(\'c5a\')">坦白是自己安排的</button>';
   html += '<button class="choice-btn" onclick="recordChoice(\'c5\',\'B\');goto(\'c5b\')">推说是巧合</button>';
-  html += '</div>';
+  html += '</div></div>';
   return html;
 };
 
@@ -1088,7 +1104,7 @@ SCREENS.c5a = function () {
     "不是问罪，是把你划进了“自己人”的商量范围。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s6\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s6\')">继续</button></div></div>';
   return html;
 };
 
@@ -1099,7 +1115,7 @@ SCREENS.c5b = function () {
     "你后来才明白，他没拆穿，也没再给你第二次机会主动开口。"
   ];
   var html = renderStory(p);
-  html += '<div class="cta-row"><button class="continue-btn" onclick="goto(\'s6\')">继续</button></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s6\')">继续</button></div></div>';
   return html;
 };
 
@@ -1110,11 +1126,11 @@ SCREENS.s6 = function () {
     "他的声音很轻，眼睛却一眨不眨地看着你。"
   ];
   var html = renderStory(p);
-  html += '<div class="choice-prompt">终局分岔：你如何回应这句质问</div>';
+  html += '<div class="action-bar"><div class="choice-prompt">终局分岔：你如何回应这句质问</div>';
   html += '<div class="choices">';
   html += '<button class="choice-btn" onclick="recordChoice(\'c6\',\'A\');showEnding(\'zhishaocike\')">坦诚面对：“想过。”</button>';
   html += '<button class="choice-btn" onclick="recordChoice(\'c6\',\'B\');showEnding(\'cuoguo\')">否认到底：“没有。”</button>';
-  html += '</div>';
+  html += '</div></div>';
   return html;
 };
 
