@@ -245,7 +245,8 @@ var CG = {
   jiejian: "cg1-jiejian.png",
   xinsi: "cg2-xinsi.png",
   cuoguo: "cg3-cuoguo.png",
-  zhishaocike: "cg4-zhishaocike.png"
+  zhishaocike: "cg4-zhishaocike.png",
+  shenxun: "cg5-shenxun.png"
 };
 
 var hexagrams = [
@@ -1111,7 +1112,7 @@ SCREENS.c5a = function () {
     "不是问罪，是把你划进了“自己人”的商量范围。"
   ];
   var html = renderStory(p);
-  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s6\')">继续</button></div></div>';
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s6_cg\')">继续</button></div></div>';
   return html;
 };
 
@@ -1122,6 +1123,12 @@ SCREENS.c5b = function () {
     "你后来才明白，他没拆穿，也没再给你第二次机会主动开口。"
   ];
   var html = renderStory(p);
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s6_cg\')">继续</button></div></div>';
+  return html;
+};
+
+SCREENS.s6_cg = function () {
+  var html = renderCGScreen(CG.shenxun);
   html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s6\')">继续</button></div></div>';
   return html;
 };
