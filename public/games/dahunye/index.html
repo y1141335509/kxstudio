@@ -175,7 +175,7 @@
   .div-reading { font-size: 12.8px; color: var(--ink); line-height: 1.8; margin: 10px 0 14px; text-align: left; padding-top: 10px; border-top: 1px dashed var(--surface-line); }
   .draw-btn { padding: 10px 22px; border-radius: 999px; border: 1px solid var(--bronze); background: var(--bronze-soft); color: var(--bronze); font-family: var(--font-body); font-weight: 600; font-size: 13px; cursor: pointer; }
 
-  .restart-row { text-align: center; }
+  .restart-row { text-align: center; margin-top: 28px; }
   .restart-btn { padding: 10px 24px; border-radius: 999px; border: 1px solid var(--ink-faint); background: transparent; color: var(--ink-soft); font-size: 12.5px; cursor: pointer; }
 </style>
 </head>
@@ -523,7 +523,7 @@ function renderReport() {
   html += '<div id="resultView" hidden><div class="div-symbol" id="hexSymbol">䷉</div><div class="div-name" id="hexName">履卦</div><div class="div-line" id="hexJudge"></div><div class="div-reading" id="hexReading"></div><button class="draw-btn" onclick="resetDivination()">再摇一次</button></div>';
   html += '</div>';
 
-  html += '<div class="action-bar"><div class="restart-row"><button class="restart-btn" onclick="restart()">重新开始</button></div></div>';
+  html += '<div class="restart-row"><button class="restart-btn" onclick="restart()">重新开始</button></div>';
   html += '</div>';
   document.getElementById('app').innerHTML = html;
 }
@@ -1130,8 +1130,7 @@ SCREENS.c5a = function () {
   var p = [
     "“是我让人送的。”你说，“我知道这样会惹人非议，可我不想楚国在你面前，只有和亲这一点用处。”",
     "政看着你，久久没说话，末了只说了一句：",
-    "“以后这样的事，先说给我听。”",
-    "不是问罪，是把你划进了“自己人”的商量范围。"
+    "“以后这样的事，先说给我听。”"
   ];
   var html = renderStory(p);
   html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s6_cg\')">继续</button></div></div>';
