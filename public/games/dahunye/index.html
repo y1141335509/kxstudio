@@ -65,7 +65,7 @@
     background: var(--bg); padding: 28px 22px 60px;
     display: flex; flex-direction: column;
   }
-  #app { padding-bottom: 150px; }
+  #app { padding-bottom: 260px; }
   .action-bar {
     position: fixed; left: 50%; bottom: 0; transform: translateX(-50%);
     width: 100%; max-width: 520px; box-sizing: border-box;
@@ -593,7 +593,15 @@ SCREENS.s0c = function () {
     "“就是……后面的礼。”",
     "他被你逗笑。",
     "“那接下来，该做什么？”",
-    "明明知道，却偏要你说。",
+    "明明知道，却偏要你说。"
+  ];
+  var html = renderStory(p);
+  html += '<div class="action-bar"><div class="cta-row"><button class="continue-btn" onclick="goto(\'s0c2\')">继续</button></div></div>';
+  return html;
+};
+
+SCREENS.s0c2 = function () {
+  var p = [
     "“依婚仪，最后一枚缨结，应由王亲手解下。”",
     "你努力让自己的声音听起来不那么颤。",
     "“好。”",
