@@ -386,6 +386,26 @@ var current = 's0';
 
 function ga(name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} }
 
+// Funnel tracking: which screen each player reaches, and where they leave.
+var T0 = Date.now();
+var screensSeen = 0;
+function secs() { return Math.round((Date.now() - T0) / 1000); }
+function trackScreen() {
+  screensSeen++;
+  ga('screen_view_game', { game_id: 'dahunye', screen_id: current, screen_depth: screensSeen, seconds: secs() });
+}
+var lastLeaveScreen = null;
+function trackLeave() {
+  if (lastLeaveScreen === current) return;
+  lastLeaveScreen = current;
+  ga('leave', { game_id: 'dahunye', screen_id: current, screen_depth: screensSeen, seconds: secs(), transport_type: 'beacon' });
+}
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'hidden') trackLeave();
+  else lastLeaveScreen = null;
+});
+window.addEventListener('pagehide', trackLeave);
+
 function recordChoice(key, value) {
   state.choices[key] = value;
   ga('choice_click', { game_id: 'dahunye', choice_key: key, choice_value: value });
@@ -437,6 +457,7 @@ function renderCurrent() {
   }
   document.getElementById('backBtn').hidden = navStack.length === 0;
   scrollTop();
+  trackScreen();
 }
 
 function goto(id) {
@@ -452,6 +473,7 @@ function goBack() {
 }
 
 function restart() {
+  ga('restart', { game_id: 'dahunye', seconds: secs() });
   navStack = [];
   current = 's0';
   state.choices = {};
