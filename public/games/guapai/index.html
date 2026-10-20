@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>六十四卦牌</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+/* Layout: a drawing table. Left, one tarot-proportioned card (back to face on draw); right, the reading.
+   Below, the eight natural images that build every picture, then all 64 cards. */
+:root{
+  --bg:#e6ede8; --fg:#16262a; --muted:#4d6064; --line:#bccac3; --panel:#f1f6f2;
+  --accent:#85601a; --on-accent:#ffffff;
+  --card-bg:#eef2ec; --card-ink:#1b2a2e;
+  --back-bg:#123238; --back-gold:#c9a24a;
+  --serif:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d191e; --fg:#e3ebe7; --muted:#9bb0b1; --line:#27404a; --panel:#142329;
+    --accent:#d6a94f; --on-accent:#1a1408; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d191e; --fg:#e3ebe7; --muted:#9bb0b1; --line:#27404a; --panel:#142329;
+  --accent:#d6a94f; --on-accent:#1a1408; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--serif); font-size:16px; line-height:1.7;
+  padding-block:40px 64px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap{max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:56px}
+h1,h2,h3,p{margin:0}
+.mast{display:flex; flex-direction:column; gap:10px}
+.mast h1{font-size:clamp(34px,6vw,52px); font-weight:700; letter-spacing:.18em; line-height:1.15}
+.mast p{color:var(--muted); max-width:36em; text-wrap:balance}
+
+/* stage */
+.stage{display:grid; grid-template-columns:minmax(240px,300px) minmax(0,1fr); gap:48px; align-items:start}
+.scene{position:relative; perspective:1200px; width:100%; max-width:300px; scroll-margin-top:24px}
+.scene::before,.scene::after{
+  content:""; position:absolute; inset:0; background:var(--back-bg); border:1px solid var(--back-gold);
+  border-radius:6px; z-index:0;
+}
+.scene::before{transform:rotate(-3.2deg) translate(-6px,3px); opacity:.85}
+.scene::after{transform:rotate(2.6deg) translate(7px,2px); opacity:.7}
+.flip{position:relative; z-index:1; aspect-ratio:3/4.4; transform-style:preserve-3d; transition:transform .8s cubic-bezier(.3,.7,.2,1)}
+.flip.is-flipped{transform:rotateY(180deg)}
+.flip.shuffling{animation:shuffle .75s ease-in-out}
+@keyframes shuffle{
+  0%{transform:translateX(0) rotate(0)} 20%{transform:translateX(-26px) rotate(-5deg)}
+  45%{transform:translateX(24px) rotate(4deg)} 70%{transform:translateX(-14px) rotate(-2deg)} 100%{transform:translateX(0) rotate(0)}
+}
+.side{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden}
+.side.front{transform:rotateY(180deg)}
+.side.back svg{display:block; width:100%; height:100%; border-radius:6px; box-shadow:0 14px 34px rgba(0,0,0,.28)}
+
+/* reading */
+.read{display:flex; flex-direction:column; gap:22px; min-width:0}
+.ask{display:flex; flex-direction:column; gap:8px}
+.ask label{font-size:13px; letter-spacing:.2em; color:var(--muted)}
+.ask-row{display:flex; gap:10px; flex-wrap:wrap}
+.ask input{
+  flex:1 1 220px; min-width:0; font:inherit; font-size:16px; color:var(--fg); background:var(--panel);
+  border:1px solid var(--line); border-radius:4px; padding:10px 12px;
+}
+.ask input::placeholder{color:var(--muted); opacity:.8}
+.btn{
+  font:inherit; font-weight:700; letter-spacing:.2em; padding:10px 26px; border:0; border-radius:4px; cursor:pointer;
+  background:var(--accent); color:var(--on-accent);
+}
+.btn:disabled{opacity:.55; cursor:default}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+.r-hint{color:var(--muted); max-width:34em}
+.r-out{display:flex; flex-direction:column; gap:18px; animation:rise .6s ease both}
+@keyframes rise{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+.r-head{display:flex; align-items:baseline; gap:16px; flex-wrap:wrap}
+.r-name{font-size:clamp(52px,9vw,76px); font-weight:700; line-height:1}
+.r-meta{display:flex; flex-direction:column; gap:2px}
+.r-no{font-family:var(--mono); font-size:13px; color:var(--muted); letter-spacing:.08em}
+.r-full{font-size:17px; letter-spacing:.1em}
+.r-tag{font-size:22px; font-weight:700; color:var(--accent); letter-spacing:.08em}
+.r-gua{border-left:2px solid var(--accent); padding:2px 0 2px 16px; display:flex; flex-direction:column; gap:2px}
+.r-gua .lbl{font-size:12px; letter-spacing:.3em; color:var(--muted)}
+.r-gua .txt{font-size:18px}
+.r-plain{max-width:34em; font-size:17px}
+.r-q{font-size:14px; color:var(--muted)}
+
+/* sections */
+.sec{display:flex; flex-direction:column; gap:18px}
+.sec-h{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:10px}
+.sec-h h2{font-size:22px; letter-spacing:.2em; font-weight:700}
+.sec-h p{font-size:14px; color:var(--muted)}
+
+/* eight images */
+.imgs{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px}
+.img-tile{display:flex; flex-direction:column; gap:8px; min-width:0}
+.img-tile .pic{border:1px solid var(--card-ink); line-height:0; background:var(--card-bg)}
+.img-tile .pic svg{width:100%; height:auto}
+.img-tile .cap{display:flex; align-items:center; gap:10px}
+.img-tile .cap svg{width:22px; flex:none; color:var(--fg)}
+.img-tile .cap span{font-size:15px; letter-spacing:.1em}
+
+/* card face */
+.card{
+  container-type:inline-size; position:relative; width:100%; aspect-ratio:3/4.4;
+  background:var(--card-bg); color:var(--card-ink); border:1px solid var(--card-ink); border-radius:6px;
+  padding:5cqw; display:flex; flex-direction:column; gap:3cqw; box-shadow:0 14px 34px rgba(0,0,0,.28);
+}
+.card::after{content:""; position:absolute; inset:2.2cqw; border:1px solid var(--card-ink); opacity:.3; border-radius:3px; pointer-events:none}
+.c-top{display:flex; justify-content:space-between; font-size:max(9px,4.6cqw); letter-spacing:.22em}
+.c-art{aspect-ratio:1; border:1px solid var(--card-ink); overflow:hidden; line-height:0}
+.c-art svg{width:100%; height:100%; display:block}
+.c-foot{flex:1; display:flex; align-items:center; gap:4.5cqw; min-height:0}
+.c-hex{width:14cqw; flex:none; color:var(--card-ink)}
+.c-hex svg{display:block; width:100%; height:auto}
+.c-title h3{font-size:15cqw; line-height:1; font-weight:700}
+.c-full{font-size:max(9px,4.8cqw); letter-spacing:.06em; margin-top:1.4cqw; display:flex; gap:2cqw; align-items:baseline; white-space:nowrap}
+.c-full .no{font-family:var(--mono); font-size:max(9px,4.4cqw); opacity:.7}
+.mini .c-top{display:none}
+
+/* gallery */
+.grid{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:16px}
+.mini{position:relative; transition:transform .2s}
+.mini .card{box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.mini:hover{transform:translateY(-4px)}
+.mini .hit{position:absolute; inset:0; width:100%; height:100%; background:none; border:0; padding:0; cursor:pointer; border-radius:6px}
+.mini.on .card{outline:2px solid var(--accent); outline-offset:3px}
+
+.note{font-size:13px; color:var(--muted); max-width:44em}
+
+@media (max-width:760px){
+  .stage{grid-template-columns:minmax(0,1fr); gap:36px; justify-items:center}
+  .read{width:100%}
+  .imgs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){
+  .flip{transition:none} .flip.shuffling{animation:none} .r-out{animation:none} .mini{transition:none}
+}
+</style>
+  <style>body{margin:0}img{max-width:100%}</style>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VCQEGLYTS2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VCQEGLYTS2');
+  </script>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <h1>六十四卦牌</h1>
+    <p>六十四张牌，每卦一张，每张一幅画。画面取自这一卦上下两个三爻卦各自的自然意象。心里想一件事，抽一张。</p>
+  </header>
+
+  <section class="stage" id="stage">
+    <div class="scene" id="scene">
+      <div class="flip" id="flip">
+        <div class="side back" id="backface"></div>
+        <div class="side front" id="front"></div>
+      </div>
+    </div>
+    <div class="read">
+      <div class="ask">
+        <label for="q">心里想着的事</label>
+        <div class="ask-row">
+          <input id="q" type="text" maxlength="80" placeholder="写下来或只在心里想，都可以" autocomplete="off">
+          <button class="btn" id="draw" type="button">抽一张</button>
+        </div>
+      </div>
+      <div id="reading" aria-live="polite">
+        <p class="r-hint">点“抽一张”，牌会洗开再翻面。每张牌有卦辞原文和一段现代说法。上卦的意象在画的上半幅，下卦的意象在下半幅。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h"><h2>八种意象</h2><p>六十四幅画都由这八个意象两两叠成</p></div>
+    <div class="imgs" id="imgs"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h"><h2>全部六十四张</h2><p>按《周易》通行次序排列，点一张直接翻开</p></div>
+    <ul class="grid" id="grid"></ul>
+  </section>
+
+  <p class="note">卦辞为《周易》原文。现代说法是对卦意的通俗概括，可以拿来想事，不能代替判断。</p>
+</div>
+
+<script>
+function ga(name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} }
+ga('start', { game_id: 'guapai' });
+/*DATA*/
+const T = {
+  qian:{n:'乾',nat:'天',lines:[1,1,1],wash:'#efe9d4',acc:'#c19a3a'},
+  dui:{n:'兑',nat:'泽',lines:[1,1,0],wash:'#dde9ee',acc:'#5b93a8'},
+  li:{n:'离',nat:'火',lines:[1,0,1],wash:'#f4dfd2',acc:'#c4452e'},
+  zhen:{n:'震',nat:'雷',lines:[1,0,0],wash:'#e5dff0',acc:'#7a5aa6'},
+  xun:{n:'巽',nat:'风',lines:[0,1,1],wash:'#dfece3',acc:'#4f9a74'},
+  kan:{n:'坎',nat:'水',lines:[0,1,0],wash:'#d6e0ec',acc:'#2f5d8c'},
+  gen:{n:'艮',nat:'山',lines:[0,0,1],wash:'#e0e4e0',acc:'#5f6e68'},
+  kun:{n:'坤',nat:'地',lines:[0,0,0],wash:'#e6dccb',acc:'#7b6347'}
+};
+const RAW = [
+['乾','qian','qian','元亨利贞。','全力向前','主动权在你手里，适合开局、立项、拿出魄力。势头越好，越要留意什么时候该收。'],
+['坤','kun','kun','元亨，利牝马之贞。君子有攸往，先迷后得主。','先顺后主','先配合，别抢跑。现在适合打基础、守本分、跟着已有的方向走，等路看清了再主导。'],
+['屯','kan','zhen','元亨利贞，勿用有攸往，利建侯。','开头最难','新事物刚出来，乱是正常的。先找几个靠得住的人搭起班子，暂时不要大动作。'],
+['蒙','gen','kan','亨。匪我求童蒙，童蒙求我。初筮告，再三渎，渎则不告。利贞。','还没弄明白','你或对方对情况还看不清。把问题问具体，向真正懂的人请教，同一个问题别反复问。'],
+['需','kan','qian','有孚，光亨，贞吉。利涉大川。','等，并做好准备','危险在前面，时机还没到。把吃饭睡觉、资源储备都安排好，条件成熟再过河。'],
+['讼','qian','kan','有孚，窒。惕中吉。终凶。利见大人，不利涉大川。','争执见好就收','有理也别把官司打到底，打到底多半两败俱伤。找一个中间人，或者先让一步。'],
+['师','kun','kan','贞，丈人吉，无咎。','队伍与纪律','事情要靠一支队伍完成，需要一位让人服气的带头人。名正言顺，赏罚分明。'],
+['比','kan','kun','吉。原筮，元永贞，无咎。不宁方来，后夫凶。','亲近与结盟','找到真正志同道合的人，早点靠近。观望到最后才表态的人，通常吃亏。'],
+['小畜','xun','qian','亨。密云不雨，自我西郊。','蓄势未发','云厚但没下雨，想做的事现在只能小成。多积累细节，等风向变。'],
+['履','qian','dui','履虎尾，不咥人，亨。','踩着虎尾走','面对危险的人或场合，态度端正、守规矩、小心行事，反而能平安通过。'],
+['泰','kun','qian','小往大来，吉亨。','上下相通','内外顺畅，资源和人心都在流动，适合推进事情。顺境不会一直在，现在就把根基打牢。'],
+['否','qian','kun','否之匪人，不利君子贞，大往小来。','闭塞不通','上下不沟通，小人当道。收起锋芒，保存实力，这个阶段不必硬争。'],
+['同人','qian','li','同人于野，亨。利涉大川，利君子贞。','公开结盟','在开阔处找同路人，目标说清楚，不搞小圈子。联合起来才能做大事。'],
+['大有','li','qian','元亨。','丰收与担当','资源和成果都很多。关键是谦逊、愿意分享，否则容易盛极而衰。'],
+['谦','kun','gen','亨，君子有终。','谦逊得福','位置高而不炫耀，是最稳的策略。今天吃的亏，之后会以别的形式补回来。'],
+['豫','zhen','kun','利建侯行师。','顺势而动','人心已经被调动起来，适合推进计划。小心高兴过头，忘了防备。'],
+['随','dui','zhen','元亨利贞，无咎。','选对跟谁走','跟随正确的人或趋势会有收获，同时要保住自己的判断。盲从不行。'],
+['蛊','gen','xun','元亨，利涉大川。先甲三日，后甲三日。','整治积弊','前人留下的烂摊子到了该清理的时候。动手前先查清原因，动手后留出观察期。'],
+['临','kun','dui','元亨利贞。至于八月有凶。','主动靠近','你正处在上升的位置，要主动贴近下面的人。这个势头不会一直有，别拖。'],
+['观','xun','kun','盥而不荐，有孚颙若。','先看再动','先把情况看清楚，也让别人看到你的诚意。心意到位比排场重要。'],
+['噬嗑','li','zhen','亨。利用狱。','咬断阻碍','有东西卡在中间，必须咬开。按规则处理，公正，不留情面。'],
+['贲','gen','li','亨。小利有攸往。','修饰与包装','外表可以提升，小事可办。别让装饰盖过内容。'],
+['剥','gen','kun','不利有攸往。','层层剥落','外部形势不利，一点点被侵蚀。此时少动作，静守，等转机。'],
+['复','kun','zhen','亨。出入无疾，朋来无咎。反复其道，七日来复，利有攸往。','一阳来复','低谷已过，转机刚冒头。节奏放慢，别指望一口气恢复。'],
+['无妄','qian','zhen','元亨利贞。其匪正有眚，不利有攸往。','不抱妄想','按本心做事，不投机。不正当的收益会带来麻烦。'],
+['大畜','gen','qian','利贞。不家食吉，利涉大川。','积蓄大力','把知识、能力和资源存足。机会出现时，你要有本事走出去做大事。'],
+['颐','gen','zhen','贞吉。观颐，自求口实。','养与言','看你吃什么、说什么。养身也养心，自己的口实自己负责。'],
+['大过','dui','xun','栋桡，利有攸往，亨。','承重过度','房梁快被压弯了。局面特殊，需要非常规手段，但先给自己找好出口。'],
+['坎','kan','kan','习坎，有孚，维心亨，行有尚。','重重险陷','连续的难关。保持诚信和内心稳定，一关一关过，别慌。'],
+['离','li','li','利贞，亨。畜牝牛，吉。','依附与光明','依附对的人或事才能发光。态度柔顺、温和，得吉。'],
+['咸','dui','gen','亨，利贞，取女吉。','彼此感应','感情或合作靠双方真诚的感受触发。别用手段，让它自然发生。'],
+['恒','zhen','xun','亨，无咎，利贞，利有攸往。','持之以恒','长久靠持续做同一件对的事。方向对了，就别频繁换赛道。'],
+['遁','qian','gen','亨，小利贞。','适时退让','对方势头正强，退一步是明智，算不上认输。小事可守，大事暂避。'],
+['大壮','zhen','qian','利贞。','力量充沛','你很强，也最容易莽撞。越强越要守规矩，别用力过猛。'],
+['晋','li','kun','康侯用锡马蕃庶，昼日三接。','稳步上升','像太阳升起，被看见、被赏识。保持光明正大，一天里也能被多次接见。'],
+['明夷','kun','li','利艰贞。','光明受伤','环境对你不友好。把才华先收起来，保住自己，等天亮。'],
+['家人','xun','li','利女贞。','先治内部','家里、团队内部的秩序决定外部的成败。角色清楚，规矩明确。'],
+['睽','li','dui','小事吉。','彼此背离','意见不合，各走各路。大事难成，小事还能合作。'],
+['蹇','kan','gen','利西南，不利东北。利见大人，贞吉。','前有险阻','路难走，别硬闯。换到有援助的方向，找有能力的人帮你。'],
+['解','zhen','kan','利西南。无所往，其来复吉。有攸往，夙吉。','困局松动','紧张开始松动。遗留的问题尽快清理，别拖到再次发酵。'],
+['损','gen','dui','有孚，元吉，无咎，可贞，利有攸往。曷之用？二簋可用享。','减损与诚意','先舍后得。少一点形式，多一点诚意，减掉真正多余的东西。'],
+['益','xun','zhen','利有攸往，利涉大川。','增益','上面愿意帮助下面。趁有利的时候做大事，迈出一步。'],
+['夬','dui','qian','扬于王庭，孚号有厉。告自邑，不利即戎，利有攸往。','果断决断','要公开说清楚、做决定。有诚意地讲明，但先别动武。'],
+['姤','qian','xun','女壮，勿用取女。','不期而遇','突然出现的人或事，势头很强。先别急着把关系定死。'],
+['萃','dui','kun','亨。王假有庙，利见大人，亨，利贞。用大牲吉，利有攸往。','聚集','人和资源正在汇聚。要有共同的目标和仪式感，也要防止人多出乱。'],
+['升','kun','xun','元亨，用见大人，勿恤，南征吉。','缓慢上升','像树从地里长高。一步一步积累，面见有权力的人也不用担心。'],
+['困','dui','kan','亨，贞大人吉，无咎。有言不信。','困窘','处境窘迫，说的话没人信。守住内心，少辩解，等转机。'],
+['井','kan','xun','改邑不改井，无丧无得，往来井井。汔至亦未繘井，羸其瓶，凶。','根基与供给','井不会变，来来往往的人都要汲水。要紧的是维护根本资源，别在快打上来时摔了瓶子。'],
+['革','dui','li','己日乃孚，元亨利贞，悔亡。','变革','要改变，但要等人们信任你的时候。时机和信任比勇气更关键。'],
+['鼎','li','xun','元吉，亨。','更新与成事','旧的破除后，建立新的秩序，是吉。聚集贤才，养出人才。'],
+['震','zhen','zhen','亨。震来虩虩，笑言哑哑。震惊百里，不丧匕鬯。','惊雷与警醒','突如其来的冲击让人害怕，但稳住的人最后还能谈笑。'],
+['艮','gen','gen','艮其背，不获其身，行其庭，不见其人，无咎。','该停就停','不被外界牵动，把注意力收回到自己身上。'],
+['渐','xun','gen','女归吉，利贞。','循序渐进','像鸿雁一步步靠岸。慢，但稳，婚事和事业都适合循序渐进。'],
+['归妹','zhen','dui','征凶，无攸利。','名分不稳','关系或行动缺少正当的基础。冲动往前走没有好处。'],
+['丰','zhen','li','亨，王假之，勿忧，宜日中。','盛大如正午','正处于顶点。不用忧虑，但要想到正午之后太阳会偏西。'],
+['旅','li','gen','小亨，旅贞吉。','异乡作客','在外作客，要低调、守规矩。小有成就就好。'],
+['巽','xun','xun','小亨，利有攸往，利见大人。','渗透与顺从','像风一样慢慢渗透。适合反复沟通、反复申明，去见有分量的人。'],
+['兑','dui','dui','亨，利贞。','喜悦交流','愉快、真诚的交谈会带来好处。别只图高兴而丢了原则。'],
+['涣','xun','kan','亨。王假有庙，利涉大川，利贞。','涣散与重聚','人心散了，用共同的信念重新聚起来。共识比命令管用。'],
+['节','kan','dui','亨。苦节不可贞。','节制','有度才长久。过度克制难以持续，要找到自己能坚持的边界。'],
+['中孚','xun','dui','豚鱼吉，利涉大川，利贞。','内心诚信','真诚能打动最难打动的对象。靠内在的信，话术没用。'],
+['小过','zhen','gen','亨，利贞。可小事，不可大事。飞鸟遗之音，不宜上，宜下，大吉。','小事可过','做小事可以，做大事不行。飞鸟留下的声音向下沉，宜低不宜高。'],
+['既济','kan','li','亨小，利贞。初吉终乱。','已成与隐患','事情刚完成，开头好，容易末尾乱。成功之后更要防备。'],
+['未济','li','kan','亨，小狐汔济，濡其尾，无攸利。','尚未完成','还差最后一步。小狐狸过河时湿了尾巴，别在终点前松劲。']
+];
+/*ENDDATA*/
+
+const DATA = RAW.map((r,i)=>({no:i+1,name:r[0],up:r[1],lo:r[2],gua:r[3],tag:r[4],plain:r[5]}));
+const PURE = {qian:'乾为天',kun:'坤为地',kan:'坎为水',li:'离为火',zhen:'震为雷',gen:'艮为山',xun:'巽为风',dui:'兑为泽'};
+const fullName = h => h.up===h.lo ? PURE[h.up] : T[h.up].nat + T[h.lo].nat + h.name;
+const cn = n => { const d='零一二三四五六七八九'; if(n<=10) return n===10?'十':d[n]; if(n<20) return '十'+d[n-10]; const t=Math.floor(n/10), o=n%10; return d[t]+'十'+(o?d[o]:''); };
+const hexLines = h => T[h.lo].lines.concat(T[h.up].lines); // bottom to top
+
+const S = 'stroke="#1b2a2e" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"';
+
+/* one motif per trigram, drawn in a 200 x 100 band */
+const M = {
+  qian: t => {
+    let r = '';
+    for(let i=0;i<16;i++){
+      const a=i*Math.PI/8, c=Math.cos(a), s=Math.sin(a);
+      r += `<line x1="${(100+44*c).toFixed(1)}" y1="${(52+44*s).toFixed(1)}" x2="${(100+56*c).toFixed(1)}" y2="${(52+56*s).toFixed(1)}" ${S}/>`;
+    }
+    return r + `<circle cx="100" cy="52" r="36" fill="none" ${S} opacity=".45"/><circle cx="100" cy="52" r="27" fill="${t.acc}" ${S}/><circle cx="92" cy="44" r="9" fill="#fff" opacity=".35"/>`;
+  },
+  kun: t => {
+    const a='M0 58 C30 44 60 44 100 56 S170 66 200 52', b='M0 72 C40 58 70 62 110 72 S170 80 200 68', c='M0 86 C50 76 90 82 130 88 S180 90 200 82';
+    return `<path d="${a} L200 100 L0 100Z" fill="${t.acc}" opacity=".3"/><path d="${b} L200 100 L0 100Z" fill="${t.acc}" opacity=".55"/><path d="${c} L200 100 L0 100Z" fill="${t.acc}"/>`
+      + `<path d="${a}" fill="none" ${S}/><path d="${b}" fill="none" ${S}/><path d="${c}" fill="none" ${S}/>`
+      + `<g ${S} opacity=".6"><path d="M22 66 h18"/><path d="M130 62 h22"/><path d="M60 80 h20"/><path d="M150 88 h26"/><path d="M96 94 h18"/></g>`;
+  },
+  zhen: t => `<g fill="#fff" opacity=".75"><ellipse cx="70" cy="16" rx="30" ry="10"/><ellipse cx="108" cy="12" rx="34" ry="11"/><ellipse cx="142" cy="18" rx="26" ry="9"/></g>`
+      + `<polygon points="112,14 84,56 101,56 90,96 130,44 110,44 124,14" fill="${t.acc}" ${S}/>`
+      + `<path d="M56 56 Q46 68 56 80" fill="none" ${S} opacity=".6"/><path d="M44 50 Q30 68 44 86" fill="none" ${S} opacity=".4"/>`
+      + `<path d="M146 56 Q156 68 146 80" fill="none" ${S} opacity=".6"/><path d="M158 50 Q172 68 158 86" fill="none" ${S} opacity=".4"/>`,
+  xun: t => `<path d="M8 34 C50 12 86 56 128 32 S184 24 196 40" fill="none" stroke="${t.acc}" stroke-width="3.2" stroke-linecap="round"/>`
+      + `<path d="M196 40 c-6 8 -18 4 -14 -4 c3 -5 10 -2 8 2" fill="none" ${S}/>`
+      + `<path d="M14 58 C60 40 100 80 148 58 S186 52 194 62" fill="none" ${S}/>`
+      + `<path d="M6 82 C50 66 92 98 136 80 S176 74 190 84" fill="none" stroke="${t.acc}" stroke-width="3.2" stroke-linecap="round"/>`
+      + `<g fill="${t.acc}" ${S}><ellipse cx="64" cy="22" rx="9" ry="4" transform="rotate(-25 64 22)"/><ellipse cx="150" cy="46" rx="9" ry="4" transform="rotate(20 150 46)"/><ellipse cx="40" cy="72" rx="9" ry="4" transform="rotate(-15 40 72)"/><ellipse cx="164" cy="92" rx="8" ry="3.6" transform="rotate(25 164 92)"/></g>`,
+  kan: t => {
+    const w = y => `M0 ${y}` + ' q12.5 -9 25 0 t25 0'.repeat(1) + ' t25 0'.repeat(7);
+    return `<path d="${w(56)} L200 100 L0 100Z" fill="${t.acc}" opacity=".35"/>`
+      + `<path d="M100 8 C100 8 84 28 84 36 a16 16 0 0 0 32 0 C116 28 100 8 100 8Z" fill="${t.acc}" ${S}/>`
+      + `<path d="M93 38 a8 8 0 0 0 6 7" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>`
+      + `<path d="${w(56)}" fill="none" ${S}/><path d="${w(72)}" fill="none" ${S} opacity=".7"/><path d="${w(88)}" fill="none" ${S} opacity=".5"/>`;
+  },
+  li: t => `<path d="M100 6 C112 30 134 40 130 66 C128 86 114 96 100 96 C86 96 72 86 70 66 C66 48 84 42 88 24 C92 32 96 24 100 6Z" fill="${t.acc}" ${S}/>`
+      + `<path d="M100 44 C108 58 118 62 116 76 C115 88 108 94 100 94 C92 94 85 88 84 76 C83 64 94 60 100 44Z" fill="#f2b84b" ${S}/>`
+      + `<g fill="${t.acc}"><circle cx="52" cy="40" r="2.6"/><circle cx="150" cy="30" r="2.2"/><circle cx="162" cy="62" r="3"/><circle cx="40" cy="76" r="2"/></g>`,
+  gen: t => `<path d="M0 98 L46 44 L92 98Z" fill="${t.acc}" opacity=".45" ${S}/><path d="M108 98 L156 40 L200 98Z" fill="${t.acc}" opacity=".45" ${S}/>`
+      + `<path d="M40 98 L100 14 L160 98Z" fill="${t.acc}" ${S}/>`
+      + `<path d="M100 14 L116 38 L106 34 L100 42 L92 34 L84 38Z" fill="#fff" opacity=".9" ${S}/>`
+      + `<path d="M62 98 L86 66 M138 98 L118 70" fill="none" ${S} opacity=".5"/>`,
+  dui: t => `<rect y="52" width="200" height="48" fill="${t.acc}" opacity=".3"/>`
+      + `<circle cx="100" cy="26" r="12" fill="#f7f3e0" ${S}/><ellipse cx="100" cy="64" rx="14" ry="3.5" fill="#f7f3e0" opacity=".85"/>`
+      + `<ellipse cx="100" cy="76" rx="70" ry="14" fill="none" ${S} opacity=".7"/><ellipse cx="100" cy="76" rx="46" ry="9" fill="none" ${S} opacity=".8"/><ellipse cx="100" cy="76" rx="22" ry="4.6" fill="none" ${S}/>`
+      + `<g ${S}><path d="M22 98 L27 54"/><path d="M34 98 L36 62"/><path d="M178 98 L173 54"/><path d="M166 98 L164 62"/></g>`
+      + `<g fill="${t.acc}" ${S}><ellipse cx="27" cy="48" rx="2.6" ry="7"/><ellipse cx="173" cy="48" rx="2.6" ry="7"/></g>`
+};
+
+function band(key, y, id){
+  const t = T[key];
+  return `<g transform="translate(0 ${y})"><clipPath id="${id}"><rect width="200" height="100"/></clipPath><g clip-path="url(#${id})"><rect width="200" height="100" fill="${t.wash}"/>${M[key](t)}</g></g>`;
+}
+let uidN = 0;
+const uid = () => 'k' + (++uidN);
+
+function art(h){
+  const id = uid();
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${T[h.up].nat}在上，${T[h.lo].nat}在下">${band(h.up,0,id+'u')}${band(h.lo,100,id+'l')}<line x1="0" y1="100" x2="200" y2="100" ${S}/></svg>`;
+}
+function bars(lines){
+  const n = lines.length, bh = 4, gap = 3.2, H = n*bh + (n-1)*gap;
+  let r = '';
+  lines.forEach((v,i)=>{
+    const y = (n-1-i)*(bh+gap);
+    r += v ? `<rect x="0" y="${y}" width="40" height="${bh}" fill="currentColor"/>`
+           : `<rect x="0" y="${y}" width="16" height="${bh}" fill="currentColor"/><rect x="24" y="${y}" width="16" height="${bh}" fill="currentColor"/>`;
+  });
+  return `<svg viewBox="0 0 40 ${H}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${r}</svg>`;
+}
+function cardFace(h){
+  return `<article class="card"><div class="c-top"><span>第${cn(h.no)}卦</span><span>${T[h.up].nat} · ${T[h.lo].nat}</span></div>`
+    + `<div class="c-art">${art(h)}</div>`
+    + `<div class="c-foot"><div class="c-hex">${bars(hexLines(h))}</div><div class="c-title"><h3>${h.name}</h3><p class="c-full"><span class="no">${String(h.no).padStart(2,'0')}</span><span>${fullName(h)}</span></p></div></div></article>`;
+}
+function cardBack(){
+  const g = 'var(--back-gold)';
+  const order = ['qian','xun','kan','gen','kun','zhen','li','dui'];
+  let tri = '';
+  order.forEach((k,i)=>{
+    let s = '';
+    T[k].lines.forEach((v,j)=>{
+      const y = -64 - j*6.5;
+      s += v ? `<rect x="-10" y="${y}" width="20" height="2.8" fill="${g}"/>`
+             : `<rect x="-10" y="${y}" width="8" height="2.8" fill="${g}"/><rect x="2" y="${y}" width="8" height="2.8" fill="${g}"/>`;
+    });
+    tri += `<g transform="translate(100 150) rotate(${i*45})">${s}</g>`;
+  });
+  let ticks = '';
+  for(let i=0;i<64;i++){ ticks += `<line x1="100" y1="${150-52}" x2="100" y2="${150-(i%8===0?47:49.5)}" stroke="${g}" stroke-width=".8" transform="rotate(${i*5.625} 100 150)" opacity=".7"/>`; }
+  return `<svg viewBox="0 0 200 293" xmlns="http://www.w3.org/2000/svg" aria-label="卡牌背面">`
+    + `<rect width="200" height="293" rx="6" fill="var(--back-bg)"/>`
+    + `<rect x="7" y="7" width="186" height="279" rx="3" fill="none" stroke="${g}" stroke-width="1.2"/>`
+    + `<rect x="12" y="12" width="176" height="269" rx="2" fill="none" stroke="${g}" stroke-width=".6" opacity=".6"/>`
+    + `<circle cx="100" cy="150" r="52" fill="none" stroke="${g}" stroke-width="1"/>` + ticks
+    + `<circle cx="100" cy="150" r="90" fill="none" stroke="${g}" stroke-width=".6" opacity=".5"/>`
+    + tri
+    + `<g transform="translate(100 150)"><circle r="24" fill="${g}"/><path d="M0 -24 A24 24 0 0 1 0 24 A12 12 0 0 1 0 0 A12 12 0 0 0 0 -24Z" fill="var(--back-bg)"/><circle cx="0" cy="-12" r="3.2" fill="var(--back-bg)" transform="scale(1)"/><circle cx="0" cy="12" r="3.2" fill="${g}"/></g>`
+    + `<g fill="${g}" opacity=".75"><circle cx="30" cy="38" r="2"/><circle cx="170" cy="38" r="2"/><circle cx="30" cy="255" r="2"/><circle cx="170" cy="255" r="2"/></g>`
+    + `</svg>`;
+}
+
+/* build page */
+const $ = s => document.querySelector(s);
+$('#backface').innerHTML = cardBack();
+
+['qian','dui','li','zhen','xun','kan','gen','kun'].forEach(k=>{
+  const t = T[k], id = uid();
+  const d = document.createElement('div');
+  d.className = 'img-tile';
+  d.innerHTML = `<div class="pic"><svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${band(k,0,id)}</svg></div><div class="cap">${bars(t.lines)}<span>${t.n} · ${t.nat}</span></div>`;
+  $('#imgs').appendChild(d);
+});
+
+const grid = $('#grid');
+DATA.forEach((h,i)=>{
+  const li = document.createElement('li');
+  li.className = 'mini'; li.dataset.i = i;
+  li.innerHTML = cardFace(h) + `<button class="hit" type="button" aria-label="翻开第${h.no}卦 ${fullName(h)}"></button>`;
+  li.querySelector('.hit').addEventListener('click', ()=>reveal(i,false,true));
+  grid.appendChild(li);
+});
+
+const flip = $('#flip'), front = $('#front'), reading = $('#reading'), btn = $('#draw'), qIn = $('#q');
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+let busy = false, last = -1;
+
+function showReading(h, q){
+  const out = document.createElement('div');
+  out.className = 'r-out';
+  const mk = (tag, cls, text) => { const e = document.createElement(tag); if(cls) e.className = cls; e.textContent = text; return e; };
+  const head = document.createElement('div'); head.className = 'r-head';
+  head.appendChild(mk('h2','r-name',h.name));
+  const meta = document.createElement('div'); meta.className = 'r-meta';
+  meta.appendChild(mk('span','r-no',`${String(h.no).padStart(2,'0')} / 64`));
+  meta.appendChild(mk('span','r-full',`${fullName(h)} · ${T[h.up].n}上${T[h.lo].n}下`));
+  head.appendChild(meta);
+  out.appendChild(head);
+  out.appendChild(mk('p','r-tag',h.tag));
+  const g = document.createElement('blockquote'); g.className = 'r-gua'; g.style.margin = '0';
+  g.appendChild(mk('span','lbl','卦辞')); g.appendChild(mk('span','txt',h.gua));
+  out.appendChild(g);
+  out.appendChild(mk('p','r-plain',h.plain));
+  if(q) out.appendChild(mk('p','r-q','你问的是：' + q));
+  reading.replaceChildren(out);
+}
+
+async function reveal(i, animate, scroll){
+  if(busy) return;
+  ga(animate ? 'draw' : 'card_open', { game_id: 'guapai', hexagram: DATA[i].name, has_question: !!qIn.value.trim() });
+  busy = true; btn.disabled = true; last = i;
+  if(scroll && !reduce) $('#scene').scrollIntoView({behavior:'smooth', block:'center'});
+  if(flip.classList.contains('is-flipped')){ flip.classList.remove('is-flipped'); await wait(520); }
+  if(animate){ flip.classList.add('shuffling'); await wait(780); flip.classList.remove('shuffling'); }
+  front.innerHTML = cardFace(DATA[i]);
+  showReading(DATA[i], qIn.value.trim());
+  flip.classList.add('is-flipped');
+  document.querySelectorAll('.mini.on').forEach(e=>e.classList.remove('on'));
+  grid.children[i].classList.add('on');
+  await wait(700);
+  btn.textContent = '再抽一张';
+  btn.disabled = false; busy = false;
+}
+function pick(){
+  let i;
+  do { i = crypto.getRandomValues(new Uint32Array(1))[0] % 64; } while(i === last);
+  return i;
+}
+btn.addEventListener('click', ()=>reveal(pick(), true, false));
+qIn.addEventListener('keydown', e=>{ if(e.key === 'Enter' && !busy) reveal(pick(), true, false); });
+</script>
+</body>
+</html>
