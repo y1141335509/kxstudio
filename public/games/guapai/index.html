@@ -37,6 +37,9 @@ body{
 }
 .wrap{max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:56px}
 h1,h2,h3,p{margin:0}
+.topnav{margin-bottom:-32px}
+.topnav a{font-size:14px; letter-spacing:.1em; color:var(--muted); text-decoration:none}
+.topnav a:hover{color:var(--accent)}
 .mast{display:flex; flex-direction:column; gap:10px}
 .mast h1{font-size:clamp(34px,6vw,52px); font-weight:700; letter-spacing:.18em; line-height:1.15}
 .mast p{color:var(--muted); max-width:36em; text-wrap:balance}
@@ -157,6 +160,7 @@ h1,h2,h3,p{margin:0}
 </head>
 <body>
 <div class="wrap">
+  <nav class="topnav"><a href="/games">← 返回游戏列表</a></nav>
   <header class="mast">
     <h1>六十四卦牌</h1>
     <p>六十四张牌，每卦一张，每张一幅画。画面取自这一卦上下两个三爻卦各自的自然意象。心里想一件事，抽一张。</p>
