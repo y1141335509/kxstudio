@@ -28,7 +28,7 @@ interface Character {
 
 
 // Mock data for countries and characters
-const countries = ['纸上秦', '与你的1001次初遇', '最后的战役', 'Others', ];
+const countries = ['纸上秦', '初创公司', '与你的1001次初遇', '最后的战役', 'Others', ];
 const characters = [
   {
     id: 14, name: '纸上秦', image: '/images/character-page/纸上秦CG.png',
@@ -105,6 +105,32 @@ const characters = [
     avatar: '/images/character-page/成蛟-avatar.png'
   },
   {
+    id: 19, name: '初创公司', image: '/images/character-page/初创公司.png',
+    country: '初创公司',
+    description: <Typography>
+      你创办了一家公司。<br />
+      四个人，四种「喜欢你」的方式。<br />
+      有人当众为你站台，<br />
+      有人在会上夸遍所有人，唯独不夸你。<br />
+      公司在长大，你也在。<br />
+      可不是每个人，都能陪你走到下一轮。
+    </Typography>,
+    avatar: '/images/character-page/初创公司-avatar.png'
+  },
+  {
+    id: 20, name: '白弈悬', image: '/images/character-page/白弈悬.png',
+    country: '初创公司',
+    description: <Typography>
+      初见时，他躺在椅子上，脚搁在桌角，<br />
+      像个周末下午晒太阳的退休老先生。<br />
+      「谁是 owner？」<br />
+      他替每个人安排好退路，把每件事写下来、标上版本号。<br />
+      唯独有一件事，他从来不写——<br />
+      那件事，只在他脑子里。
+    </Typography>,
+    avatar: '/images/character-page/白弈悬-avatar.png'
+  },
+  {
     id: 1, name: 'Silver（银）', image: '/images/character-page/Silver.png', country: 'Others',
     description: <Typography>
       Silver的童年因一次与父亲的严重冲突而留下了深刻的心理阴影，他被砍去一根手指，这一事件深刻地影响了他对世界的看法。
@@ -158,7 +184,7 @@ const characters = [
   },
   {
     id: 7, name: '陆泽（Calvin Lu）', image: '/images/character-page/陆泽.png',
-    country: 'Others', 
+    country: '初创公司', 
     description: <Typography>
       陆泽的少年时期因一次投资失败而被父亲严厉责罚，这段经历深深影响了他对自己价值的认知。他不得不亲手放弃对绘画的热爱，投身于一个充满算计与压力的商场世界。这一事件在他心中刻下了深深的烙印，使他对亲密关系和信任充满矛盾。
       尽管陆泽表面温润如玉，举止优雅，似乎是一个无可挑剔的绅士，但他内心深处却埋藏着一股压抑的孤独与脆弱。他的微笑是他的武器，亦是他的盔甲，而内心的不安与渴望则驱动着他不断追求成就与认可。
