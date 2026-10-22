@@ -137,7 +137,14 @@ function CarouselSection() {
   };
 
   return (
-    <Box sx={{ width: '100%', py: 4, marginTop: '2em', '.slick-dots li button:before': { fontSize: '16px', color: 'black' }, '.slick-dots li.slick-active button:before': { color: 'primary.main' } }}>
+    <Box sx={{ width: '100%', py: 4, marginTop: '2em', '.slick-dots li button:before': { fontSize: '16px', color: 'black' }, '.slick-dots li.slick-active button:before': { color: 'primary.main' },
+      // Phones: stack image above text instead of the fixed side-by-side desktop layout.
+      '@media (max-width: 900px)': {
+        '.slick-slide .MuiPaper-root': { flexDirection: 'column-reverse', height: 'auto !important', justifyContent: 'flex-start' },
+        '.slick-slide .MuiPaper-root > .MuiBox-root': { margin: '0 !important', width: '100%' },
+        '.slick-slide .MuiPaper-root img': { width: '100% !important', maxWidth: '375px', height: 'auto !important', margin: '0 auto 16px !important' },
+      },
+    }}>
       <Slider {...settings}>    {/* set up carousel configurations */}
 
         {/* First Carousel */}

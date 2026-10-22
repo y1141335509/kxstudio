@@ -316,7 +316,14 @@ function CarouselSection({ selectedCountry, selectedName, onSlideChange }: Carou
   };
 
   return (
-    <Box sx={{ marginBottom: '70px', width: '100%', py: 4, marginTop: '2em' }}>
+    <Box sx={{ marginBottom: '70px', width: '100%', py: 4, marginTop: '2em',
+      // Phones: stack image above text instead of the fixed side-by-side desktop layout.
+      '@media (max-width: 900px)': {
+        '.slick-slide .MuiPaper-root': { flexDirection: 'column-reverse', height: 'auto !important', justifyContent: 'flex-start' },
+        '.slick-slide .MuiPaper-root > .MuiBox-root': { margin: '0 !important', width: '100%' },
+        '.slick-slide .MuiPaper-root img': { width: '100% !important', maxWidth: '375px', height: 'auto !important', margin: '0 auto 16px !important' },
+      },
+    }}>
       <Slider key={selectedCountry} {...settings}>
         {filteredCharacters.length > 0 ? (
           filteredCharacters.map((character, index) => (
@@ -366,11 +373,18 @@ function CharacterPage() {
     setSearchParams({ work: selectedCountry, c: name }, { replace: true });
 
   return (
-    <Container maxWidth="lg" sx={{ display: 'flex' }}>
-      <Box sx={{ width: '20%', minWidth: '150px' }}>
+    <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
+      <Box sx={{
+        width: { xs: '100%', md: '20%' }, minWidth: { md: '150px' },
+        '@media (max-width: 900px)': {
+          '.MuiList-root': { display: 'flex', overflowX: 'auto', py: 0 },
+          '.MuiListItem-root': { width: 'auto', flexShrink: 0 },
+          '.MuiListItemText-root .MuiTypography-root': { whiteSpace: 'nowrap' },
+        },
+      }}>
         <SideNav selectedCountry={selectedCountry} onSelectCountry={handleSelectCountry} />
       </Box>
-      <Box sx={{ width: '80%' }}>
+      <Box sx={{ width: { xs: '100%', md: '80%' } }}>
         <CarouselSection selectedCountry={selectedCountry} selectedName={selectedName} onSlideChange={handleSlideChange} />
       </Box>
     </Container>
