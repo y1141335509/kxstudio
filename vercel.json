@@ -28,6 +28,15 @@
       ]
     },
     {
+      "source": "/games/watermelon/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/games/watermelon/index.html",
       "headers": [
         {
