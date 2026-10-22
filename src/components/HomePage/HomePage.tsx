@@ -126,6 +126,7 @@ function Subscription() {
 
 function CarouselSection() {
   const settings = {
+    draggable: false,
     dots: true,
     infinite: true,
     speed: 500,

@@ -15,6 +15,7 @@ const Qi = () => {
 
   // Settings for the carousel
   const settings = {
+    draggable: false,
     dots: true,
     infinite: true,
     speed: 300,

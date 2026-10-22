@@ -8,6 +8,7 @@ import theme from './theme';
 import './fonts/fonts.css'; // Import your custom font styles
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import './global.css';
 
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement!);

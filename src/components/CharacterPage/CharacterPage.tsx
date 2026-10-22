@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Container, Box, Typography, Paper, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Block, Topic } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import './CharacterPage.css';
 
 
 interface SideNavProps {
+  selectedCountry: string;
   onSelectCountry: (country: string) => void;
 }
 
 interface CarouselSectionProps {
   selectedCountry: string;
+  selectedName: string;
+  onSlideChange: (name: string) => void;
 }
 
 interface Character {
@@ -254,12 +257,12 @@ const characters = [
   // Add more characters as needed
 ];
 
-function SideNav({ onSelectCountry }: SideNavProps) {
+function SideNav({ selectedCountry, onSelectCountry }: SideNavProps) {
   return (
     <List>
       {countries.map((country) => (
         <ListItem key={country} disablePadding>
-          <ListItemButton onClick={() => onSelectCountry(country)}>
+          <ListItemButton selected={country === selectedCountry} onClick={() => onSelectCountry(country)}>
             <ListItemText primary={country} />
           </ListItemButton>
         </ListItem>
@@ -270,7 +273,7 @@ function SideNav({ onSelectCountry }: SideNavProps) {
 
 
 // Carousel Section
-function CarouselSection({ selectedCountry }: CarouselSectionProps) {
+function CarouselSection({ selectedCountry, selectedName, onSlideChange }: CarouselSectionProps) {
   // Filter characters based on selected country and ensure uniqueness
   const filteredCharacters = Array.from(
     new Map(
@@ -280,10 +283,15 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
     ).values()
   );
   
-  console.log('Filtered Characters:', filteredCharacters);
+  const initialIndex = Math.max(0, filteredCharacters.findIndex((char) => char.name === selectedName));
 
-  
   const settings = {
+    draggable: false,
+    initialSlide: initialIndex,
+    afterChange: (index: number) => {
+      const char = filteredCharacters[index];
+      if (char) onSlideChange(char.name);
+    },
     dots: true,
     infinite: filteredCharacters.length > 1,
     speed: 500,
@@ -309,7 +317,7 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
 
   return (
     <Box sx={{ marginBottom: '70px', width: '100%', py: 4, marginTop: '2em' }}>
-      <Slider {...settings}>
+      <Slider key={selectedCountry} {...settings}>
         {filteredCharacters.length > 0 ? (
           filteredCharacters.map((character, index) => (
             <div key={`${character.id}-${index}`}>
@@ -347,16 +355,23 @@ function CarouselSection({ selectedCountry }: CarouselSectionProps) {
 
 
 function CharacterPage() {
-  const [selectedCountry, setSelectedCountry] = useState<string>('纸上秦'); // Default selection
+  // The selected work and character live in the URL (?work=...&c=...) so each view can be linked and shared.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const workParam = searchParams.get('work') || '';
+  const selectedCountry = countries.includes(workParam) ? workParam : '纸上秦';
+  const selectedName = searchParams.get('c') || '';
 
+  const handleSelectCountry = (country: string) => setSearchParams({ work: country });
+  const handleSlideChange = (name: string) =>
+    setSearchParams({ work: selectedCountry, c: name }, { replace: true });
 
   return (
     <Container maxWidth="lg" sx={{ display: 'flex' }}>
       <Box sx={{ width: '20%', minWidth: '150px' }}>
-        <SideNav onSelectCountry={setSelectedCountry} />
+        <SideNav selectedCountry={selectedCountry} onSelectCountry={handleSelectCountry} />
       </Box>
       <Box sx={{ width: '80%' }}>
-        <CarouselSection selectedCountry={selectedCountry} />
+        <CarouselSection selectedCountry={selectedCountry} selectedName={selectedName} onSlideChange={handleSlideChange} />
       </Box>
     </Container>
   );
