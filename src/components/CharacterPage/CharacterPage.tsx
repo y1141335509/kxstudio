@@ -95,7 +95,7 @@ const characters = [
     avatar: '/images/character-page/丹-avatar.png'
   },
   {
-    id: 18, name: '成蛟', image: '/images/character-page/成蛟.png',
+    id: 18, name: '成蟜', image: '/images/character-page/成蟜.png',
     country: '纸上秦',
     description: <Typography>
       他看得很清楚，却从不说破。<br />
@@ -105,7 +105,7 @@ const characters = [
       他知道那些人不会放过他，<br />
       所以这一次，他选择先放过你。
     </Typography>,
-    avatar: '/images/character-page/成蛟-avatar.png'
+    avatar: '/images/character-page/成蟜-avatar.png'
   },
   {
     id: 19, name: '初创公司', image: '/images/character-page/初创公司.png',
