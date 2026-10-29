@@ -72,10 +72,10 @@ function Subscription() {
           </Box>
           {message && <Typography sx={{ mt: 2, color: message.includes("成功") ? "green" : "red" }}>{message}</Typography>}
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
-            <Button variant="outlined" color="primary" href="/character-page?work=%E7%BA%B8%E4%B8%8A%E7%A7%A6">
+            <Button variant="contained" color="primary" href="/character-page?work=%E7%BA%B8%E4%B8%8A%E7%A7%A6">
               去见他们 →
             </Button>
-            <Button variant="outlined" color="primary" href="/games/dahunye/">
+            <Button variant="contained" color="primary" href="/games/dahunye/">
               试玩「大婚之夜」→
             </Button>
           </Box>
