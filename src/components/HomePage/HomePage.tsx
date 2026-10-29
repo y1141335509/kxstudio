@@ -52,30 +52,29 @@ function Subscription() {
           <Typography variant="body1" sx={{ mb: 2 }}>
             走进一个故事，成为其中那个人——被看见、被记住，或者不得不做出选择。
           </Typography>
-          <Typography variant="h2" gutterBottom sx={{ fontSize: { xs: '1.1rem', md: '1.4rem' } }}>
-            留下你的邮箱，他来的时候，我会告诉你。
+          <Button variant="contained" color="primary" size="large" fullWidth href="/games/dahunye/" sx={{ py: 1.5, fontSize: '1.1rem' }}>
+            试玩「大婚之夜」→
+          </Button>
+          <Button variant="outlined" color="primary" fullWidth href="/character-page?work=%E7%BA%B8%E4%B8%8A%E7%A7%A6" sx={{ mt: 1 }}>
+            先去见见他们 →
+          </Button>
+          <Typography variant="body2" sx={{ mt: 4, color: 'text.secondary' }}>
+            还没准备好？留下邮箱或手机号，他来的时候，我会告诉你。
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
             <TextField
               label="邮箱或手机号"
               variant="outlined"
+              size="small"
               sx={{ flexGrow: 1, mr: 1 }}
               value={email}
               onChange={(e) => setEmail(e.target.value)} // 更新邮箱状态
             />
-            <Button variant="contained" color="primary" onClick={handleSubscribe}>
+            <Button variant="text" color="primary" onClick={handleSubscribe}>
               订阅
             </Button>
           </Box>
-          {message && <Typography sx={{ mt: 2, color: message.includes("成功") ? "green" : "red" }}>{message}</Typography>}
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
-            <Button variant="contained" color="primary" href="/character-page?work=%E7%BA%B8%E4%B8%8A%E7%A7%A6">
-              去见他们 →
-            </Button>
-            <Button variant="contained" color="primary" href="/games/dahunye/">
-              试玩「大婚之夜」→
-            </Button>
-          </Box>
+          {message && <Typography sx={{ mt: 1, color: message.includes("成功") ? "green" : "red" }}>{message}</Typography>}
         </Grid>
       </Grid>
     </Container>
