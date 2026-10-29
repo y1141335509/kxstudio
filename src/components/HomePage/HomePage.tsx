@@ -10,27 +10,24 @@ function Subscription() {
   const [email, setEmail] = useState(""); // 用于存储用户输入的邮箱
   const [message, setMessage] = useState(""); // 用于显示订阅结果消息
 
-  // Claude.ai
+  // 订阅写进 Google 表单「KXStudio 订阅」，回复自动进 Google Sheet「KXStudio 订阅名单」
   const handleSubscribe = async () => {
-    if (!email) {
-      setMessage("请输入有效的邮箱地址");
+    const contact = email.trim();
+    if (!/@/.test(contact) && !/^\+?[\d\s-]{7,}$/.test(contact)) {
+      setMessage("请输入有效的邮箱或手机号");
       return;
     }
-  
+
     try {
-      const apiUrl = window.location.origin + '/api/subscribe';
-      console.log('hehehe', apiUrl);
-      
-      const response = await fetch(apiUrl, {
+      const body = new URLSearchParams({ "entry.579516729": contact });
+      // Google 表单不允许跨域读取结果，no-cors 下只要请求发出去就算成功
+      await fetch("https://docs.google.com/forms/d/e/1FAIpQLScgHdyV5TfxXRqYUURTgg8ynIXPsHvvVwGKkXi-onM_e32y5Q/formResponse", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
+        mode: "no-cors",
+        body,
       });
-  
-      const result = await response.json();
-      setMessage(result.message);
+      setEmail("");
+      setMessage("订阅成功");
     } catch (error) {
       setMessage("订阅失败，请稍后重试");
     }
@@ -60,7 +57,7 @@ function Subscription() {
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
             <TextField
-              label="Enter your email"
+              label="邮箱或手机号"
               variant="outlined"
               sx={{ flexGrow: 1, mr: 1 }}
               value={email}
