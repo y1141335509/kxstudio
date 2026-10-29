@@ -43,20 +43,20 @@ function Subscription() {
           <Box
             component="img"
             sx={{ width: '90%', height: 'auto', maxWidth: '100%', maxHeight: '100%', borderRadius: 2 }}
-            alt="Descriptive Alt Text"
-            src="/images/homepage/homepage-pic1.png"
+            alt="纸上秦"
+            src="/images/character-page/纸上秦CG.png"
           />
         </Grid>
 
         <Grid item xs={12} md={6} component={Paper} elevation={0} sx={{ p: 2, bgcolor: 'secondary.main' }}>
-          <Typography variant="h1" gutterBottom>
-            欢迎来到 KXStudio
+          <Typography variant="h1" gutterBottom sx={{ fontSize: { xs: '1.6rem', md: '2.2rem' }, lineHeight: 1.4 }}>
+            或许他不认识你，但我可以让你们相遇。
           </Typography>
           <Typography variant="body1" sx={{ mb: 2 }}>
-            在这里，我们将带您以最酷的方式了解最前沿的动态。我们的宗旨是传递最前沿信息。让我们一起发掘每个角落的奇迹及妙用等等。
+            走进一个故事，成为其中那个人——被看见、被记住，或者不得不做出选择。
           </Typography>
-          <Typography variant="h2" gutterBottom>
-            立即订阅，共同探索!
+          <Typography variant="h2" gutterBottom sx={{ fontSize: { xs: '1.1rem', md: '1.4rem' } }}>
+            留下你的邮箱，他来的时候，我会告诉你。
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
             <TextField
@@ -71,6 +71,14 @@ function Subscription() {
             </Button>
           </Box>
           {message && <Typography sx={{ mt: 2, color: message.includes("成功") ? "green" : "red" }}>{message}</Typography>}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
+            <Button variant="outlined" color="primary" href="/character-page?work=%E7%BA%B8%E4%B8%8A%E7%A7%A6">
+              去见他们 →
+            </Button>
+            <Button variant="outlined" color="primary" href="/games/dahunye/">
+              试玩「大婚之夜」→
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </Container>
