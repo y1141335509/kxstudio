@@ -101,6 +101,21 @@
     border-radius: 14px; display: inline-block;
     box-shadow: 0 8px 30px rgba(0,0,0,0.18);
   }
+  .intro-wrap { position: relative; text-align: center; }
+  .intro-video {
+    width: 100%; max-height: 62vh; object-fit: cover; border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18); background: #000; display: block;
+  }
+  .intro-sound {
+    position: absolute; right: 10px; bottom: 10px; border: none; border-radius: 999px;
+    background: rgba(0,0,0,0.55); color: #fff; font-size: 12px; padding: 6px 12px; cursor: pointer;
+  }
+  .intro-skip {
+    display: block; margin: 10px auto 0; border: none; background: transparent;
+    color: var(--ink-faint); font-family: var(--font-body); font-size: 12.5px; cursor: pointer;
+  }
+  .intro-skip[hidden], .intro-sound[hidden], .action-bar[hidden] { display: none; }
+  .intro-line { font-size: 18px; color: var(--ink); text-align: center; margin: 16px 0 0; }
   .story p {
     font-size: 15.5px; line-height: 2; color: var(--ink); margin: 0 0 14px;
   }
@@ -254,11 +269,11 @@ function scrollTop() {
 }
 
 var CG = {
-  jiejian: "cg1-jiejian.png",
-  xinsi: "cg2-xinsi.png",
-  cuoguo: "cg3-cuoguo.png",
-  zhishaocike: "cg4-zhishaocike.png",
-  shenxun: "cg5-shenxun.png"
+  jiejian: "cg1-jiejian.jpg",
+  xinsi: "cg2-xinsi.jpg",
+  cuoguo: "cg3-cuoguo.jpg",
+  zhishaocike: "cg4-zhishaocike.jpg",
+  shenxun: "cg5-shenxun.jpg"
 };
 
 var hexagrams = [
@@ -388,7 +403,26 @@ var state = { ending: null, choices: {} };
 var navStack = [];
 var current = 's0';
 
-function ga(name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} }
+// First-screen format test: A = original text screens. B/C get added to READY_VARIANTS once built.
+// ?v=A|B|C forces a variant (for testing); otherwise random, kept for the session.
+var READY_VARIANTS = ['A', 'C'];
+var VARIANT = (function () {
+  var m = /[?&]v=([ABC])/.exec(location.search);
+  if (m) return m[1];
+  try { var saved = sessionStorage.getItem('dahunye_variant'); if (saved && READY_VARIANTS.indexOf(saved) >= 0) return saved; } catch (e) {}
+  var v = READY_VARIANTS[Math.floor(Math.random() * READY_VARIANTS.length)];
+  try { sessionStorage.setItem('dahunye_variant', v); } catch (e) {}
+  return v;
+})();
+
+var START_SCREEN = VARIANT === 'C' ? 'v0' : 's0';
+current = START_SCREEN;
+
+function ga(name, params) {
+  params = params || {};
+  params.variant = VARIANT;
+  try { if (typeof gtag === 'function') gtag('event', name, params); } catch (e) {}
+}
 
 // Funnel tracking: which screen each player reaches, and where they leave.
 var T0 = Date.now();
@@ -445,7 +479,7 @@ function renderCGScreen(image) {
   return '<div class="cg-screen fade-in"><div class="cg-full-wrap"><img class="cg-full" src="' + image + '" alt="CG" /></div></div>';
 }
 
-var MUSIC_CUES = { s0: 'calm', s1b: 'romantic', report: 'calm' };
+var MUSIC_CUES = { s0: 'calm', c1a: 'calm', c1b: 'calm', s1b: 'romantic', report: 'calm' };
 
 function renderCurrent() {
   if (MUSIC_CUES[current]) switchTrack(MUSIC_CUES[current]);
@@ -479,7 +513,7 @@ function goBack() {
 function restart() {
   ga('restart', { game_id: 'dahunye', seconds: secs() });
   navStack = [];
-  current = 's0';
+  current = START_SCREEN;
   state.choices = {};
   renderCurrent();
 }
@@ -573,6 +607,42 @@ function resetDivination() {
 }
 
 var SCREENS = {};
+
+// Variant C: the Reel clip of 政 untying the tassel, then straight to the first choice.
+SCREENS.v0 = function () {
+  var html = '<div class="fade-in">';
+  html += '<div class="intro-wrap">';
+  html += '<video id="introVideo" class="intro-video" src="intro-yingjie.mp4" autoplay muted playsinline preload="auto" onended="showIntroChoice(\'ended\')" onerror="showIntroChoice(\'error\')"></video>';
+  html += '<button class="intro-sound" id="introSound" onclick="unmuteIntro()">🔈 点开声音</button>';
+  html += '</div>';
+  html += '<button class="intro-skip" id="introSkip" onclick="showIntroChoice(\'skip\')">跳过 →</button>';
+  html += '</div>';
+  html += '<div class="action-bar" id="introChoice" hidden><p class="intro-line">“怕吗？”</p><div class="choice-prompt">面对这句询问，你如何回答</div>';
+  html += '<div class="choices">';
+  html += '<button class="choice-btn" onclick="recordChoice(\'c1\',\'A\');goto(\'c1a\')">摇头，回一句“不怕”</button>';
+  html += '<button class="choice-btn" onclick="recordChoice(\'c1\',\'B\');goto(\'c1b\')">顿了顿，如实相告</button>';
+  html += '</div></div>';
+  return html;
+};
+
+function unmuteIntro() {
+  var v = document.getElementById('introVideo');
+  if (!v) return;
+  v.muted = false;
+  v.play().catch(function () {});
+  var b = document.getElementById('introSound');
+  if (b) b.hidden = true;
+  ga('intro_video', { game_id: 'dahunye', action: 'unmute', seconds: secs() });
+}
+
+function showIntroChoice(how) {
+  var box = document.getElementById('introChoice');
+  if (!box || !box.hidden) return;
+  box.hidden = false;
+  var skip = document.getElementById('introSkip');
+  if (skip) skip.hidden = true;
+  ga('intro_video', { game_id: 'dahunye', action: how, seconds: secs() });
+}
 
 SCREENS.s0 = function () {
   var p = [
