@@ -7,6 +7,7 @@ const Games: React.FC = () => {
   const [isHoveringChuxin, setIsHoveringChuxin] = useState(false);
   const [isHoveringDahunye, setIsHoveringDahunye] = useState(false);
   const [isHoveringGuapai, setIsHoveringGuapai] = useState(false);
+  const [isHoveringAnqiu, setIsHoveringAnqiu] = useState(false);
 
   const handlePlayGame = () => {
     window.location.href = '/games/watermelon/';
@@ -46,6 +47,14 @@ const Games: React.FC = () => {
 
   const handlePlayGuapaiInNewTab = () => {
     window.open('/games/guapai/', '_blank');
+  };
+
+  const handlePlayAnqiuGame = () => {
+    window.location.href = '/games/anqiu/';
+  };
+
+  const handlePlayAnqiuInNewTab = () => {
+    window.open('/games/anqiu/', '_blank');
   };
 
   const handlePlayDahunyeGame = () => {
@@ -130,6 +139,61 @@ const Games: React.FC = () => {
             </div>
           </div>
 
+          <div className="game-card" onMouseEnter={() => setIsHoveringAnqiu(true)} onMouseLeave={() => setIsHoveringAnqiu(false)}>
+            <div className="game-preview">
+              <div className="game-icon">
+                <span className={`game-emoji ${isHoveringAnqiu ? 'bounce' : ''}`}>🥟</span>
+                <div className="icon-glow"></div>
+              </div>
+
+              <div className="game-info">
+                <div className="game-badge">🆕 料理 · 守城</div>
+                <h2 className="game-title">风起安丘</h2>
+                <p className="game-description">
+                  锅还热着，怪已经来了。端起铁锅、甩出肉包，用一道道家常料理守住安丘城——南瓜汤、豆汁一路升到第五重，终极形态才会揭晓。
+                </p>
+                <p className="game-author" style={{ fontSize: '13px', opacity: 0.75, margin: '0 0 12px' }}>游戏制作人：冬涤昔誓</p>
+
+                <div className="game-features">
+                  <div className="feature-item">
+                    <span className="feature-icon">🏯</span>
+                    <span>12关守城</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🍲</span>
+                    <span>料理五阶觉醒</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🛡️</span>
+                    <span>五槽装备</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">💾</span>
+                    <span>双存档</span>
+                  </div>
+                </div>
+
+                <div className="game-actions">
+                  <button
+                    onClick={handlePlayAnqiuGame}
+                    className="play-button primary"
+                  >
+                    <span className="button-icon">🎮</span>
+                    开始守城
+                    <div className="button-shine"></div>
+                  </button>
+                  <button
+                    onClick={handlePlayAnqiuInNewTab}
+                    className="play-button secondary"
+                  >
+                    <span className="button-icon">🔗</span>
+                    新窗口打开
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="game-card" onMouseEnter={() => setIsHoveringGuapai(true)} onMouseLeave={() => setIsHoveringGuapai(false)}>
             <div className="game-preview">
               <div className="game-icon">
@@ -138,7 +202,7 @@ const Games: React.FC = () => {
               </div>
 
               <div className="game-info">
-                <div className="game-badge">🆕 周易 · 占卜</div>
+                <div className="game-badge">周易 · 占卜</div>
                 <h2 className="game-title">六十四卦牌</h2>
                 <p className="game-description">
                   六十四张牌，每卦一张，每张一幅画。画面取自这一卦上下两个三爻卦各自的自然意象。
