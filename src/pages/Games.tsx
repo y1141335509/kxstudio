@@ -75,61 +75,6 @@ const Games: React.FC = () => {
       
       <main className="games-content">
         <div className="games-grid">
-          <div className="game-card" onMouseEnter={() => setIsHoveringGuapai(true)} onMouseLeave={() => setIsHoveringGuapai(false)}>
-            <div className="game-preview">
-              <div className="game-icon">
-                <span className={`game-emoji ${isHoveringGuapai ? 'bounce' : ''}`}>☯️</span>
-                <div className="icon-glow"></div>
-              </div>
-
-              <div className="game-info">
-                <div className="game-badge">🆕 周易 · 占卜</div>
-                <h2 className="game-title">六十四卦牌</h2>
-                <p className="game-description">
-                  六十四张牌，每卦一张，每张一幅画。画面取自这一卦上下两个三爻卦各自的自然意象。
-                  心里想一件事，抽一张。
-                </p>
-
-                <div className="game-features">
-                  <div className="feature-item">
-                    <span className="feature-icon">🎴</span>
-                    <span>64张卦牌</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">📜</span>
-                    <span>周易卦辞原文</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">💡</span>
-                    <span>现代解读</span>
-                  </div>
-                  <div className="feature-item">
-                    <span className="feature-icon">🔀</span>
-                    <span>洗牌翻牌</span>
-                  </div>
-                </div>
-
-                <div className="game-actions">
-                  <button
-                    onClick={handlePlayGuapaiGame}
-                    className="play-button primary"
-                  >
-                    <span className="button-icon">🎮</span>
-                    开始抽牌
-                    <div className="button-shine"></div>
-                  </button>
-                  <button
-                    onClick={handlePlayGuapaiInNewTab}
-                    className="play-button secondary"
-                  >
-                    <span className="button-icon">🔗</span>
-                    新窗口打开
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div className="game-card" onMouseEnter={() => setIsHoveringDahunye(true)} onMouseLeave={() => setIsHoveringDahunye(false)}>
             <div className="game-preview">
               <div className="game-icon">
@@ -175,6 +120,61 @@ const Games: React.FC = () => {
                   </button>
                   <button
                     onClick={handlePlayDahunyeInNewTab}
+                    className="play-button secondary"
+                  >
+                    <span className="button-icon">🔗</span>
+                    新窗口打开
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="game-card" onMouseEnter={() => setIsHoveringGuapai(true)} onMouseLeave={() => setIsHoveringGuapai(false)}>
+            <div className="game-preview">
+              <div className="game-icon">
+                <span className={`game-emoji ${isHoveringGuapai ? 'bounce' : ''}`}>☯️</span>
+                <div className="icon-glow"></div>
+              </div>
+
+              <div className="game-info">
+                <div className="game-badge">🆕 周易 · 占卜</div>
+                <h2 className="game-title">六十四卦牌</h2>
+                <p className="game-description">
+                  六十四张牌，每卦一张，每张一幅画。画面取自这一卦上下两个三爻卦各自的自然意象。
+                  心里想一件事，抽一张。
+                </p>
+
+                <div className="game-features">
+                  <div className="feature-item">
+                    <span className="feature-icon">🎴</span>
+                    <span>64张卦牌</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">📜</span>
+                    <span>周易卦辞原文</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">💡</span>
+                    <span>现代解读</span>
+                  </div>
+                  <div className="feature-item">
+                    <span className="feature-icon">🔀</span>
+                    <span>洗牌翻牌</span>
+                  </div>
+                </div>
+
+                <div className="game-actions">
+                  <button
+                    onClick={handlePlayGuapaiGame}
+                    className="play-button primary"
+                  >
+                    <span className="button-icon">🎮</span>
+                    开始抽牌
+                    <div className="button-shine"></div>
+                  </button>
+                  <button
+                    onClick={handlePlayGuapaiInNewTab}
                     className="play-button secondary"
                   >
                     <span className="button-icon">🔗</span>
