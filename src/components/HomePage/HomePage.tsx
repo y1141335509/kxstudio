@@ -46,7 +46,7 @@ function Subscription() {
 
         <Grid item xs={12} md={6} component={Paper} elevation={0} sx={{ p: 2, bgcolor: 'secondary.main' }}>
           <Typography variant="h1" gutterBottom sx={{ fontSize: { xs: '1.6rem', md: '2.2rem' }, lineHeight: 1.4 }}>
-            或许他不认识你，但我可以让你们相遇。
+            或许他不认识你，<br />但我会让你们相遇。
           </Typography>
           <Typography variant="body1" sx={{ mb: 2 }}>
             走进一个故事，成为其中那个人——被看见、被记住，或者不得不做出选择。
