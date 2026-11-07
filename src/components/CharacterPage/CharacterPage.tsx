@@ -134,6 +134,20 @@ const characters = [
     avatar: '/images/character-page/白弈悬-avatar.png'
   },
   {
+    id: 21, name: '罗莎妮 (Roshani)', image: '/images/character-page/罗莎妮.png', country: 'Others',
+    description: <Typography>
+      几百年前，太阳古国亡了。<br />
+      灭它的人留了下来，说着另一种语言，<br />
+      却唱着古国的歌，拜着古国的神。<br />
+      每逢灾年，太阳神都会显灵。<br />
+      百姓跪下来，感谢他们的神。<br />
+      没有人知道，站在火光后面的是她。<br />
+      「感谢我吧！」<br />
+      她喊得那么大声，好像真的会有人回头。
+    </Typography>,
+    avatar: '/images/character-page/罗莎妮-avatar.png'
+  },
+  {
     id: 1, name: 'Silver（银）', image: '/images/character-page/Silver.png', country: 'Others',
     description: <Typography>
       Silver的童年因一次与父亲的严重冲突而留下了深刻的心理阴影，他被砍去一根手指，这一事件深刻地影响了他对世界的看法。
