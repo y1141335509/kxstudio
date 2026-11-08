@@ -131,6 +131,11 @@
     position: absolute; top: 10px; left: 10px; z-index: 3; border: none; border-radius: 999px;
     background: rgba(0,0,0,0.45); color: #EDE3D1; font-family: var(--font-body); font-size: 12px; padding: 5px 12px; cursor: pointer;
   }
+  .sub-auto {
+    position: absolute; top: 10px; right: 10px; z-index: 3; border: 1px solid transparent; border-radius: 999px;
+    background: rgba(0,0,0,0.45); color: #EDE3D1; font-family: var(--font-body); font-size: 12px; padding: 5px 12px; cursor: pointer;
+  }
+  .sub-auto.on { border-color: #B8924A; color: #E9C98A; background: rgba(140,47,36,0.55); }
   .sub-box { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0 14px 14px; text-align: center; display: flex; flex-direction: column; }
   .sub-box .sub-choices { order: 1; margin-bottom: 14px; }
   .dlg {
@@ -2239,12 +2244,26 @@ var B_SCENES = {
 }
 };
 var bIndex = 0, bTimer = null;
+var bAuto = false;
+try { bAuto = localStorage.getItem('dahunye_auto') === '1'; } catch (e) {}
+function autoDelay(l) { return l[0] === 'cg' ? 2200 : 1400 + l[1].length * 90; }
+function toggleAuto() {
+  bAuto = !bAuto;
+  try { localStorage.setItem('dahunye_auto', bAuto ? '1' : '0'); } catch (e) {}
+  var b = document.getElementById('subAuto');
+  if (b) { b.classList.toggle('on', bAuto); b.textContent = bAuto ? '自动 ▶' : '自动'; }
+  ga('auto_toggle', { game_id: 'dahunye', on: bAuto ? 1 : 0, screen_id: current + '#' + bIndex });
+  clearTimeout(bTimer);
+  var sc = B_SCENES[current];
+  if (bAuto && sc && !(bIndex >= sc.lines.length - 1 && (sc.choice || sc.ending))) bTimer = setTimeout(advanceSub, 900);
+}
 function isSubScene(id) { return !!B_SCENES[id]; }
 function renderSub(id) {
   var sc = B_SCENES[id];
   bIndex = 0;
   var html = '<div class="sub-stage fade-in" id="subStage" style="background-image:url(\'' + sc.bg + '\')" onclick="advanceSub()">';
   html += '<button class="sub-recap" onclick="event.stopPropagation();openRecap()">前情</button>';
+  html += '<button class="sub-auto' + (bAuto ? ' on' : '') + '" id="subAuto" onclick="event.stopPropagation();toggleAuto()">' + (bAuto ? '自动 ▶' : '自动') + '</button>';
   html += '<div class="sub-box">';
   html += '<div class="dlg" id="subDlg"><span class="dlg-name" id="subName" hidden></span><div class="dlg-text" id="subLine"></div><span class="dlg-more" id="subHint">▼</span></div>';
   html += '<p class="sub-hint" id="cgHint" hidden style="order:3;margin-top:10px">点击屏幕继续</p>';
@@ -2321,6 +2340,8 @@ function showSubLine() {
     }, 500);
   } else if (sc.auto && bIndex < sc.auto) {
     bTimer = setTimeout(advanceSub, 1200);
+  } else if (bAuto) {
+    bTimer = setTimeout(advanceSub, autoDelay(l));
   }
 }
 function advanceSub() {
