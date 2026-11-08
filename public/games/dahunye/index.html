@@ -121,6 +121,7 @@
   .sub-stage {
     position: relative; height: calc(100svh - 120px); min-height: 460px; border-radius: 14px; overflow: hidden;
     background-color: #000; background-position: center top; background-size: cover; background-repeat: no-repeat; cursor: pointer;
+    transition: background-image 0.6s ease;
     box-shadow: 0 8px 30px rgba(0,0,0,0.18); -webkit-tap-highlight-color: transparent;
   }
   .sub-stage::after {
@@ -163,6 +164,8 @@
   .sub-line span { animation: fadeIn 0.5s ease both; line-height: 1.7; }
   .sub-line .narr { font-size: 15px; color: rgba(237,227,209,0.82); }
   .sub-stage.sub-cg::after { height: 22%; }
+  .sub-stage::before { content: ''; position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; z-index: 1; }
+  .sub-stage.sub-dark::before { opacity: 0.86; }
   .sub-line .ni { font-size: 17px; color: #EDE3D1; }
   .sub-line .zheng { font-size: 19px; color: #B8924A; font-family: var(--font-display); letter-spacing: 0.04em; }
   .sub-hint { font-size: 11.5px; color: rgba(237,227,209,0.45); margin: 0; }
@@ -2243,6 +2246,33 @@ var B_SCENES = {
 ]
 }
 };
+// Mid-scene CG changes for B (11-07 art, see 大婚之夜-B版CG出图需求.md): [first line index, image, dark?]
+var B_BG = {
+  b_act2: [[0, 'cg3-cuoguo.jpg'], [16, 'cg10-etouxiangdi.jpg']],
+  b_c2a: [[0, 'cg10-etouxiangdi.jpg']],
+  b_c2b: [[0, 'cg10-etouxiangdi.jpg']],
+  b_act3: [[0, 'cg6-woshou.jpg'], [15, 'cg12-yingdai.jpg']],
+  b_act4: [[0, 'cg9-qixia.jpg'], [19, 'cg3-cuoguo.jpg']],
+  b_act6: [[0, 'cg1-jiejian.jpg'], [5, 'cg8-jianyuchufu.jpg'], [13, 'cg13-jiedadai.jpg'], [34, 'cg7-wuzui.jpg'], [51, 'cg10-etouxiangdi.jpg'], [67, 'cg10-etouxiangdi.jpg', 1]],
+  b_c4a: [[0, 'cg10-etouxiangdi.jpg', 1]],
+  b_c4b: [[0, 'cg10-etouxiangdi.jpg', 1]],
+  b_act7: [[0, 'cg11-lairifangchang.jpg']]
+};
+function bgFor(id, i) {
+  var segs = B_BG[id], pick = null;
+  if (!segs) return [B_SCENES[id].bg, 0];
+  for (var k = 0; k < segs.length; k++) if (segs[k][0] <= i) pick = segs[k];
+  return pick ? [pick[1], pick[2] || 0] : [B_SCENES[id].bg, 0];
+}
+var bPreloaded = false;
+function preloadBArt() {
+  if (bPreloaded) return; bPreloaded = true;
+  var seen = {};
+  for (var id in B_BG) for (var k = 0; k < B_BG[id].length; k++) {
+    var f = B_BG[id][k][1];
+    if (!seen[f]) { seen[f] = 1; var im = new Image(); im.src = f; }
+  }
+}
 var bIndex = 0, bTimer = null;
 var bAuto = false;
 try { bAuto = localStorage.getItem('dahunye_auto') === '1'; } catch (e) {}
@@ -2261,7 +2291,9 @@ function isSubScene(id) { return !!B_SCENES[id]; }
 function renderSub(id) {
   var sc = B_SCENES[id];
   bIndex = 0;
-  var html = '<div class="sub-stage fade-in" id="subStage" style="background-image:url(\'' + sc.bg + '\')" onclick="advanceSub()">';
+  var bg0 = bgFor(id, 0);
+  if (id !== 'b0') preloadBArt();
+  var html = '<div class="sub-stage fade-in' + (bg0[1] ? ' sub-dark' : '') + '" id="subStage" style="background-image:url(\'' + bg0[0] + '\')" onclick="advanceSub()">';
   html += '<button class="sub-recap" onclick="event.stopPropagation();openRecap()">前情</button>';
   html += '<button class="sub-auto' + (bAuto ? ' on' : '') + '" id="subAuto" onclick="event.stopPropagation();toggleAuto()">' + (bAuto ? '自动 ▶' : '自动') + '</button>';
   html += '<div class="sub-box">';
@@ -2320,7 +2352,12 @@ function showSubLine() {
   if (!sc || !el) return;
   var l = sc.lines[bIndex];
   var stage = document.getElementById('subStage');
-  if (stage) stage.classList.toggle('sub-cg', l[0] === 'cg');
+  if (stage) {
+    stage.classList.toggle('sub-cg', l[0] === 'cg');
+    var bg = bgFor(current, bIndex), url = "url('" + bg[0] + "')";
+    if (stage.dataset.bg !== bg[0]) { stage.style.backgroundImage = url; stage.dataset.bg = bg[0]; }
+    stage.classList.toggle('sub-dark', !!bg[1]);
+  }
   var dlg = document.getElementById('subDlg'), nm = document.getElementById('subName');
   dlg.hidden = l[0] === 'cg';
   nm.hidden = l[0] === 'narr' || l[0] === 'cg';
