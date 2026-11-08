@@ -116,6 +116,44 @@
   }
   .intro-skip[hidden], .intro-sound[hidden], .action-bar[hidden] { display: none; }
   .intro-line { font-size: 18px; color: var(--ink); text-align: center; margin: 16px 0 0; }
+  /* Variant B: full-bleed CG with one subtitle line at a time (short-video subtitle style) */
+  #app:has(.sub-stage) { padding-bottom: 0; }
+  .sub-stage {
+    position: relative; height: calc(100svh - 120px); min-height: 460px; border-radius: 14px; overflow: hidden;
+    background: #000 url('cg3-cuoguo.jpg') center top / cover no-repeat; cursor: pointer;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18); -webkit-tap-highlight-color: transparent;
+  }
+  .sub-stage::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 55%; pointer-events: none;
+    background: linear-gradient(to top, rgba(10,7,5,0.92) 0%, rgba(10,7,5,0.7) 45%, rgba(10,7,5,0) 100%);
+  }
+  .sub-recap {
+    position: absolute; top: 10px; left: 10px; z-index: 3; border: none; border-radius: 999px;
+    background: rgba(0,0,0,0.45); color: #EDE3D1; font-family: var(--font-body); font-size: 12px; padding: 5px 12px; cursor: pointer;
+  }
+  .sub-box { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0 22px 22px; text-align: center; }
+  .sub-line { min-height: 64px; display: flex; align-items: center; justify-content: center; margin: 0 0 6px; }
+  .sub-line span { animation: fadeIn 0.5s ease both; line-height: 1.7; }
+  .sub-line .narr { font-size: 15px; color: rgba(237,227,209,0.82); }
+  .sub-line .zheng { font-size: 21px; color: #B8924A; font-family: var(--font-display); letter-spacing: 0.04em; }
+  .sub-hint { font-size: 11.5px; color: rgba(237,227,209,0.45); margin: 0; }
+  .sub-choices[hidden], .sub-hint[hidden] { display: none; }
+  .sub-choices { animation: fadeIn 0.5s ease both; }
+  .sub-meta { font-size: 11.5px; color: rgba(237,227,209,0.6); letter-spacing: 0.08em; margin: 2px 0 10px; }
+  .sub-btn {
+    display: block; width: 100%; margin: 0 0 10px; padding: 12px 18px; border-radius: 999px;
+    border: 1px solid #8C2F24; background: rgba(140,47,36,0.18); color: #EDE3D1;
+    font-family: var(--font-body); font-size: 14.5px; cursor: pointer;
+  }
+  .sub-btn:last-child { margin-bottom: 0; }
+  .recap-panel {
+    position: fixed; inset: 0; z-index: 40; background: rgba(10,7,5,0.6); display: flex; justify-content: center;
+  }
+  .recap-panel[hidden] { display: none; }
+  .recap-inner {
+    width: 100%; max-width: 520px; background: var(--bg); overflow-y: auto; padding: 22px 22px 40px;
+  }
+  .recap-close { border: none; background: transparent; color: var(--ink-faint); font-family: var(--font-body); font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 12px; }
   .story p {
     font-size: 15.5px; line-height: 2; color: var(--ink); margin: 0 0 14px;
   }
@@ -405,7 +443,7 @@ var current = 's0';
 
 // First-screen format test: A = original text screens. B/C get added to READY_VARIANTS once built.
 // ?v=A|B|C forces a variant (for testing); otherwise random, kept for the session.
-var READY_VARIANTS = ['A', 'C'];
+var READY_VARIANTS = ['A', 'B', 'C'];
 var VARIANT = (function () {
   var m = /[?&]v=([ABC])/.exec(location.search);
   if (m) return m[1];
@@ -415,7 +453,7 @@ var VARIANT = (function () {
   return v;
 })();
 
-var START_SCREEN = VARIANT === 'C' ? 'v0' : 's0';
+var START_SCREEN = VARIANT === 'C' ? 'v0' : (VARIANT === 'B' ? 'b0' : 's0');
 current = START_SCREEN;
 
 function ga(name, params) {
@@ -479,7 +517,7 @@ function renderCGScreen(image) {
   return '<div class="cg-screen fade-in"><div class="cg-full-wrap"><img class="cg-full" src="' + image + '" alt="CG" /></div></div>';
 }
 
-var MUSIC_CUES = { s0: 'calm', c1a: 'calm', c1b: 'calm', s1b: 'romantic', report: 'calm' };
+var MUSIC_CUES = { s0: 'calm', b0: 'calm', c1a: 'calm', c1b: 'calm', s1b: 'romantic', report: 'calm' };
 
 function renderCurrent() {
   if (MUSIC_CUES[current]) switchTrack(MUSIC_CUES[current]);
@@ -642,6 +680,94 @@ function showIntroChoice(how) {
   var skip = document.getElementById('introSkip');
   if (skip) skip.hidden = true;
   ga('intro_video', { game_id: 'dahunye', action: how, seconds: secs() });
+}
+
+// Variant B: cg3 full-bleed, three subtitle beats (auto-advance, tap to skip), then the first choice.
+// Copy from 大婚之夜-新版逐屏文案-审阅稿.md, opening beats with ⚠️① added and ⚠️② trimmed (decided 11-07).
+var B_LINES = [
+  { who: 'narr', text: '大婚之夜。门在他身后缓缓合拢。' },
+  { who: 'narr', text: '依婚仪，最后一枚缨结，应由王亲手解下。' },
+  { who: 'zheng', text: '「怕吗？」' }
+];
+var bIndex = 0, bTimer = null;
+SCREENS.b0 = function () {
+  bIndex = 0;
+  var html = '<div class="sub-stage fade-in" onclick="advanceSub()">';
+  html += '<button class="sub-recap" onclick="event.stopPropagation();openRecap()">前情</button>';
+  html += '<div class="sub-box">';
+  html += '<div class="sub-line" id="subLine"></div>';
+  html += '<p class="sub-hint" id="subHint">点击屏幕继续</p>';
+  html += '<div class="sub-choices" id="subChoices" hidden onclick="event.stopPropagation()">';
+  html += '<div class="sub-meta">3 种结局 · 6 种诗签</div>';
+  html += '<button class="sub-btn" onclick="recordChoice(\'c1\',\'A\');goto(\'c1a\')">摇头，回一句“不怕”</button>';
+  html += '<button class="sub-btn" onclick="recordChoice(\'c1\',\'B\');goto(\'c1b\')">顿了顿，如实相告</button>';
+  html += '</div></div></div>';
+  html += '<div class="recap-panel" id="recapPanel" hidden onclick="closeRecap()"><div class="recap-inner" onclick="event.stopPropagation()">';
+  html += '<button class="recap-close" onclick="closeRecap()">← 回到故事</button>';
+  html += renderStory(RECAP_TEXT);
+  html += '</div></div>';
+  setTimeout(showSubLine, 0);
+  return html;
+};
+var RECAP_TEXT = [
+  "再见，便是大婚。",
+  "醮礼之后，政亲自引你出门，扶你登车，御轮三周。",
+  "每一道礼仪，你都怕自己行错。",
+  "车驾缓缓驶向秦宫。你在心里一遍遍默诵祭告宗庙的祝辞，思绪却总被方才那只冰凉的手打断。",
+  "他扶你登车时，掌心比你的还冷。",
+  "你控制不住地想：外面很冷吗？还是他也紧张？",
+  "抑或，他本就是个铁石心肠的冰冷男人？",
+  "夕阳渐渐沉下去。",
+  "祭告、拜礼，一切都算顺利。余光中，太后的神色很是欣慰，你本该松一口气。",
+  "可越接近寝殿，你的心跳得越快。",
+  "接下来是共牢而食，合卺而饮。",
+  "然后，便是婚仪中的最后一件事。",
+  "也是你最没有把握的一件事。",
+  "临行前，傅姆教过你许多遍。她甚至用木箸在席上画出大致的形态，告诉你，这本该是一件快乐的事，只是最初或许会有些痛。",
+  "“完婚是完婚，册后另有大典。”她还特意叮嘱，“你且宽心，今日只成夫妻之礼。”",
+  "可你依然莫名地担心。",
+  "冕旒被侍者取下后，你第一次在这样近的地方，真正看清政的脸。",
+  "鼻梁高挺，眼形狭长。",
+  "他比你记忆中更高。",
+  "起身向你走来时，身影几乎覆住了整间寝殿。",
+  "门在他身后缓缓合拢，也遮住了门外宫人的目光。",
+  "“后面的礼，”他问，“你学过吗？”",
+  "“学过。”",
+  "“学过什么？”",
+  "“就是……后面的礼。”",
+  "他被你逗笑。",
+  "“那接下来，该做什么？”",
+  "明明知道，却偏要你说。"
+];
+function showSubLine() {
+  var el = document.getElementById('subLine');
+  if (!el || current !== 'b0') return;
+  var l = B_LINES[bIndex];
+  el.innerHTML = '<span class="' + l.who + '">' + l.text + '</span>';
+  clearTimeout(bTimer);
+  if (bIndex < B_LINES.length - 1) {
+    bTimer = setTimeout(advanceSub, 1200);
+  } else {
+    document.getElementById('subHint').hidden = true;
+    bTimer = setTimeout(function () {
+      var c = document.getElementById('subChoices');
+      if (c && current === 'b0') c.hidden = false;
+    }, 500);
+  }
+}
+function advanceSub() {
+  if (current !== 'b0' || bIndex >= B_LINES.length - 1) return;
+  bIndex++;
+  showSubLine();
+}
+function openRecap() {
+  clearTimeout(bTimer);
+  document.getElementById('recapPanel').hidden = false;
+  ga('recap_open', { game_id: 'dahunye', seconds: secs() });
+}
+function closeRecap() {
+  document.getElementById('recapPanel').hidden = true;
+  showSubLine();
 }
 
 SCREENS.s0 = function () {
