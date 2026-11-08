@@ -120,7 +120,7 @@
   #app:has(.sub-stage) { padding-bottom: 0; }
   .sub-stage {
     position: relative; height: calc(100svh - 120px); min-height: 460px; border-radius: 14px; overflow: hidden;
-    background: #000 url('cg3-cuoguo.jpg') center top / cover no-repeat; cursor: pointer;
+    background-color: #000; background-position: center top; background-size: cover; background-repeat: no-repeat; cursor: pointer;
     box-shadow: 0 8px 30px rgba(0,0,0,0.18); -webkit-tap-highlight-color: transparent;
   }
   .sub-stage::after {
@@ -132,10 +132,13 @@
     background: rgba(0,0,0,0.45); color: #EDE3D1; font-family: var(--font-body); font-size: 12px; padding: 5px 12px; cursor: pointer;
   }
   .sub-box { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0 22px 22px; text-align: center; }
+  .sub-prompt { font-size: 12.5px; color: rgba(237,227,209,0.6); margin: 0 0 8px; }
   .sub-line { min-height: 64px; display: flex; align-items: center; justify-content: center; margin: 0 0 6px; }
   .sub-line span { animation: fadeIn 0.5s ease both; line-height: 1.7; }
   .sub-line .narr { font-size: 15px; color: rgba(237,227,209,0.82); }
-  .sub-line .zheng { font-size: 21px; color: #B8924A; font-family: var(--font-display); letter-spacing: 0.04em; }
+  .sub-stage.sub-cg::after { height: 22%; }
+  .sub-line .ni { font-size: 17px; color: #EDE3D1; }
+  .sub-line .zheng { font-size: 19px; color: #B8924A; font-family: var(--font-display); letter-spacing: 0.04em; }
   .sub-hint { font-size: 11.5px; color: rgba(237,227,209,0.45); margin: 0; }
   .sub-choices[hidden], .sub-hint[hidden] { display: none; }
   .sub-choices { animation: fadeIn 0.5s ease both; }
@@ -474,7 +477,7 @@ var lastLeaveScreen = null;
 function trackLeave() {
   if (lastLeaveScreen === current) return;
   lastLeaveScreen = current;
-  ga('leave', { game_id: 'dahunye', screen_id: current, screen_depth: screensSeen, seconds: secs(), transport_type: 'beacon' });
+  ga('leave', { game_id: 'dahunye', screen_id: (B_SCENES[current] ? current + '#' + bIndex : current), screen_depth: screensSeen, seconds: secs(), transport_type: 'beacon' });
 }
 document.addEventListener('visibilitychange', function () {
   if (document.visibilityState === 'hidden') trackLeave();
@@ -517,7 +520,7 @@ function renderCGScreen(image) {
   return '<div class="cg-screen fade-in"><div class="cg-full-wrap"><img class="cg-full" src="' + image + '" alt="CG" /></div></div>';
 }
 
-var MUSIC_CUES = { s0: 'calm', b0: 'calm', c1a: 'calm', c1b: 'calm', s1b: 'romantic', report: 'calm' };
+var MUSIC_CUES = { s0: 'calm', b0: 'calm', b_c1a: 'calm', b_c1b: 'calm', b_act2: 'romantic', c1a: 'calm', c1b: 'calm', s1b: 'romantic', report: 'calm' };
 
 function renderCurrent() {
   if (MUSIC_CUES[current]) switchTrack(MUSIC_CUES[current]);
@@ -573,7 +576,7 @@ function renderEndingCG(key) {
 
 function renderEnding(key) {
   var e = ENDINGS[key];
-  var html = renderStory(e.body);
+  var html = VARIANT === 'B' ? '' : renderStory(e.body);
   html += '<div class="end-eyebrow">结局</div>';
   html += '<div class="end-title ' + e.tone + '">' + e.title + '</div>';
   html += '<div class="divider">政的心声</div>';
@@ -682,25 +685,1556 @@ function showIntroChoice(how) {
   ga('intro_video', { game_id: 'dahunye', action: how, seconds: secs() });
 }
 
-// Variant B: cg3 full-bleed, three subtitle beats (auto-advance, tap to skip), then the first choice.
-// Copy from 大婚之夜-新版逐屏文案-审阅稿.md, opening beats with ⚠️① added and ⚠️② trimmed (decided 11-07).
-var B_LINES = [
-  { who: 'narr', text: '大婚之夜。门在他身后缓缓合拢。' },
-  { who: 'narr', text: '依婚仪，最后一枚缨结，应由王亲手解下。' },
-  { who: 'zheng', text: '「怕吗？」' }
-];
+// Variant B: the whole demo as short-video subtitles over full-bleed CGs, one line per tap.
+// Copy and CG mapping from 大婚之夜-新版逐屏文案-审阅稿.md (方案B, 10-19); ⚠️①② applied, ③ kept, ④⑤ left as live (11-07).
+// Narration over 30 chars is split at the punctuation nearest its middle; no words changed.
+var B_SCENES = {
+"b0": {
+"bg": "cg3-cuoguo.jpg",
+"auto": 2,
+"choice": {
+"prompt": "",
+"meta": "3 种结局 · 6 种诗签",
+"opts": [
+[
+"摇头，回一句“不怕”",
+"c1",
+"A",
+"b_c1a"
+],
+[
+"顿了顿，如实相告",
+"c1",
+"B",
+"b_c1b"
+]
+]
+},
+"lines": [
+[
+"narr",
+"大婚之夜。门在他身后缓缓合拢。"
+],
+[
+"narr",
+"依婚仪，最后一枚缨结，应由王亲手解下。"
+],
+[
+"zheng",
+"「怕吗？」"
+]
+]
+},
+"b_c1a": {
+"bg": "cg3-cuoguo.jpg",
+"next": "b_act2",
+"lines": [
+[
+"narr",
+"他又解了一会儿，仍没有解开，索性收回手，望着你笑。"
+],
+[
+"zheng",
+"「不怕？」"
+],
+[
+"ni",
+"「……不怕。」"
+],
+[
+"zheng",
+"「欺瞒秦王，该当何罪？」"
+],
+[
+"ni",
+"「秦律里没写。」"
+]
+]
+},
+"b_c1b": {
+"bg": "cg3-cuoguo.jpg",
+"next": "b_act2",
+"lines": [
+[
+"narr",
+"他又解了一会儿，仍没有解开，索性收回手，望着你笑。"
+],
+[
+"zheng",
+"「不怕？」"
+],
+[
+"narr",
+"你顿了顿，没有立刻答话。"
+],
+[
+"zheng",
+"「好。」"
+],
+[
+"narr",
+"他点点头，也不追问，转而继续去解缨结。"
+],
+[
+"narr",
+"你下意识地握住他的手。"
+],
+[
+"ni",
+"「有点……」"
+]
+]
+},
+"b_act2": {
+"bg": "cg3-cuoguo.jpg",
+"choice": {
+"prompt": "面对这句调侃，你怎么接",
+"opts": [
+[
+"继续逗他",
+"c2",
+"A",
+"b_c2a"
+],
+[
+"小声嘟囔，耳根先红了",
+"c2",
+"B",
+"b_c2b"
+]
+]
+},
+"lines": [
+[
+"narr",
+"政低笑一声，垂眼理了理玄衣的袖缘。"
+],
+[
+"zheng",
+"「我今日穿的是新衣。」"
+],
+[
+"ni",
+"「嗯。」"
+],
+[
+"zheng",
+"「好看吗？」"
+],
+[
+"ni",
+"「好看。」"
+],
+[
+"narr",
+"他侧过身，指给你看衣缘上的纹样。"
+],
+[
+"zheng",
+"「这里还绣了一只楚地的凤鸟。像吗？」"
+],
+[
+"ni",
+"「像。」"
+],
+[
+"narr",
+"你低头看了看自己身上的衣裳。"
+],
+[
+"ni",
+"「我今日穿的也是新衣。」"
+],
+[
+"zheng",
+"「楚人的衣裳，比秦人的好看。」"
+],
+[
+"narr",
+"他今日温柔得不像秦王。"
+],
+[
+"narr",
+"你抬眼看他。"
+],
+[
+"ni",
+"「秦人也好看。」"
+],
+[
+"narr",
+"话音落下，你的目光恰好与他的撞在一起。"
+],
+[
+"narr",
+"你慌忙低下头。"
+],
+[
+"narr",
+"政却先抬起手，捧住了你的脸。"
+],
+[
+"narr",
+"他的额头轻轻抵住你的额头，闭上眼睛。"
+],
+[
+"narr",
+"呼吸近得几乎与你交缠在一起。"
+],
+[
+"narr",
+"你闻见他身上新制玄衣的丝帛气味。"
+],
+[
+"narr",
+"再近一些，便是合卺酒留下的淡淡辛香。"
+],
+[
+"narr",
+"原来秦王身上的气味，并没有你想象中那样不近人情。"
+],
+[
+"zheng",
+"「你们楚人身上的气味，都这样香吗？」"
+]
+],
+"music": "romantic"
+},
+"b_c2a": {
+"bg": "cg3-cuoguo.jpg",
+"next": "b_act3",
+"lines": [
+[
+"ni",
+"「我又没凑近闻过别人。不然，大王多闻几个楚人试试？」"
+],
+[
+"narr",
+"你渐渐大胆起来。"
+],
+[
+"narr",
+"政睁开眼睛，松开手，退回方才的位置。"
+],
+[
+"zheng",
+"「别人？」"
+],
+[
+"narr",
+"他认真想了想。"
+],
+[
+"zheng",
+"「我这样闻昌平君，恐怕不太合适。」"
+],
+[
+"ni",
+"「也可以闻昌文君。」"
+],
+[
+"narr",
+"你忍不住逗他。"
+],
+[
+"narr",
+"政看了你片刻，再次捧起你的脸轻轻摇摇，顺着你的话说道："
+],
+[
+"zheng",
+"「那还是算了。」"
+]
+]
+},
+"b_c2b": {
+"bg": "cg3-cuoguo.jpg",
+"next": "b_act3",
+"lines": [
+[
+"ni",
+"「我又没凑近闻过别人。」"
+],
+[
+"narr",
+"你小声嘟囔，耳根却先红了，忙别开眼去看别处。"
+],
+[
+"narr",
+"政见状，笑意压不住地漫开。"
+],
+[
+"zheng",
+"「看着我，再说一遍方才那句。」"
+],
+[
+"narr",
+"你梗着脖子，梗了半晌，到底没敢看他。"
+],
+[
+"ni",
+"「不说。」"
+],
+[
+"zheng",
+"「不说？」"
+],
+[
+"ni",
+"「不说。」"
+],
+[
+"narr",
+"政低笑一声，也不逼你，"
+],
+[
+"narr",
+"由着你把脸往他肩上躲，反手轻轻拍了拍你的背。"
+],
+[
+"zheng",
+"「我看在眼里，便够了。」"
+]
+]
+},
+"b_act3": {
+"bg": "cg3-cuoguo.jpg",
+"next": "b_act4",
+"lines": [
+[
+"narr",
+"两颊传来一丝凉意。"
+],
+[
+"narr",
+"他的手仍旧是冰的。"
+],
+[
+"narr",
+"你握住他的手。"
+],
+[
+"ni",
+"「大王冷吗？」"
+],
+[
+"zheng",
+"「冷，今日太冷。」"
+],
+[
+"narr",
+"你看了一眼窗外。暮春时节，殿内甚至没有一丝风。"
+],
+[
+"ni",
+"「今日明明很热。」"
+],
+[
+"zheng",
+"「你的手也很冷。」"
+],
+[
+"narr",
+"他反过来握住你的手，认真感受了一会儿。"
+],
+[
+"zheng",
+"「紧张吗？」"
+],
+[
+"ni",
+"「嗯。」"
+],
+[
+"zheng",
+"「那便再握一会儿。」"
+],
+[
+"narr",
+"他果真又握了一会儿。"
+],
+[
+"narr",
+"直到你们的指尖渐渐染上同样的温度，"
+],
+[
+"narr",
+"他才重新抬手，去解那枚繁复的缨结。"
+],
+[
+"narr",
+"这一次，缨结很快便松开了。"
+],
+[
+"narr",
+"缨带从你颈间滑落，被他稳稳接在掌中。"
+],
+[
+"ni",
+"「怎么突然这么熟练？」"
+],
+[
+"zheng",
+"「练过。」"
+],
+[
+"ni",
+"「那刚刚为什么解不开？」"
+],
+[
+"narr",
+"政把缨带放到一旁。"
+],
+[
+"zheng",
+"「那时，你还没有准备好。」"
+],
+[
+"ni",
+"「哦。」"
+],
+[
+"narr",
+"你不知道该如何接话，只好故意岔开话题。"
+],
+[
+"ni",
+"「大王具体练过什么？」"
+],
+[
+"zheng",
+"「学过如何以礼相待，如何不怠慢公主不怠慢王后。」"
+],
+[
+"narr",
+"他顿了顿，看着你，低声补了句："
+],
+[
+"zheng",
+"「还学过如何取悦你。」"
+],
+[
+"zheng",
+"「你呢？你也学过吗？」"
+],
+[
+"narr",
+"你先摇头，又点了点头。"
+],
+[
+"narr",
+"过了许久，才缓缓开口。"
+],
+[
+"ni",
+"「学过如何取悦秦王，傅姆在席上画过。」"
+],
+[
+"zheng",
+"「学会了吗？」"
+],
+[
+"ni",
+"「不知道。」"
+],
+[
+"zheng",
+"「那怎么办？」"
+],
+[
+"ni",
+"「不知道。」"
+],
+[
+"narr",
+"政笑了。"
+],
+[
+"zheng",
+"「傅姆是不是只教了你‘不知道’？」"
+]
+]
+},
+"b_act4": {
+"bg": "cg3-cuoguo.jpg",
+"next": "b_act5",
+"lines": [
+[
+"narr",
+"他转身从榻边取来一只漆匣。"
+],
+[
+"narr",
+"乌黑的匣身，只在边角饰着暗红云纹。"
+],
+[
+"zheng",
+"「听说你喜欢占卜。」"
+],
+[
+"narr",
+"他把漆匣放进你手里。"
+],
+[
+"zheng",
+"「这个给你装蓍策。」"
+],
+[
+"narr",
+"你打开看了看。"
+],
+[
+"ni",
+"「果然秦人尚黑。」"
+],
+[
+"narr",
+"政看了你片刻。"
+],
+[
+"zheng",
+"「不是。」"
+],
+[
+"ni",
+"「什么不是？」"
+],
+[
+"zheng",
+"「不是因为秦人尚黑。是昌平君说，你五行喜水，也喜欢黑色。」"
+],
+[
+"narr",
+"你抬起头。"
+],
+[
+"narr",
+"他面上仍旧从容，眼睛里却藏着一点等待。"
+],
+[
+"zheng",
+"「喜欢吗？」"
+],
+[
+"ni",
+"「嗯。」"
+],
+[
+"narr",
+"你下意识地笑了。"
+],
+[
+"narr",
+"想到他方才的话，又认真补了一句："
+],
+[
+"ni",
+"「喜欢。」"
+],
+[
+"narr",
+"政忽然又开口："
+],
+[
+"zheng",
+"「你知道吗，这宫里的人，见了我，说的都是好话。」"
+],
+[
+"narr",
+"语气很轻，像是不经意。"
+],
+[
+"zheng",
+"「我听了六年，早分不清哪句是真的。」"
+],
+[
+"narr",
+"你一时怔住，不知该如何接话。"
+],
+[
+"narr",
+"他却已经笑着收起了那点认真，"
+],
+[
+"narr",
+"转身取来榻边一柄秦剑，递到你面前。"
+]
+]
+},
+"b_act5": {
+"bg": "cg1-jiejian.jpg",
+"choice": {
+"prompt": "接剑那一刻，你如何回答这句追问",
+"opts": [
+[
+"“……都一样吧。”",
+"c3",
+"B",
+"end:xinsi"
+],
+[
+"“我不喜欢杀戮。”",
+"c3",
+"A",
+"b_act6"
+]
+]
+},
+"lines": [
+[
+"cg",
+""
+],
+[
+"zheng",
+"「这是孤送给公主的。」"
+],
+[
+"narr",
+"你知道，这把剑代表秦国给予楚国的承诺。"
+],
+[
+"narr",
+"你伸手去接。"
+],
+[
+"narr",
+"剑比想象中沉得多。"
+],
+[
+"narr",
+"手腕猛地一坠，你猝不及防，整个人被带得向前倾去。"
+],
+[
+"narr",
+"下一刻，一只手臂稳稳揽住你的腰，另一只手已经托住剑身。"
+],
+[
+"narr",
+"你几乎撞进他怀里。"
+],
+[
+"narr",
+"两个人都没有立刻动。"
+],
+[
+"narr",
+"离得太近，你甚至能听见他的呼吸。"
+],
+[
+"narr",
+"一下。"
+],
+[
+"narr",
+"又一下。"
+],
+[
+"narr",
+"和你的乱在一起。"
+],
+[
+"narr",
+"最后还是政先开了口。"
+],
+[
+"zheng",
+"「怎么连剑都接不住？」"
+],
+[
+"ni",
+"「谁会在大婚之夜送新妇一柄这么重的剑？」"
+],
+[
+"narr",
+"你以为这是明日见太后时才会拿出来的礼。"
+],
+[
+"zheng",
+"「你喜欢吗？我送你的这个。」"
+],
+[
+"ni",
+"「喜欢。」"
+],
+[
+"narr",
+"你没有看他。"
+],
+[
+"ni",
+"「公主喜欢，太后喜欢，楚国也会喜欢。」"
+],
+[
+"narr",
+"他低头看你，那点笑意慢慢淡下去。"
+],
+[
+"zheng",
+"「我问的是你。」"
+]
+]
+},
+"b_act6": {
+"bg": "cg1-jiejian.jpg",
+"choice": {
+"prompt": "烛火将灭，你如何回应",
+"opts": [
+[
+"顺着他主动回应",
+"c4",
+"A",
+"b_c4a"
+],
+[
+"下意识僵住",
+"c4",
+"B",
+"b_c4b"
+]
+]
+},
+"lines": [
+[
+"narr",
+"你沉默了片刻，想起入秦途中见过的那个百姓。"
+],
+[
+"narr",
+"他靠在路旁，袖管空荡荡的。旁人说，他的手臂是在战场上失去的。"
+],
+[
+"ni",
+"「我不喜欢杀戮。可有些事，大约也由不得人。」"
+],
+[
+"ni",
+"「你给我的，我说不上真心喜欢——但我信，你给我的时候，是把我当自己人在给。」"
+],
+[
+"narr",
+"政没有回答。"
+],
+[
+"narr",
+"他将剑从你手中接过去，横放在叠好的楚服旁。"
+],
+[
+"narr",
+"漆黑的剑鞘压住一角朱红的衣料。"
+],
+[
+"narr",
+"一秦一楚，并排躺在那里。"
+],
+[
+"zheng",
+"「是。若没有剑，许多事都做不成。」"
+],
+[
+"narr",
+"你望着那柄剑，想问他许多问题。"
+],
+[
+"narr",
+"可你没有再问。"
+],
+[
+"narr",
+"有些话，大婚之夜不必说尽。"
+],
+[
+"narr",
+"政从剑上收回目光，重新望向你。"
+],
+[
+"narr",
+"随后，他张开双臂。"
+],
+[
+"zheng",
+"「该你了。」"
+],
+[
+"narr",
+"你伸手去解他腰间的大带。"
+],
+[
+"narr",
+"第一道。"
+],
+[
+"narr",
+"第二道。"
+],
+[
+"narr",
+"沉重的玄衣从他肩头褪下。"
+],
+[
+"narr",
+"你学着他方才的模样，将衣裳仔细叠好，"
+],
+[
+"narr",
+"放在榻边，与你的楚服靠在一起。"
+],
+[
+"narr",
+"直到这时，你才看见他背后的中衣已经湿了一片。"
+],
+[
+"narr",
+"政察觉你的目光，脸颊微微泛红，没再提方才那个“冷”字。"
+],
+[
+"narr",
+"你低下头忍笑。"
+],
+[
+"zheng",
+"「傅姆就是这样教你的？」"
+],
+[
+"ni",
+"「什么？」"
+],
+[
+"zheng",
+"「嘲笑我。」"
+],
+[
+"ni",
+"「不敢。」"
+],
+[
+"narr",
+"虽这样回答，可他的语气轻松，你也并没有真的害怕。"
+],
+[
+"narr",
+"政抬手刮了一下你的鼻尖。"
+],
+[
+"zheng",
+"「没什么不敢的。想笑便笑吧。为人夫者，本该使妻子欢喜。」"
+],
+[
+"narr",
+"说完，他垂下眼，像是不经意地又添了一句："
+],
+[
+"zheng",
+"「你也不必取悦秦王。」"
+],
+[
+"ni",
+"「嗯？」"
+],
+[
+"zheng",
+"「秦王他不过是个提线木偶。大小事务，还不是要听太后与相邦——」"
+],
+[
+"narr",
+"话未说完，你立刻捂住了他的嘴。"
+],
+[
+"narr",
+"又惊惶地向门外看了一眼。"
+],
+[
+"narr",
+"政没有挣开。"
+],
+[
+"narr",
+"你的掌心贴着他的唇，能感觉到一点温热的呼吸，"
+],
+[
+"narr",
+"一下，又一下，落在掌心。"
+],
+[
+"narr",
+"殿外无人说话。"
+],
+[
+"narr",
+"只有烛火在门缝下投出一道细长的影子。"
+],
+[
+"narr",
+"你甚至听见了自己的心跳。"
+],
+[
+"narr",
+"政就这样看着你。"
+],
+[
+"narr",
+"方才的笑意还留在唇边，眼睛里却没有。"
+],
+[
+"narr",
+"你忽然意识到，他说的不是玩笑。"
+],
+[
+"narr",
+"十三岁即位，至今六年。"
+],
+[
+"narr",
+"所有人都称他为王。"
+],
+[
+"narr",
+"可太后替他决定婚姻，相邦替他决断国事。"
+],
+[
+"narr",
+"就连今夜门外，也有人等着知道秦王是否完成了该完成的礼。"
+],
+[
+"narr",
+"你的手渐渐松开。"
+],
+[
+"narr",
+"政却在它落下之前握住了你的右手，在你掌心轻轻落下一吻。"
+],
+[
+"zheng",
+"「别怕。」"
+],
+[
+"narr",
+"门外传来一阵极轻的脚步声。"
+],
+[
+"narr",
+"政没有回头。"
+],
+[
+"narr",
+"他只是将你的手翻过来，又在手背吻了一下。"
+],
+[
+"narr",
+"你的指尖蜷了一下，却没有收回去。"
+],
+[
+"narr",
+"他顺势与你十指紧扣，用你的手背来回摩挲自己的脸颊。"
+],
+[
+"narr",
+"许久，他轻轻唤了一声你的乳名。"
+],
+[
+"narr",
+"那两个字顺着手背一路传到手臂、肩膀、耳根，"
+],
+[
+"narr",
+"你的右耳连同半边脸颊都热了起来。"
+],
+[
+"narr",
+"他又唤了一声。"
+],
+[
+"ni",
+"「嗯。」"
+],
+[
+"narr",
+"你的声音气若游丝。"
+],
+[
+"narr",
+"他用额头抵住你的额头，鼻尖靠着你的鼻尖。"
+],
+[
+"narr",
+"呼出的气息落在你唇边，带着合卺酒留下的淡淡辛香。"
+],
+[
+"narr",
+"大概，你是醉了。"
+],
+[
+"narr",
+"一阵风从窗隙钻进来，案上的烛火倏然熄灭。"
+],
+[
+"narr",
+"黑暗中，他握住你的腰，将你带倒在榻上。"
+],
+[
+"narr",
+"倒下的一瞬，他的唇碰上你的。"
+],
+[
+"narr",
+"起初只是轻轻试探，后来他像是不受控制了似的。"
+]
+]
+},
+"b_c4a": {
+"bg": "cg1-jiejian.jpg",
+"next": "b_act7",
+"lines": [
+[
+"narr",
+"你飞速回忆傅姆的话——要怎样不要怎样，"
+],
+[
+"narr",
+"可她的声音渐渐破碎，飞向了很远的地方。"
+],
+[
+"narr",
+"你也像不受控制了一般配合他、回应他。"
+],
+[
+"narr",
+"不能怪政出了那么多汗，今日确实很热。"
+],
+[
+"narr",
+"你们推开碍事的衣衫和褥子。"
+],
+[
+"narr",
+"秦进，楚退；秦退，楚迎……一时间难分胜负。"
+],
+[
+"narr",
+"后来许多个夜晚，你们确实如此亲近。"
+],
+[
+"narr",
+"可那不是大婚当夜。"
+],
+[
+"narr",
+"是他先松的手，气息还没平复，额头抵着你的额头："
+],
+[
+"zheng",
+"「若你害怕，今日便到这里。」"
+],
+[
+"narr",
+"你还没反应过来，他又说："
+],
+[
+"zheng",
+"「再这样，我怕收不住。」"
+],
+[
+"narr",
+"笑意里带着点自嘲。"
+],
+[
+"narr",
+"他直起身，替你理好鬓边散落的发丝。"
+]
+]
+},
+"b_c4b": {
+"bg": "cg1-jiejian.jpg",
+"next": "b_act7",
+"lines": [
+[
+"narr",
+"你脑中还在飞速回忆傅姆教过的话，身子却先一步僵住了，"
+],
+[
+"narr",
+"连呼吸都放得很轻，不知该往哪里搁。"
+],
+[
+"narr",
+"政很快察觉，动作顿住。"
+],
+[
+"narr",
+"他没有再往前，只是低低笑了一声，退开一些，额头仍贴着你的。"
+],
+[
+"zheng",
+"「怎么，怕成这样？」"
+],
+[
+"ni",
+"「……嗯。」"
+],
+[
+"zheng",
+"「那便更没什么好急的了。」"
+],
+[
+"narr",
+"他松开手，替你理好鬓边散落的发丝，动作放得极轻。"
+],
+[
+"zheng",
+"「到这里，好不好？」"
+],
+[
+"narr",
+"你这才后知后觉地松了口气，"
+],
+[
+"narr",
+"那口气却松得有点心虚——好像辜负了他方才的等候。"
+]
+]
+},
+"b_act7": {
+"bg": "cg1-jiejian.jpg",
+"next": "b_act8",
+"lines": [
+[
+"narr",
+"你怔住。"
+],
+[
+"ni",
+"「可是太后那边……」"
+],
+[
+"zheng",
+"「无妨，我有办法。」"
+],
+[
+"ni",
+"「如果宗室问我……」"
+],
+[
+"zheng",
+"「你便害羞回避，让他们来问孤。」"
+],
+[
+"narr",
+"说着，他拉你在榻上躺下，替你掖好衣襟。"
+],
+[
+"zheng",
+"「别怕，你不必勉强。我们来日方长。」"
+],
+[
+"narr",
+"他的气息混着淡淡的酒香，深重而绵长，落在你耳边，吹得人发痒。"
+],
+[
+"narr",
+"你原以为自己会松一口气。"
+],
+[
+"narr",
+"可听见“来日方长”四个字，心里却忽然生出一点说不清的遗憾。"
+],
+[
+"narr",
+"政闭上眼，似乎当真准备就这样睡了。"
+],
+[
+"narr",
+"你犹豫许久，悄悄向他挪近一些。"
+],
+[
+"narr",
+"又近一些。"
+],
+[
+"narr",
+"然后伸出手，轻轻握住他仍旧冰凉的手指。"
+],
+[
+"narr",
+"政没有睁眼，只将你的手收进掌心。"
+],
+[
+"narr",
+"过了一会儿，你听见他唤："
+],
+[
+"zheng",
+"「嬬。」"
+],
+[
+"narr",
+"你怔了怔。"
+],
+[
+"narr",
+"那是楚人的旧称。"
+],
+[
+"narr",
+"妻子。"
+],
+[
+"ni",
+"「嗯。」"
+],
+[
+"narr",
+"你轻声应他。"
+],
+[
+"narr",
+"他将你的手握得更紧了一些。"
+],
+[
+"narr",
+"你闭上眼，把额头抵在他的肩侧。"
+],
+[
+"narr",
+"隔着薄薄一层中衣，你听见他的心跳仍旧又急又重。"
+],
+[
+"narr",
+"是啊。"
+],
+[
+"narr",
+"来日方长。"
+]
+]
+},
+"b_act8": {
+"bg": "cg5-shenxun.jpg",
+"choice": {
+"prompt": "面对这个询问",
+"opts": [
+[
+"坦白是自己安排的",
+"c5",
+"A",
+"b_c5a"
+],
+[
+"推说是巧合",
+"c5",
+"B",
+"b_c5b"
+]
+]
+},
+"lines": [
+[
+"narr",
+"入秋后，楚国使者来朝，进献了一批治水的图纸。"
+],
+[
+"narr",
+"是你托人从郢都寻来的，本想悄悄呈给政，"
+],
+[
+"narr",
+"替楚国在他面前挣一点体面。"
+],
+[
+"narr",
+"不料事情传到了相邦耳中，说你“私通楚使”。"
+],
+[
+"narr",
+"政审时，没有当众发作，只是屏退左右，把那卷图纸放在你面前。"
+],
+[
+"zheng",
+"「这是你让人送来的？」"
+]
+]
+},
+"b_c5a": {
+"bg": "cg5-shenxun.jpg",
+"next": "b_act9",
+"lines": [
+[
+"ni",
+"「是我让人送的。」"
+],
+[
+"ni",
+"「我知道这样会惹人非议，可我不想楚国在你面前，只有和亲这一点用处。」"
+],
+[
+"narr",
+"政看着你，久久没说话，末了只说了一句："
+],
+[
+"zheng",
+"「以后这样的事，先说给我听。」"
+]
+]
+},
+"b_c5b": {
+"bg": "cg5-shenxun.jpg",
+"next": "b_act9",
+"lines": [
+[
+"ni",
+"「是……侍女多嘴，胡乱寻来的，我原也没放在心上。」"
+],
+[
+"narr",
+"政点点头，没再多问，把图纸交给内侍存档，"
+],
+[
+"narr",
+"像是处理一件寻常公务。"
+],
+[
+"narr",
+"你后来才明白，他没拆穿，也没再给你第二次机会主动开口。"
+]
+]
+},
+"b_act9": {
+"bg": "cg5-shenxun.jpg",
+"choice": {
+"prompt": "终局分岔：你如何回应这句质问",
+"opts": [
+[
+"坦诚面对：“想过。”",
+"c6",
+"A",
+"end:zhishaocike"
+],
+[
+"否认到底：“没有。”",
+"c6",
+"B",
+"end:cuoguo"
+]
+]
+},
+"lines": [
+[
+"cg",
+""
+],
+[
+"narr",
+"直到一日，他忽然又问起——"
+],
+[
+"zheng",
+"「你可曾想过，让楚国拿回本该属于它的天下？」"
+],
+[
+"narr",
+"他的声音很轻，眼睛却一眨不眨地看着你。"
+]
+]
+},
+"b_end_xinsi": {
+"bg": "cg2-xinsi.jpg",
+"ending": "xinsi",
+"lines": [
+[
+"cg",
+""
+],
+[
+"narr",
+"你张了张口，到底还是没有换一个答案。"
+],
+[
+"ni",
+"「……都一样吧。」"
+],
+[
+"narr",
+"政静静看着你，没有再追问。"
+],
+[
+"zheng",
+"「是么。」"
+],
+[
+"narr",
+"他松开手，替你理了理鬓边散落的发丝，动作依旧很轻，"
+],
+[
+"narr",
+"只是那句“我”，好像从此再没问出口过。"
+],
+[
+"narr",
+"这一夜，他再没有多问什么。"
+],
+[
+"narr",
+"往后的日子，他待你处处周全，礼数不缺——"
+],
+[
+"narr",
+"只是每一次，都是“孤”在待你好，再没有“我”。"
+],
+[
+"narr",
+"心死，大约就是从这一刻，悄悄开始的。"
+]
+]
+},
+"b_end_cuoguo": {
+"bg": "cg3-cuoguo.jpg",
+"ending": "cuoguo",
+"lines": [
+[
+"cg",
+""
+],
+[
+"ni",
+"「没有。」"
+],
+[
+"narr",
+"你脱口而出，然后一字一句地说："
+],
+[
+"ni",
+"「我从未想过这些。」"
+],
+[
+"narr",
+"政静静看着你，许久，风吹得烛光摇曳。"
+],
+[
+"zheng",
+"「你当真没有想过？」"
+],
+[
+"narr",
+"他又问了一遍，声音很轻。"
+],
+[
+"ni",
+"「没有。」"
+],
+[
+"narr",
+"你又说了一遍。"
+],
+[
+"narr",
+"他久久看着你，忽然笑了，笑意薄得像纸。"
+],
+[
+"zheng",
+"「好。孤记住了。」"
+],
+[
+"narr",
+"自那以后，他待你礼数周全，"
+],
+[
+"narr",
+"甚至比从前更加体贴——他是挑不出任何错处的秦王，"
+],
+[
+"narr",
+"可你渐渐明白，你等来的，从此只会是秦王，"
+],
+[
+"narr",
+"不会再是那个问过你“我问的是你”的人。"
+],
+[
+"narr",
+"或许，你曾有过机会，只是在那一夜，你亲手把它推远了。"
+]
+]
+},
+"b_end_zhishaocike": {
+"bg": "cg4-zhishaocike.jpg",
+"ending": "zhishaocike",
+"lines": [
+[
+"cg",
+""
+],
+[
+"narr",
+"你沉默了很久，久到连自己都以为不会再开口。"
+],
+[
+"ni",
+"「想过。我是楚人，芈姓的女儿，怎么可能真的一点都不想。」"
+],
+[
+"narr",
+"政的神色未变，只是看你看得更专注了些。"
+],
+[
+"ni",
+"「可我从未想过要因此负你。」"
+],
+[
+"narr",
+"你继续说下去，声音渐渐稳了。"
+],
+[
+"ni",
+"「秦楚之争，是秦王和楚公主的事，是天下的事；至少此刻，这不是政和我之间的事。」"
+],
+[
+"narr",
+"殿内静了很久。"
+],
+[
+"narr",
+"政忽然笑了，如少年般单纯的笑。"
+],
+[
+"zheng",
+"「至少此刻。」"
+],
+[
+"narr",
+"他低声重复了一遍，像是把这四个字放进心里收好。"
+],
+[
+"zheng",
+"「那便够了。」"
+],
+[
+"narr",
+"他伸手，一边帮你整理散落的发，一边喃喃："
+],
+[
+"zheng",
+"「你的实话，于我，弥足珍贵。」"
+]
+]
+}
+};
 var bIndex = 0, bTimer = null;
-SCREENS.b0 = function () {
+function isSubScene(id) { return !!B_SCENES[id]; }
+function renderSub(id) {
+  var sc = B_SCENES[id];
   bIndex = 0;
-  var html = '<div class="sub-stage fade-in" onclick="advanceSub()">';
+  var html = '<div class="sub-stage fade-in" id="subStage" style="background-image:url(\'' + sc.bg + '\')" onclick="advanceSub()">';
   html += '<button class="sub-recap" onclick="event.stopPropagation();openRecap()">前情</button>';
   html += '<div class="sub-box">';
   html += '<div class="sub-line" id="subLine"></div>';
   html += '<p class="sub-hint" id="subHint">点击屏幕继续</p>';
   html += '<div class="sub-choices" id="subChoices" hidden onclick="event.stopPropagation()">';
-  html += '<div class="sub-meta">3 种结局 · 6 种诗签</div>';
-  html += '<button class="sub-btn" onclick="recordChoice(\'c1\',\'A\');goto(\'c1a\')">摇头，回一句“不怕”</button>';
-  html += '<button class="sub-btn" onclick="recordChoice(\'c1\',\'B\');goto(\'c1b\')">顿了顿，如实相告</button>';
+  if (sc.choice) {
+    if (sc.choice.meta) html += '<div class="sub-meta">' + sc.choice.meta + '</div>';
+    if (sc.choice.prompt) html += '<p class="sub-prompt">' + sc.choice.prompt + '</p>';
+    for (var i = 0; i < sc.choice.opts.length; i++) html += '<button class="sub-btn" onclick="bChoose(' + i + ')">' + sc.choice.opts[i][0] + '</button>';
+  } else if (sc.ending) {
+    html += '<button class="sub-btn" onclick="goto(\'end:' + sc.ending + '\')">查看结局 →</button>';
+  }
   html += '</div></div></div>';
   html += '<div class="recap-panel" id="recapPanel" hidden onclick="closeRecap()"><div class="recap-inner" onclick="event.stopPropagation()">';
   html += '<button class="recap-close" onclick="closeRecap()">← 回到故事</button>';
@@ -708,7 +2242,8 @@ SCREENS.b0 = function () {
   html += '</div></div>';
   setTimeout(showSubLine, 0);
   return html;
-};
+}
+for (var bk in B_SCENES) (function (id) { SCREENS[id] = function () { return renderSub(id); }; })(bk);
 var RECAP_TEXT = [
   "再见，便是大婚。",
   "醮礼之后，政亲自引你出门，扶你登车，御轮三周。",
@@ -740,30 +2275,53 @@ var RECAP_TEXT = [
   "明明知道，却偏要你说。"
 ];
 function showSubLine() {
+  var sc = B_SCENES[current];
   var el = document.getElementById('subLine');
-  if (!el || current !== 'b0') return;
-  var l = B_LINES[bIndex];
-  el.innerHTML = '<span class="' + l.who + '">' + l.text + '</span>';
+  if (!sc || !el) return;
+  var l = sc.lines[bIndex];
+  var stage = document.getElementById('subStage');
+  if (stage) stage.classList.toggle('sub-cg', l[0] === 'cg');
+  el.innerHTML = l[0] === 'cg' ? '' : '<span class="' + l[0] + '">' + l[1] + '</span>';
   clearTimeout(bTimer);
-  if (bIndex < B_LINES.length - 1) {
-    bTimer = setTimeout(advanceSub, 1200);
-  } else {
+  var last = bIndex >= sc.lines.length - 1;
+  if (last && (sc.choice || sc.ending)) {
     document.getElementById('subHint').hidden = true;
     bTimer = setTimeout(function () {
       var c = document.getElementById('subChoices');
-      if (c && current === 'b0') c.hidden = false;
+      if (c && B_SCENES[current] === sc) c.hidden = false;
     }, 500);
+  } else if (sc.auto && bIndex < sc.auto) {
+    bTimer = setTimeout(advanceSub, 1200);
   }
 }
 function advanceSub() {
-  if (current !== 'b0' || bIndex >= B_LINES.length - 1) return;
-  bIndex++;
-  showSubLine();
+  var sc = B_SCENES[current];
+  if (!sc) return;
+  if (bIndex < sc.lines.length - 1) { bIndex++; showSubLine(); }
+  else if (sc.next) goto(sc.next);
 }
+function bChoose(i) {
+  var o = B_SCENES[current].choice.opts[i];
+  recordChoice(o[1], o[2]);
+  if (o[3].indexOf('end:') === 0) {
+    var key = o[3].slice(4);
+    state.ending = key;
+    ga('complete', { game_id: 'dahunye', ending: key });
+    goto('b_end_' + key);
+  } else {
+    goto(o[3]);
+  }
+}
+document.addEventListener('keydown', function (e) {
+  if (!B_SCENES[current]) return;
+  var c = document.getElementById('subChoices'), r = document.getElementById('recapPanel');
+  if ((c && !c.hidden) || (r && !r.hidden)) return;
+  if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') { e.preventDefault(); advanceSub(); }
+});
 function openRecap() {
   clearTimeout(bTimer);
   document.getElementById('recapPanel').hidden = false;
-  ga('recap_open', { game_id: 'dahunye', seconds: secs() });
+  ga('recap_open', { game_id: 'dahunye', screen_id: current, seconds: secs() });
 }
 function closeRecap() {
   document.getElementById('recapPanel').hidden = true;
