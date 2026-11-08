@@ -131,7 +131,28 @@
     position: absolute; top: 10px; left: 10px; z-index: 3; border: none; border-radius: 999px;
     background: rgba(0,0,0,0.45); color: #EDE3D1; font-family: var(--font-body); font-size: 12px; padding: 5px 12px; cursor: pointer;
   }
-  .sub-box { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0 22px 22px; text-align: center; }
+  .sub-box { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0 14px 14px; text-align: center; display: flex; flex-direction: column; }
+  .sub-box .sub-choices { order: 1; margin-bottom: 14px; }
+  .dlg {
+    order: 2; position: relative; text-align: left; min-height: 104px; margin-top: 14px;
+    background: rgba(18,12,9,0.82); border: 1px solid rgba(184,146,74,0.45); border-radius: 12px;
+    padding: 18px 18px 22px; box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+  }
+  .dlg[hidden] { display: none; }
+  .dlg-name {
+    position: absolute; top: -13px; left: 14px; padding: 3px 14px; border-radius: 6px;
+    font-family: var(--font-display); font-size: 14px; letter-spacing: 0.12em;
+  }
+  .dlg-name.zheng { background: #8C2F24; color: #F3DFB4; border: 1px solid #B8924A; }
+  .dlg-name.ni { background: #EDE3D1; color: #3a2a1e; border: 1px solid #B8924A; }
+  .dlg-name[hidden] { display: none; }
+  .dlg-text { line-height: 1.75; animation: fadeIn 0.4s ease both; }
+  .dlg-text.narr { font-size: 15px; color: rgba(237,227,209,0.85); }
+  .dlg-text.ni { font-size: 16px; color: #EDE3D1; }
+  .dlg-text.zheng { font-size: 16.5px; color: #E9C98A; }
+  .dlg-more { position: absolute; right: 14px; bottom: 6px; font-size: 11px; color: rgba(184,146,74,0.8); animation: blink 1.2s ease-in-out infinite; }
+  .dlg-more[hidden] { display: none; }
+  @keyframes blink { 0%,100% { opacity: 0.25; } 50% { opacity: 1; } }
   .sub-prompt { font-size: 12.5px; color: rgba(237,227,209,0.6); margin: 0 0 8px; }
   .sub-line { min-height: 64px; display: flex; align-items: center; justify-content: center; margin: 0 0 6px; }
   .sub-line span { animation: fadeIn 0.5s ease both; line-height: 1.7; }
@@ -2225,8 +2246,8 @@ function renderSub(id) {
   var html = '<div class="sub-stage fade-in" id="subStage" style="background-image:url(\'' + sc.bg + '\')" onclick="advanceSub()">';
   html += '<button class="sub-recap" onclick="event.stopPropagation();openRecap()">前情</button>';
   html += '<div class="sub-box">';
-  html += '<div class="sub-line" id="subLine"></div>';
-  html += '<p class="sub-hint" id="subHint">点击屏幕继续</p>';
+  html += '<div class="dlg" id="subDlg"><span class="dlg-name" id="subName" hidden></span><div class="dlg-text" id="subLine"></div><span class="dlg-more" id="subHint">▼</span></div>';
+  html += '<p class="sub-hint" id="cgHint" hidden style="order:3;margin-top:10px">点击屏幕继续</p>';
   html += '<div class="sub-choices" id="subChoices" hidden onclick="event.stopPropagation()">';
   if (sc.choice) {
     if (sc.choice.meta) html += '<div class="sub-meta">' + sc.choice.meta + '</div>';
@@ -2281,7 +2302,15 @@ function showSubLine() {
   var l = sc.lines[bIndex];
   var stage = document.getElementById('subStage');
   if (stage) stage.classList.toggle('sub-cg', l[0] === 'cg');
-  el.innerHTML = l[0] === 'cg' ? '' : '<span class="' + l[0] + '">' + l[1] + '</span>';
+  var dlg = document.getElementById('subDlg'), nm = document.getElementById('subName');
+  dlg.hidden = l[0] === 'cg';
+  nm.hidden = l[0] === 'narr' || l[0] === 'cg';
+  nm.className = 'dlg-name ' + l[0];
+  nm.textContent = l[0] === 'zheng' ? '政' : (l[0] === 'ni' ? '你' : '');
+  el.className = 'dlg-text ' + l[0];
+  el.innerHTML = l[0] === 'cg' ? '' : l[1];
+  document.getElementById('subHint').hidden = false;
+  document.getElementById('cgHint').hidden = l[0] !== 'cg';
   clearTimeout(bTimer);
   var last = bIndex >= sc.lines.length - 1;
   if (last && (sc.choice || sc.ending)) {
