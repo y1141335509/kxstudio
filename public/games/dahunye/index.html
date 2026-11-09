@@ -2246,7 +2246,8 @@ var B_SCENES = {
 ]
 }
 };
-// Mid-scene CG changes for B (11-07 art, see 大婚之夜-B版CG出图需求.md): [first line index, image, dark?]
+// Mid-scene CG changes for B (11-07/08 art, see 大婚之夜-B版CG出图需求.md): [first line index, image, dark?, fit?]
+// fit 'contain' shows the whole picture top-aligned (for wide two-figure shots that 'cover' would clip on phones).
 var B_BG = {
   b_c1a: [[0, 'cg14-jieyingjie.jpg']],
   b_c1b: [[0, 'cg14-jieyingjie.jpg']],
@@ -2258,13 +2259,16 @@ var B_BG = {
   b_act6: [[0, 'cg1-jiejian.jpg'], [5, 'cg8-jianyuchufu.jpg'], [13, 'cg13-jiedadai.jpg'], [34, 'cg7-wuzui.jpg'], [51, 'cg10-etouxiangdi.jpg'], [67, 'cg10-etouxiangdi.jpg', 1]],
   b_c4a: [[0, 'cg10-etouxiangdi.jpg', 1]],
   b_c4b: [[0, 'cg10-etouxiangdi.jpg', 1]],
-  b_act7: [[0, 'cg11-lairifangchang.jpg']]
+  b_act7: [[0, 'cg11-lairifangchang.jpg']],
+  b_end_xinsi: [[0, 'cg2-xinsi.jpg'], [7, 'cg16-xinsi-wanghou.jpg', 0, 'contain']],
+  b_end_cuoguo: [[0, 'cg3-cuoguo.jpg'], [11, 'cg17-cuoguo-tuiyuan.jpg']],
+  b_end_zhishaocike: [[0, 'cg4-zhishaocike.jpg'], [8, 'cg18-zhishaocike-xiao.jpg']]
 };
 function bgFor(id, i) {
   var segs = B_BG[id], pick = null;
-  if (!segs) return [B_SCENES[id].bg, 0];
+  if (!segs) return [B_SCENES[id].bg, 0, 'cover'];
   for (var k = 0; k < segs.length; k++) if (segs[k][0] <= i) pick = segs[k];
-  return pick ? [pick[1], pick[2] || 0] : [B_SCENES[id].bg, 0];
+  return pick ? [pick[1], pick[2] || 0, pick[3] || 'cover'] : [B_SCENES[id].bg, 0, 'cover'];
 }
 var bPreloaded = false;
 function preloadBArt() {
@@ -2357,7 +2361,7 @@ function showSubLine() {
   if (stage) {
     stage.classList.toggle('sub-cg', l[0] === 'cg');
     var bg = bgFor(current, bIndex), url = "url('" + bg[0] + "')";
-    if (stage.dataset.bg !== bg[0]) { stage.style.backgroundImage = url; stage.dataset.bg = bg[0]; }
+    if (stage.dataset.bg !== bg[0]) { stage.style.backgroundImage = url; stage.dataset.bg = bg[0]; stage.style.backgroundSize = bg[2]; }
     stage.classList.toggle('sub-dark', !!bg[1]);
   }
   var dlg = document.getElementById('subDlg'), nm = document.getElementById('subName');
