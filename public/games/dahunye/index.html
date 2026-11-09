@@ -612,7 +612,7 @@ function renderEnding(key) {
   html += '<div class="end-title ' + e.tone + '">' + e.title + '</div>';
   html += '<div class="divider">政的心声</div>';
   html += '<div class="judgment-card"><div class="judgment-avatar"><img src="' + CG.cuoguo + '" alt="政" /></div><div class="judgment-text">“' + e.judgment + '”</div></div>';
-  if (VARIANT === 'B' && B_END_ART[key]) html += '<div class="end-art fade-in"><img src="' + B_END_ART[key] + '" alt="' + e.title + '" /></div>';
+  if (B_END_ART[key]) html += '<div class="end-art fade-in"><img src="' + B_END_ART[key] + '" alt="' + e.title + '" /></div>';
   html += '<div class="action-bar"><div class="cta-row"><button class="cta ' + (e.tone === 'he' ? 'he-cta' : '') + '" onclick="showReport()">查看你的结局报告 →</button></div></div>';
   document.getElementById('app').innerHTML = html;
 }
@@ -2264,7 +2264,7 @@ var B_BG = {
   b_c4b: [[0, 'cg10-etouxiangdi.jpg', 1]],
   b_act7: [[0, 'cg11-lairifangchang.jpg']]
 };
-// The 'aftermath' picture for each ending sits on B's ending card, under 政的心声 (11-08).
+// The 'aftermath' picture for each ending sits on the ending card under 政的心声, in every variant (11-08).
 var B_END_ART = { xinsi: 'cg16-xinsi-wanghou.jpg', cuoguo: 'cg17-cuoguo-tuiyuan.jpg', zhishaocike: 'cg18-zhishaocike-xiao.jpg' };
 function bgFor(id, i) {
   var segs = B_BG[id], pick = null;
