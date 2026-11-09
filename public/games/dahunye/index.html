@@ -590,12 +590,11 @@ function restart() {
   renderCurrent();
 }
 
+// Every variant ends the same way (11-08): the subtitle ending scene, then the ending card.
 function showEnding(key) {
   state.ending = key;
-  navStack.push(current);
-  current = 'endcg:' + key;
   ga('complete', { game_id: 'dahunye', ending: key });
-  renderCurrent();
+  goto('b_end_' + key);
 }
 
 function renderEndingCG(key) {
@@ -607,7 +606,7 @@ function renderEndingCG(key) {
 
 function renderEnding(key) {
   var e = ENDINGS[key];
-  var html = VARIANT === 'B' ? '' : renderStory(e.body);
+  var html = '';
   html += '<div class="end-eyebrow">结局</div>';
   html += '<div class="end-title ' + e.tone + '">' + e.title + '</div>';
   html += '<div class="divider">政的心声</div>';
@@ -2399,10 +2398,7 @@ function bChoose(i) {
   var o = B_SCENES[current].choice.opts[i];
   recordChoice(o[1], o[2]);
   if (o[3].indexOf('end:') === 0) {
-    var key = o[3].slice(4);
-    state.ending = key;
-    ga('complete', { game_id: 'dahunye', ending: key });
-    goto('b_end_' + key);
+    showEnding(o[3].slice(4));
   } else {
     goto(o[3]);
   }
