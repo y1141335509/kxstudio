@@ -114,7 +114,11 @@
     display: block; margin: 10px auto 0; border: none; background: transparent;
     color: var(--ink-faint); font-family: var(--font-body); font-size: 12.5px; cursor: pointer;
   }
-  .intro-skip[hidden], .intro-sound[hidden], .action-bar[hidden] { display: none; }
+  .intro-play {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border: none; border-radius: 999px;
+    background: rgba(0,0,0,0.6); color: #fff; font-size: 15px; padding: 12px 22px; cursor: pointer;
+  }
+  .intro-skip[hidden], .intro-sound[hidden], .intro-play[hidden], .action-bar[hidden] { display: none; }
   .intro-line { font-size: 18px; color: var(--ink); text-align: center; margin: 16px 0 0; }
   /* Variant B: full-bleed CG with one subtitle line at a time (short-video subtitle style) */
   #app:has(.sub-stage) { padding-bottom: 0; }
@@ -564,6 +568,7 @@ function renderCurrent() {
     renderEnding(current.slice(4));
   } else {
     document.getElementById('app').innerHTML = SCREENS[current]();
+    if (current === 'v0') initIntro();
   }
   document.getElementById('backBtn').hidden = navStack.length === 0;
   scrollTop();
@@ -684,10 +689,11 @@ var SCREENS = {};
 SCREENS.v0 = function () {
   var html = '<div class="fade-in">';
   html += '<div class="intro-wrap">';
-  html += '<video id="introVideo" class="intro-video" src="intro-yingjie.mp4" autoplay muted playsinline preload="auto" onended="showIntroChoice(\'ended\')" onerror="showIntroChoice(\'error\')"></video>';
+  html += '<video id="introVideo" class="intro-video" src="intro-yingjie.mp4" poster="cg14-jieyingjie.jpg" autoplay muted playsinline preload="auto" onended="endIntro(\'ended\')" onerror="endIntro(\'error\')"></video>';
+  html += '<button class="intro-play" id="introPlay" hidden onclick="tapPlayIntro()">▶ 点击播放</button>';
   html += '<button class="intro-sound" id="introSound" onclick="unmuteIntro()">🔈 点开声音</button>';
   html += '</div>';
-  html += '<button class="intro-skip" id="introSkip" onclick="showIntroChoice(\'skip\')">跳过 →</button>';
+  html += '<button class="intro-skip" id="introSkip" onclick="endIntro(\'skip\')">跳过 →</button>';
   html += '</div>';
   html += '<div class="action-bar" id="introChoice" hidden><p class="intro-line">“怕吗？”</p><div class="choice-prompt">面对这句询问，你如何回答</div>';
   html += '<div class="choices">';
@@ -707,13 +713,70 @@ function unmuteIntro() {
   ga('intro_video', { game_id: 'dahunye', action: 'unmute', seconds: secs() });
 }
 
-function showIntroChoice(how) {
+// The Reel clip ends with a 「kxstudio看结局」 call-to-action card from 8.8s to the end (15.3s);
+// inside the demo that card makes no sense, so stop just before it.
+var INTRO_CUT = 8.7;
+// Don't make players wait for the clip: the 「怕吗？」 choice appears after a few seconds while it keeps playing.
+var INTRO_CHOICE_AT = 3;
+var introDone = false;
+
+function revealIntroChoice() {
   var box = document.getElementById('introChoice');
   if (!box || !box.hidden) return;
   box.hidden = false;
   var skip = document.getElementById('introSkip');
   if (skip) skip.hidden = true;
+}
+
+function endIntro(how) {
+  if (introDone) return;
+  introDone = true;
+  var v = document.getElementById('introVideo');
+  if (v) {
+    if (!v.paused) v.pause();
+    // timeupdate only fires every ~250ms, so the clip can overshoot into the card — step back to a clean frame.
+    if (v.currentTime > INTRO_CUT - 0.2) v.currentTime = INTRO_CUT - 0.3;
+  }
+  ['introSound', 'introPlay', 'introSkip'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.hidden = true;
+  });
+  revealIntroChoice();
   ga('intro_video', { game_id: 'dahunye', action: how, seconds: secs() });
+}
+
+// Autoplay can be blocked (iOS Low Power Mode, some in-app browsers): the video then sits on its
+// poster with no controls. Offer a tap-to-play button and show the choice right away.
+function introBlocked() {
+  if (introDone) return;
+  var v = document.getElementById('introVideo');
+  if (!v || !v.paused) return;
+  var p = document.getElementById('introPlay');
+  if (!p || !p.hidden) return;
+  p.hidden = false;
+  revealIntroChoice();
+  ga('intro_video', { game_id: 'dahunye', action: 'blocked', seconds: secs() });
+}
+
+function tapPlayIntro() {
+  var v = document.getElementById('introVideo');
+  var p = document.getElementById('introPlay');
+  if (p) p.hidden = true;
+  if (v) v.play().catch(function () {});
+  ga('intro_video', { game_id: 'dahunye', action: 'tap_play', seconds: secs() });
+}
+
+function initIntro() {
+  introDone = false;
+  var v = document.getElementById('introVideo');
+  if (!v) return;
+  v.addEventListener('timeupdate', function () {
+    if (v.currentTime >= INTRO_CHOICE_AT) revealIntroChoice();
+    if (v.currentTime >= INTRO_CUT) endIntro('ended');
+  });
+  var pr = v.play();
+  if (pr && pr.catch) pr.catch(introBlocked);
+  setTimeout(introBlocked, 1500);
 }
 
 // Variant B: the whole demo as short-video subtitles over full-bleed CGs, one line per tap.
