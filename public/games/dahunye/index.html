@@ -254,6 +254,15 @@
     padding-top: 12px; border-top: 1px dashed var(--surface-line);
   }
 
+  .subscribe-box { margin-top: 20px; background: var(--surface); border: 1px solid var(--surface-line); border-radius: 14px; padding: 18px; text-align: center; }
+  .sbx-line { font-family: var(--font-display); font-size: 14.5px; line-height: 1.8; color: var(--ink); margin: 0 0 12px; }
+  .sbx-row { display: flex; gap: 8px; }
+  .sbx-input { flex: 1; min-width: 0; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--surface-line); background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 14px; }
+  .sbx-input:focus { outline: none; border-color: var(--bronze); }
+  .sbx-btn { flex-shrink: 0; }
+  .sbx-note { font-size: 11.5px; color: var(--ink-faint); margin: 10px 0 0; }
+  .sbx-msg { font-size: 12.5px; color: var(--vermillion); margin: 8px 0 0; min-height: 0; }
+  .sbx-done { font-family: var(--font-display); font-size: 15px; color: var(--ink); margin: 4px 0; }
   .divination { margin-top: 20px; background: var(--surface); border: 1px solid var(--surface-line); border-radius: 14px; padding: 18px; text-align: center; }
   .div-title { font-family: var(--font-display); font-weight: 700; font-size: 14.5px; margin: 0 0 4px; }
   .div-sub { font-size: 11.5px; color: var(--ink-faint); margin: 0 0 14px; }
@@ -621,6 +630,27 @@ function renderEnding(key) {
   document.getElementById('app').innerHTML = html;
 }
 
+// Report-page subscribe box (11-22): same Google Form「KXStudio 订阅」as the homepage; rows land in「KXStudio 订阅名单」.
+var SUBSCRIBE_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLScgHdyV5TfxXRqYUURTgg8ynIXPsHvvVwGKkXi-onM_e32y5Q/formResponse';
+var subscribing = false;
+function submitSubscribe() {
+  if (subscribing) return;
+  var input = document.getElementById('subEmail');
+  var msg = document.getElementById('subMsg');
+  var email = (input.value || '').trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = '邮箱好像不太对，再看一眼？'; return; }
+  subscribing = true;
+  msg.textContent = '';
+  // Google Forms blocks cross-origin reads, so with no-cors a sent request counts as success.
+  fetch(SUBSCRIBE_FORM, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ 'entry.579516729': email }) })
+    .then(function () {
+      ga('subscribe', { game_id: 'dahunye', ending: state.ending, source: 'report' });
+      document.getElementById('subscribeBox').innerHTML = '<p class="sbx-done">记下了。下一章见。</p>';
+    })
+    .catch(function () { msg.textContent = '没送出去，稍后再试一次？'; })
+    .then(function () { subscribing = false; });
+}
+
 function showReport() {
   navStack.push(current);
   current = 'report';
@@ -650,6 +680,13 @@ function renderReport() {
   if (sideNotes.length) {
     html += '<p class="quiz-extra">往前翻一翻你的选择——' + sideNotes.join(' ') + '</p>';
   }
+  html += '</div>';
+
+  html += '<div class="subscribe-box" id="subscribeBox">';
+  html += '<p class="sbx-line">他的故事还没写完。<br>留个邮箱，下一章写好，我第一个告诉你。</p>';
+  html += '<div class="sbx-row"><input class="sbx-input" id="subEmail" type="email" inputmode="email" autocomplete="email" placeholder="你的邮箱" /><button class="draw-btn sbx-btn" onclick="submitSubscribe()">等他</button></div>';
+  html += '<p class="sbx-msg" id="subMsg"></p>';
+  html += '<p class="sbx-note">只用来通知纸上秦新章和新 demo，不发别的。</p>';
   html += '</div>';
 
   html += '<div class="divination">';
