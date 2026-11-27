@@ -15,6 +15,7 @@ import CharacterPage from './components/CharacterPage/CharacterPage';
 import SilverPage from './components/CharacterPage/SilverPage/SilverPage';
 import Qi from './components/CharacterPage/QiPage/QiPage';
 import Games from './pages/Games'; // 主要的游戏页面组件
+import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 
 export default function App() {
   const theme = useTheme();
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/character-page/qipage" element={<Qi />} />
         <Route path="/resources" element={<ResourcesPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </Container>
