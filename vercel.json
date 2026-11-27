@@ -3,11 +3,6 @@
   "framework": "vite",
   "buildCommand": "npm run build && cp build/index.html build/404.html",
   "outputDirectory": "build",
-  "functions": {
-    "api/*.js": {
-      "maxDuration": 10
-    }
-  },
   "headers": [
     {
       "source": "/static/(.*)",
@@ -122,10 +117,6 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
     { "source": "/games", "destination": "/index.html" },
     { "source": "/games/", "destination": "/index.html" },
     { "source": "/resources", "destination": "/index.html" },
