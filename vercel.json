@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "framework": null,
+  "framework": "vite",
   "buildCommand": "npm run build && cp build/index.html build/404.html",
   "outputDirectory": "build",
   "functions": {
