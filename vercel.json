@@ -1,11 +1,23 @@
 {
   "version": 2,
+  "framework": null,
+  "buildCommand": "npm run build && cp build/index.html build/404.html",
+  "outputDirectory": "build",
   "functions": {
     "api/*.js": {
       "maxDuration": 10
     }
   },
   "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
     {
       "source": "/games/watermelon/(.*)",
       "headers": [
@@ -113,6 +125,18 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
-    }
+    },
+    { "source": "/games", "destination": "/index.html" },
+    { "source": "/games/", "destination": "/index.html" },
+    { "source": "/resources", "destination": "/index.html" },
+    { "source": "/resources/", "destination": "/index.html" },
+    { "source": "/about-us", "destination": "/index.html" },
+    { "source": "/about-us/", "destination": "/index.html" },
+    { "source": "/character-page", "destination": "/index.html" },
+    { "source": "/character-page/", "destination": "/index.html" },
+    { "source": "/character-page/silver", "destination": "/index.html" },
+    { "source": "/character-page/silver/", "destination": "/index.html" },
+    { "source": "/character-page/qipage", "destination": "/index.html" },
+    { "source": "/character-page/qipage/", "destination": "/index.html" }
   ]
 }
